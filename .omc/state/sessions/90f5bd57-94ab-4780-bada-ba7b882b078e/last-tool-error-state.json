@@ -1,0 +1,7 @@
+{
+  "tool_name": "PowerShell",
+  "tool_input_preview": "{\"command\":\"Get-ChildItem \\\"$HOME\\\\.claude\\\\hooks\\\\*.sh\\\" -ErrorAction SilentlyContinue | Select-Object Name\",\"description\":\"Check for legacy bash hook scripts\"}",
+  "error": "Exit code 1",
+  "timestamp": "2026-07-12T07:51:01.112Z",
+  "retry_count": 1
+}

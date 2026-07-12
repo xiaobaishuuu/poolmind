@@ -1,0 +1,77 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1783838846811,
+  "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "project-001-poolmind": {
+      "path": "project-001-poolmind",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1783838846776,
+      "keyFiles": [
+        "CLAUDE.md",
+        "README.md"
+      ]
+    },
+    "project-002-simple-login-system": {
+      "path": "project-002-simple-login-system",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1783838846777,
+      "keyFiles": []
+    },
+    "project-001-poolmind\\docs": {
+      "path": "project-001-poolmind\\docs",
+      "purpose": "Documentation",
+      "fileCount": 11,
+      "lastAccessed": 1783838846778,
+      "keyFiles": [
+        "00-overview-and-team-division.md",
+        "01-product-business-rules.md",
+        "02-backend-data-model.md"
+      ]
+    },
+    "project-001-poolmind\\scripts": {
+      "path": "project-001-poolmind\\scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 1,
+      "lastAccessed": 1783838846779,
+      "keyFiles": []
+    },
+    "project-001-poolmind\\src": {
+      "path": "project-001-poolmind\\src",
+      "purpose": "Source code",
+      "fileCount": 1,
+      "lastAccessed": 1783838846779,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}

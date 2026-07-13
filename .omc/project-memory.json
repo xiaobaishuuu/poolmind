@@ -1,7 +1,7 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1783838846811,
-  "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace",
+  "lastScanned": 1783953247313,
+  "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
     "languages": [],
     "frameworks": [],
@@ -24,54 +24,43 @@
   "structure": {
     "isMonorepo": false,
     "workspaces": [],
-    "mainDirectories": [],
+    "mainDirectories": [
+      "docs"
+    ],
     "gitBranches": null
   },
   "customNotes": [],
   "directoryMap": {
-    "project-001-poolmind": {
-      "path": "project-001-poolmind",
-      "purpose": null,
-      "fileCount": 3,
-      "lastAccessed": 1783838846776,
-      "keyFiles": [
-        "CLAUDE.md",
-        "README.md"
-      ]
-    },
-    "project-002-simple-login-system": {
-      "path": "project-002-simple-login-system",
-      "purpose": null,
-      "fileCount": 0,
-      "lastAccessed": 1783838846777,
-      "keyFiles": []
-    },
-    "project-001-poolmind\\docs": {
-      "path": "project-001-poolmind\\docs",
+    "docs": {
+      "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 11,
-      "lastAccessed": 1783838846778,
+      "fileCount": 2,
+      "lastAccessed": 1783953247284,
       "keyFiles": [
-        "00-overview-and-team-division.md",
-        "01-product-business-rules.md",
-        "02-backend-data-model.md"
+        "deep-interview-spec.md",
+        "PROGRESS.md"
       ]
-    },
-    "project-001-poolmind\\scripts": {
-      "path": "project-001-poolmind\\scripts",
-      "purpose": "Build/utility scripts",
-      "fileCount": 1,
-      "lastAccessed": 1783838846779,
-      "keyFiles": []
-    },
-    "project-001-poolmind\\src": {
-      "path": "project-001-poolmind\\src",
-      "purpose": "Source code",
-      "fileCount": 1,
-      "lastAccessed": 1783838846779,
-      "keyFiles": []
     }
   },
-  "hotPaths": [],
+  "hotPaths": [
+    {
+      "path": "README.md",
+      "accessCount": 1,
+      "lastAccessed": 1783854988215,
+      "type": "file"
+    },
+    {
+      "path": "docs/deep-interview-spec.md",
+      "accessCount": 1,
+      "lastAccessed": 1783871239809,
+      "type": "file"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "accessCount": 1,
+      "lastAccessed": 1783871298126,
+      "type": "file"
+    }
+  ],
   "userDirectives": []
 }

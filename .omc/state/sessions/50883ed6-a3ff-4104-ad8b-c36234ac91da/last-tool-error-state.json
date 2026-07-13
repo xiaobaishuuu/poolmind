@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"cp \\\"/c/Users/OWNER/AppData/Local/Microsoft/WinGet/Packages/jqlang.jq_Microsoft.Winget.Source_8wekyb3d8bbwe/jq.exe\\\" /c/Users/OWNER/bin/jq.exe\\njq --version\",\"description\":\"Copy jq.exe int...",
-  "error": "Exit code 127\ncp: cannot create regular file '/c/Users/OWNER/bin/jq.exe': No such file or directory\n/usr/bin/bash: line 2: jq: command not found",
-  "timestamp": "2026-07-12T07:25:45.073Z",
-  "retry_count": 1
-}

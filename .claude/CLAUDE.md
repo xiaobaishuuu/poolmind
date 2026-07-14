@@ -69,3 +69,19 @@ State root: `.omc/` by default, or `$OMC_STATE_DIR/{project-id}/` when `OMC_STAT
 Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 
 <!-- OMC:END -->
+
+## PoolMind 文档约定（每次会话必须遵守）
+
+所有项目文档只保存在本仓库，**禁止写入全局目录**（`~/.claude/plans`、`~/.claude` 下任何位置）：
+
+| 文件 | 用途 | 更新时机 |
+|------|------|---------|
+| `docs/deep-interview-spec.md` | 需求规格书（唯一事实来源） | 有新决定时直接合并进正文对应章节，不另开增量文件 |
+| `docs/PROGRESS.md` | 进度速览 + 恢复指引 | 每次会话结束前更新 |
+| `docs/interview-sessions/YYYY-MM-DD.md` | 当日访谈/对话记录 | 每个访谈日新建一份，逐轮记录问答与定案 |
+| `.omc/specs/deep-interview-poolmind.md` | 规格书副本（OMC 下游技能用） | 规格书改完后同步复制 |
+| `.omc/state/deep-interview-state.json` | 访谈恢复状态 | 会话结束前更新 |
+
+会话收尾固定顺序：**合并决定进 spec → 写当日 interview-sessions 记录 → 更新 PROGRESS.md → 同步 .omc 副本与状态 → 更新记忆**。
+
+`.omc/` 其余内容（sessions、state/sessions、logs 等）为运行时产物，已由 `.gitignore` 排除，不提交、不手动维护。恢复会话时先读 `docs/PROGRESS.md`。

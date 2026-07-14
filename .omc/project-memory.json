@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1783953247313,
+  "lastScanned": 1784048691137,
   "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
     "languages": [],
@@ -27,7 +27,10 @@
     "mainDirectories": [
       "docs"
     ],
-    "gitBranches": null
+    "gitBranches": {
+      "defaultBranch": "master",
+      "branchingStrategy": null
+    }
   },
   "customNotes": [],
   "directoryMap": {
@@ -35,7 +38,7 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 2,
-      "lastAccessed": 1783953247284,
+      "lastAccessed": 1784048691096,
       "keyFiles": [
         "deep-interview-spec.md",
         "PROGRESS.md"
@@ -44,21 +47,33 @@
   },
   "hotPaths": [
     {
+      "path": "docs/deep-interview-spec.md",
+      "accessCount": 7,
+      "lastAccessed": 1784047376845,
+      "type": "file"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "accessCount": 3,
+      "lastAccessed": 1784048358768,
+      "type": "file"
+    },
+    {
+      "path": "docs/PROGRESS.md",
+      "accessCount": 2,
+      "lastAccessed": 1784047491186,
+      "type": "file"
+    },
+    {
       "path": "README.md",
       "accessCount": 1,
       "lastAccessed": 1783854988215,
       "type": "file"
     },
     {
-      "path": "docs/deep-interview-spec.md",
+      "path": "docs/interview-sessions/2026-07-14.md",
       "accessCount": 1,
-      "lastAccessed": 1783871239809,
-      "type": "file"
-    },
-    {
-      "path": "docs/PROGRESS.md",
-      "accessCount": 1,
-      "lastAccessed": 1783871298126,
+      "lastAccessed": 1784047436569,
       "type": "file"
     }
   ],

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1784048691137,
+  "lastScanned": 1784299986771,
   "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
     "languages": [],
@@ -38,7 +38,7 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 2,
-      "lastAccessed": 1784048691096,
+      "lastAccessed": 1784299986734,
       "keyFiles": [
         "deep-interview-spec.md",
         "PROGRESS.md"
@@ -48,20 +48,32 @@
   "hotPaths": [
     {
       "path": "docs/deep-interview-spec.md",
-      "accessCount": 7,
-      "lastAccessed": 1784047376845,
-      "type": "file"
-    },
-    {
-      "path": ".claude/CLAUDE.md",
-      "accessCount": 3,
-      "lastAccessed": 1784048358768,
+      "accessCount": 35,
+      "lastAccessed": 1784305055396,
       "type": "file"
     },
     {
       "path": "docs/PROGRESS.md",
-      "accessCount": 2,
-      "lastAccessed": 1784047491186,
+      "accessCount": 8,
+      "lastAccessed": 1784305063445,
+      "type": "file"
+    },
+    {
+      "path": "docs/interview-sessions/2026-07-17.md",
+      "accessCount": 6,
+      "lastAccessed": 1784305334454,
+      "type": "file"
+    },
+    {
+      "path": "docs/SPEC.md",
+      "accessCount": 5,
+      "lastAccessed": 1784305868223,
+      "type": "file"
+    },
+    {
+      "path": ".claude/CLAUDE.md",
+      "accessCount": 4,
+      "lastAccessed": 1784305043512,
       "type": "file"
     },
     {
@@ -74,6 +86,12 @@
       "path": "docs/interview-sessions/2026-07-14.md",
       "accessCount": 1,
       "lastAccessed": 1784047436569,
+      "type": "file"
+    },
+    {
+      "path": "docs/HANDOFF.md",
+      "accessCount": 1,
+      "lastAccessed": 1784306398761,
       "type": "file"
     }
   ],

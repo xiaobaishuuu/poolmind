@@ -76,10 +76,11 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 
 | 文件 | 用途 | 更新时机 |
 |------|------|---------|
-| `docs/deep-interview-spec.md` | 需求规格书（唯一事实来源） | 有新决定时直接合并进正文对应章节，不另开增量文件 |
+| `docs/SPEC.md` | **正式规格书 v1.0+（唯一事实来源）** | 有新决定时直接合并进正文对应章节，不另开增量文件 |
+| `docs/deep-interview-spec.md` | 访谈过程档案（历史，含逐轮评分与本体收敛） | 已冻结，不再更新 |
 | `docs/PROGRESS.md` | 进度速览 + 恢复指引 | 每次会话结束前更新 |
 | `docs/interview-sessions/YYYY-MM-DD.md` | 当日访谈/对话记录 | 每个访谈日新建一份，逐轮记录问答与定案 |
-| `.omc/specs/deep-interview-poolmind.md` | 规格书副本（OMC 下游技能用） | 规格书改完后同步复制 |
+| `.omc/specs/poolmind-spec.md` | 正式规格书副本（OMC 下游技能用） | SPEC.md 改完后同步复制 |
 | `.omc/state/deep-interview-state.json` | 访谈恢复状态 | 会话结束前更新 |
 
 会话收尾固定顺序：**合并决定进 spec → 写当日 interview-sessions 记录 → 更新 PROGRESS.md → 同步 .omc 副本与状态 → 更新记忆**。

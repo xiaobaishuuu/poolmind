@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1784299986771,
+  "lastScanned": 1784386685285,
   "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
     "languages": [],
@@ -38,10 +38,10 @@
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 2,
-      "lastAccessed": 1784299986734,
+      "lastAccessed": 1784386685240,
       "keyFiles": [
-        "deep-interview-spec.md",
-        "PROGRESS.md"
+        "HANDOFF.md",
+        "SPEC.md"
       ]
     }
   },
@@ -66,14 +66,20 @@
     },
     {
       "path": "docs/SPEC.md",
-      "accessCount": 5,
-      "lastAccessed": 1784305868223,
+      "accessCount": 6,
+      "lastAccessed": 1784386769303,
       "type": "file"
     },
     {
       "path": ".claude/CLAUDE.md",
       "accessCount": 4,
       "lastAccessed": 1784305043512,
+      "type": "file"
+    },
+    {
+      "path": "docs/HANDOFF.md",
+      "accessCount": 2,
+      "lastAccessed": 1784387706807,
       "type": "file"
     },
     {
@@ -86,12 +92,6 @@
       "path": "docs/interview-sessions/2026-07-14.md",
       "accessCount": 1,
       "lastAccessed": 1784047436569,
-      "type": "file"
-    },
-    {
-      "path": "docs/HANDOFF.md",
-      "accessCount": 1,
-      "lastAccessed": 1784306398761,
       "type": "file"
     }
   ],

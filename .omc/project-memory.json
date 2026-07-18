@@ -59,15 +59,15 @@
       "type": "file"
     },
     {
-      "path": "docs/interview-sessions/2026-07-17.md",
-      "accessCount": 6,
-      "lastAccessed": 1784305334454,
+      "path": "docs/SPEC.md",
+      "accessCount": 8,
+      "lastAccessed": 1784390429415,
       "type": "file"
     },
     {
-      "path": "docs/SPEC.md",
+      "path": "docs/interview-sessions/2026-07-17.md",
       "accessCount": 6,
-      "lastAccessed": 1784386769303,
+      "lastAccessed": 1784305334454,
       "type": "file"
     },
     {
@@ -78,8 +78,8 @@
     },
     {
       "path": "docs/HANDOFF.md",
-      "accessCount": 2,
-      "lastAccessed": 1784387706807,
+      "accessCount": 3,
+      "lastAccessed": 1784390450230,
       "type": "file"
     },
     {
@@ -92,6 +92,24 @@
       "path": "docs/interview-sessions/2026-07-14.md",
       "accessCount": 1,
       "lastAccessed": 1784047436569,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/style-directions.html",
+      "accessCount": 1,
+      "lastAccessed": 1784389570351,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/layout-styles.html",
+      "accessCount": 1,
+      "lastAccessed": 1784389890613,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/all-pages-demo.html",
+      "accessCount": 1,
+      "lastAccessed": 1784390405882,
       "type": "file"
     }
   ],

@@ -1,15 +1,15 @@
-# OMC 运行时产物：默认全部忽略，只保留有价值的规范/状态文件
-.omc/*
-!.omc/specs/
-!.omc/project-memory.json
-!.omc/state/
-.omc/state/*
-!.omc/state/deep-interview-state.json
+# # OMC 运行时产物：默认全部忽略，只保留有价值的规范/状态文件
+# .omc/*
+# !.omc/specs/
+# !.omc/project-memory.json
+# !.omc/state/
+# .omc/state/*
+# !.omc/state/deep-interview-state.json
 
-# 常规
-node_modules/
-dist/
-build/
-*.log
-.env
-.env.*
+# # 常规
+# node_modules/
+# dist/
+# build/
+# *.log
+# .env
+# .env.*

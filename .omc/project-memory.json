@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1784386685285,
+  "lastScanned": 1784476632459,
   "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
     "languages": [],
@@ -37,10 +37,11 @@
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 2,
-      "lastAccessed": 1784386685240,
+      "fileCount": 3,
+      "lastAccessed": 1784476632403,
       "keyFiles": [
         "HANDOFF.md",
+        "PROGRESS.md",
         "SPEC.md"
       ]
     }
@@ -83,12 +84,6 @@
       "type": "file"
     },
     {
-      "path": "docs/design/all-pages-demo.html",
-      "accessCount": 3,
-      "lastAccessed": 1784475348719,
-      "type": "file"
-    },
-    {
       "path": "README.md",
       "accessCount": 1,
       "lastAccessed": 1783854988215,
@@ -98,18 +93,6 @@
       "path": "docs/interview-sessions/2026-07-14.md",
       "accessCount": 1,
       "lastAccessed": 1784047436569,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/style-directions.html",
-      "accessCount": 1,
-      "lastAccessed": 1784389570351,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/layout-styles.html",
-      "accessCount": 1,
-      "lastAccessed": 1784389890613,
       "type": "file"
     },
     {

@@ -1,0 +1,149 @@
+<meta charset="utf-8">
+<title>PoolMind R1・平台管理員端交互 demo</title>
+<style>
+:root{--p:#2a6f97;--psoft:#eaf3f8;--ink:#22303e;--sub:#7b8c9c;--warn:#c9463d;--ok:#2e8b57;--bg:#f2f4f7;--line:#e6eaef;--fw:402px;--fh:874px}
+body[data-color=teal]{--p:#0e7c7b;--psoft:#e6f4f3}
+body[data-color=orange]{--p:#d9660e;--psoft:#fbeee1}
+body[data-color=purple]{--p:#5f55c5;--psoft:#edebfa}
+body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#dfe3e8;margin:0;padding:76px 14px 30px;color:var(--ink);display:flex;justify-content:center}
+.bar{position:fixed;top:0;left:0;right:0;background:#1c2733;color:#fff;padding:8px 14px;display:flex;gap:9px;align-items:center;z-index:99;flex-wrap:wrap;font-size:13px}
+.bar b{opacity:.85}
+.bar button{border:1px solid #4a5a6a;background:#2a3947;color:#dfe8f0;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer}
+.bar button.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:700}
+.sw{width:20px;height:20px;border-radius:50%;border:2px solid #fff3;cursor:pointer;display:inline-block}
+.sw.on{border-color:#fff}
+.frame{width:var(--fw);height:var(--fh);background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 8px 26px rgba(0,0,0,.18);position:relative;flex-shrink:0}
+.pid{position:absolute;top:9px;right:12px;background:rgba(0,0,0,.35);color:#fff;font-size:11px;border-radius:6px;padding:1px 7px;z-index:5;font-weight:700}
+.scr{display:none;flex-direction:column;height:100%}
+.scr.on{display:flex}
+.top{background:var(--p);color:#fff;padding:13px 15px;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;padding-right:52px;flex-shrink:0}
+.top .mini{font-size:11px;opacity:.85;font-weight:400}
+.pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
+.nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:8px 0 16px;flex-shrink:0}
+.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer}
+.nav .on{color:var(--p);font-weight:700}
+.red{color:var(--warn);font-weight:700}
+.green{color:var(--ok);font-weight:700}
+.badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:12px;cursor:pointer}
+.badge.warn{background:#fdecec;color:var(--warn)}
+.btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:11px;margin:8px 12px;font-size:14px;font-weight:700;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--p);border:1.5px solid var(--p)}
+.card{margin:10px 12px;padding:12px}
+body[data-style=A] .card{background:#fff;border-radius:14px;box-shadow:0 1px 5px rgba(20,40,60,.07)}
+body[data-style=C] .card{background:#fff;border-radius:6px;border:1px solid var(--line);border-top:3px solid var(--p);box-shadow:none;margin:8px 10px;padding:10px 12px}
+.t{font-size:13px;color:var(--sub);margin-bottom:6px;font-weight:600}
+.item{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);align-items:center}
+.item:last-child{border-bottom:none}
+.sub{font-size:12px;color:var(--sub)}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2733;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;max-width:80%;text-align:center}
+.overlay{position:absolute;inset:0;background:rgba(10,20,30,.55);z-index:8;display:none;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.certbox{background:#fff;border-radius:14px;padding:14px;width:84%;text-align:center}
+.certimg{background:#e8ecf0;border-radius:10px;height:180px;display:flex;align-items:center;justify-content:center;font-size:52px;margin:8px 0}
+</style>
+<body data-style="A" data-color="blue">
+<div class="bar">
+  <b>機型：</b>
+  <button id="d-se" onclick="setD('se')">SE 375</button>
+  <button id="d-i17" class="on" onclick="setD('i17')">iPhone 17</button>
+  <button id="d-max" onclick="setD('max')">17 Pro Max</button>
+  <button id="d-an" onclick="setD('an')">Android 360</button>
+  <b style="margin-left:6px">風格：</b>
+  <button id="sA" class="on" onclick="setS('A')">A</button>
+  <button id="sC" onclick="setS('C')">C</button>
+  <b>色：</b>
+  <span class="sw on" id="c-blue" style="background:#2a6f97" onclick="setC('blue')"></span>
+  <span class="sw" id="c-teal" style="background:#0e7c7b" onclick="setC('teal')"></span>
+  <span class="sw" id="c-orange" style="background:#d9660e" onclick="setC('orange')"></span>
+  <span class="sw" id="c-purple" style="background:#5f55c5" onclick="setC('purple')"></span>
+  <span style="font-size:11px;opacity:.65">試下：睇證件圖 → 通過/駁回，A2 睇狀態變化</span>
+</div>
+<div id="toast"></div>
+
+<div class="frame">
+  <span class="pid" id="pidbox">A1</span>
+
+  <!-- A1 證件審核 -->
+  <div class="scr on" id="A1">
+    <div class="top">認證審核 <span class="mini">待審 <span id="pend">3</span></span></div>
+    <div class="pbody">
+      <div class="card"><div class="item"><div><b>陳大文</b><div class="sub">OCR：姓名相符・證號 LG-88123・2027-03 到期</div></div><span class="badge" onclick="viewCert('陳大文')">看證件圖 ›</span></div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="actChan"><span class="btn" style="flex:1;margin:0" onclick="pass('Chan')">✓ 通過認證</span><span class="btn ghost" style="flex:1;margin:0" onclick="reject('Chan')">✗ 駁回</span></div>
+        <div id="resChan"></div></div>
+      <div class="card"><div class="item"><div><b>阿水</b><div class="sub">OCR：姓名相符・證號 LG-77045・2026-11 到期</div></div><span class="badge" onclick="viewCert('阿水')">看證件圖 ›</span></div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="actSui"><span class="btn" style="flex:1;margin:0" onclick="pass('Sui')">✓ 通過認證</span><span class="btn ghost" style="flex:1;margin:0" onclick="reject('Sui')">✗ 駁回</span></div>
+        <div id="resSui"></div></div>
+      <div class="card"><div class="item"><div><b>肥波</b> <span class="badge">待復審</span><div class="sub">續期重傳・新證 2029-05 到期（舊排班工資不受影響）</div></div><span class="badge" onclick="viewCert('肥波')">看證件圖 ›</span></div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="actBo"><span class="btn" style="flex:1;margin:0" onclick="pass('Bo')">✓ 通過認證</span><span class="btn ghost" style="flex:1;margin:0" onclick="reject('Bo')">✗ 駁回</span></div>
+        <div id="resBo"></div></div>
+      <div class="card"><div class="sub">證件圖經後端加密通道串流顯示，全站無公開連結（合規 SPEC §10）；未認證唔卡業務，只喺主管界面高亮</div></div>
+    </div>
+    <div class="nav"><div class="on">審核</div><div onclick="go('A2')">用戶</div><div onclick="toast('平台設定（demo 未做）')">設定</div></div>
+  </div>
+
+  <!-- A2 用戶列表 -->
+  <div class="scr" id="A2">
+    <div class="top">用戶 <span class="mini">全部 ▾｜搜索 🔍</span></div>
+    <div class="pbody">
+      <div style="display:flex;gap:8px;padding:10px 12px 0;font-size:12px;flex-wrap:wrap">
+        <span class="badge">全部 46</span><span class="badge warn">未認證 <span id="unv">5</span></span><span class="badge">待復審 <span id="rev">2</span></span><span class="badge warn">駁回 <span id="rej">1</span></span>
+      </div>
+      <div class="card">
+        <div class="item"><div><b>陳大文</b> <span class="sub">@chan_tai_man</span><div class="sub">LG-88123・救生員</div></div><span class="badge warn" id="stChan">未認證</span></div>
+        <div class="item"><div><b>阿水</b> <span class="sub">@ah_sui</span><div class="sub">LG-77045・救生員</div></div><span class="badge warn" id="stSui">未認證</span></div>
+        <div class="item"><div><b>肥波</b> <span class="sub">@fatbo</span><div class="sub">LG-52290・救生員</div></div><span class="badge" id="stBo">待復審</span></div>
+        <div class="item"><div><b>阿明</b> <span class="sub">@ming2019</span><div class="sub">LG-65001・救生員</div></div><span class="green">已認證</span></div>
+        <div class="item"><div><b>波哥</b> <span class="sub">@bogor</span><div class="sub">主管兼救生員</div></div><span class="green">已認證</span></div>
+        <div class="item"><div><b>黑仔</b> <span class="sub">@hakzai</span><div class="sub">LG-40011・救生員</div></div><span class="red">已駁回 ❗</span></div>
+      </div>
+      <div class="card"><div class="sub">用戶名永久唔改得、永不釋放復用；駁回嘅人全界面紅色警告，排唔排佢主管自己負責</div></div>
+    </div>
+    <div class="nav"><div onclick="go('A1')">審核</div><div class="on">用戶</div><div onclick="toast('平台設定（demo 未做）')">設定</div></div>
+  </div>
+
+  <!-- 證件圖彈窗 -->
+  <div class="overlay" id="certDlg">
+    <div class="certbox">
+      <b id="certName">陳大文</b>
+      <div class="certimg">🪪</div>
+      <div class="sub">示意圖。正式版：後端權限驗證後以 Stream 串流讀取，嚴禁公開 URL（SPEC §10）</div>
+      <div class="btn" style="margin:10px 0 0" onclick="certDlg.classList.remove('on')">關閉</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 通用切換 ============ */
+const DEV={se:[375,667],i17:[402,874],max:[440,956],an:[360,800]};
+function setD(k){const r=document.documentElement.style;r.setProperty('--fw',DEV[k][0]+'px');r.setProperty('--fh',DEV[k][1]+'px');['se','i17','max','an'].forEach(x=>document.getElementById('d-'+x).classList.toggle('on',x==k))}
+function setS(s){document.body.dataset.style=s;document.getElementById('sA').classList.toggle('on',s=='A');document.getElementById('sC').classList.toggle('on',s=='C')}
+function setC(c){document.body.dataset.color=c;['blue','teal','orange','purple'].forEach(x=>document.getElementById('c-'+x).classList.toggle('on',x==c))}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.opacity=1;clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,2400)}
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById('pidbox').textContent=id}
+
+/* ============ A1 審核動作 → A2 狀態聯動 ============ */
+let pend=3;
+function viewCert(n){document.getElementById('certName').textContent=n+' 的救生員證';document.getElementById('certDlg').classList.add('on')}
+function done(key,html,st,stCls){
+  document.getElementById('act'+key).style.display='none';
+  document.getElementById('res'+key).innerHTML=html;
+  const s=document.getElementById('st'+key);if(s){s.textContent=st;s.className=stCls}
+  pend--;document.getElementById('pend').textContent=pend;
+}
+function pass(key){
+  done(key,'<div class="green" style="padding-top:8px">✓ 已認證，用戶會收到站內通知</div>','已認證','green');
+  if(key!='Bo'){unv.textContent=--unv.dataset.n||(unv.dataset.n=4)}
+  toast('已通過認證');refresh(key,true);
+}
+function reject(key){
+  done(key,'<div class="red" style="padding-top:8px">✗ 已駁回，該用戶全界面會出紅色警告（唔封鎖業務）</div>','已駁回 ❗','red');
+  toast('已駁回，主管端見到呢個人會有紅色警告');refresh(key,false);
+}
+/* A2 計數簡化聯動（demo 用，數字示意） */
+function refresh(key,ok){
+  if(key=='Bo'){rev.textContent=1}
+  else{unv.textContent=parseInt(unv.textContent)-1}
+  if(!ok){rej.textContent=parseInt(rej.textContent)+1}
+}
+</script>
+</body>

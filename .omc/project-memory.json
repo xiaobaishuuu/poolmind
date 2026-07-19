@@ -54,8 +54,8 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "accessCount": 8,
-      "lastAccessed": 1784305063445,
+      "accessCount": 9,
+      "lastAccessed": 1784475498865,
       "type": "file"
     },
     {
@@ -72,14 +72,20 @@
     },
     {
       "path": ".claude/CLAUDE.md",
-      "accessCount": 4,
-      "lastAccessed": 1784305043512,
+      "accessCount": 6,
+      "lastAccessed": 1784475946438,
       "type": "file"
     },
     {
       "path": "docs/HANDOFF.md",
       "accessCount": 3,
       "lastAccessed": 1784390450230,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/all-pages-demo.html",
+      "accessCount": 3,
+      "lastAccessed": 1784475348719,
       "type": "file"
     },
     {
@@ -107,9 +113,51 @@
       "type": "file"
     },
     {
-      "path": "docs/design/all-pages-demo.html",
+      "path": "docs",
       "accessCount": 1,
-      "lastAccessed": 1784390405882,
+      "lastAccessed": 1784475349685,
+      "type": "directory"
+    },
+    {
+      "path": "docs/design/DEMO-RULES.md",
+      "accessCount": 1,
+      "lastAccessed": 1784475894421,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/DEMO-INDEX.md",
+      "accessCount": 1,
+      "lastAccessed": 1784475895665,
+      "type": "file"
+    },
+    {
+      "path": "docs/dev-log/README.md",
+      "accessCount": 1,
+      "lastAccessed": 1784475896930,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/00-all-pages.html",
+      "accessCount": 1,
+      "lastAccessed": 1784476060500,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/01-supervisor.html",
+      "accessCount": 1,
+      "lastAccessed": 1784476164352,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/02-lifeguard.html",
+      "accessCount": 1,
+      "lastAccessed": 1784476242688,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/03-admin.html",
+      "accessCount": 1,
+      "lastAccessed": 1784476298524,
       "type": "file"
     }
   ],

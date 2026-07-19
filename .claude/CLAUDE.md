@@ -85,4 +85,11 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 
 会话收尾固定顺序：**合并决定进 spec → 写当日 interview-sessions 记录 → 更新 PROGRESS.md → 同步 .omc 副本与状态 → 更新记忆**。
 
+### Demo 与开发硬规则（2026-07-19 用户定案，做 demo / 写代码前必读）
+
+- **Demo 四件套**：每轮 demo 一个文件夹 `docs/design/demo-YYYY-MM-DD/`，固定 4 份——`00-all-pages.html`（全页总览）＋ `01-supervisor.html` / `02-lifeguard.html` / `03-admin.html`（三端简单交互）。手机框用**真实机型尺寸且可切换**（iPhone SE 375×667 / iPhone 17 402×874 / 17 Pro Max 440×956 / Android 360×800）。每个页面有**跨轮固定 ID 角标**（S1–S8 主管、L1–L5 救生员、A1–A2 管理员），索引在 `docs/design/DEMO-INDEX.md`，完整规则在 `docs/design/DEMO-RULES.md`。
+- **测试壳**：WhatsApp 验证＝显示验证码后 3 秒自动通过；证件 OCR＝任意照片即通过；正式接入等用户通知。代码标 `【壳-待补】`。
+- **测试代码标记**：`【长期测试】` 或 `【临时测试-用完即删】`，功能收尾时清掉临时测试，防止残留副作用。
+- **功能日志**：每完成/更新一个功能，在 `docs/dev-log/` 新增 `YYYY-MM-DD-<功能名>.md`（格式见该目录 README）。
+
 `.omc/` 其余内容（sessions、state/sessions、logs 等）为运行时产物，已由 `.gitignore` 排除，不提交、不手动维护。恢复会话时先读 `docs/PROGRESS.md`。

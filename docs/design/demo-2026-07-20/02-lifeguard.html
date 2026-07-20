@@ -1,0 +1,298 @@
+<meta charset="utf-8">
+<title>PoolMind R2・救生員端交互 demo（含註冊測試殼）</title>
+<style>
+:root{--p:#2a6f97;--psoft:#eaf3f8;--ink:#22303e;--sub:#7b8c9c;--warn:#c9463d;--ok:#2e8b57;--bg:#f2f4f7;--line:#e6eaef;--fw:402px;--fh:874px}
+body[data-color=teal]{--p:#0e7c7b;--psoft:#e6f4f3}
+body[data-color=orange]{--p:#d9660e;--psoft:#fbeee1}
+body[data-color=purple]{--p:#5f55c5;--psoft:#edebfa}
+body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#dfe3e8;margin:0;padding:76px 14px 30px;color:var(--ink);display:flex;justify-content:center}
+.bar{position:fixed;top:0;left:0;right:0;background:#1c2733;color:#fff;padding:8px 14px;display:flex;gap:9px;align-items:center;z-index:99;flex-wrap:wrap;font-size:13px}
+.bar b{opacity:.85}
+.bar button{border:1px solid #4a5a6a;background:#2a3947;color:#dfe8f0;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer}
+.bar button.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:700}
+.sw{width:20px;height:20px;border-radius:50%;border:2px solid #fff3;cursor:pointer;display:inline-block}
+.sw.on{border-color:#fff}
+.frame{width:var(--fw);height:var(--fh);background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 8px 26px rgba(0,0,0,.18);position:relative;flex-shrink:0}
+.pid{position:absolute;top:9px;right:12px;background:rgba(0,0,0,.35);color:#fff;font-size:11px;border-radius:6px;padding:1px 7px;z-index:5;font-weight:700}
+.scr{display:none;flex-direction:column;height:100%}
+.scr.on{display:flex}
+.top{background:var(--p);color:#fff;padding:13px 15px;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;padding-right:52px;flex-shrink:0}
+.top .mini{font-size:11px;opacity:.85;font-weight:400}
+.top .back{cursor:pointer;margin-right:8px}
+.pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
+.nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:8px 0 16px;flex-shrink:0}
+.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer}
+.nav .on{color:var(--p);font-weight:700}
+.red{color:var(--warn);font-weight:700}
+.green{color:var(--ok);font-weight:700}
+.badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:12px}
+.btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:11px;margin:8px 12px;font-size:14px;font-weight:700;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--p);border:1.5px solid var(--p)}
+.btn.dis{opacity:.4;pointer-events:none}
+.wa{display:inline-block;background:#25d366;color:#fff;border-radius:7px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer}
+.card{margin:10px 12px;padding:12px}
+body[data-style=A] .card{background:#fff;border-radius:14px;box-shadow:0 1px 5px rgba(20,40,60,.07)}
+body[data-style=C] .card{background:#fff;border-radius:6px;border:1px solid var(--line);border-top:3px solid var(--p);box-shadow:none;margin:8px 10px;padding:10px 12px}
+.t{font-size:13px;color:var(--sub);margin-bottom:6px;font-weight:600}
+.item{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);align-items:center}
+.item:last-child{border-bottom:none}
+.sub{font-size:12px;color:var(--sub)}
+.shell{font-size:11px;color:#a06a10;background:#fdf3dd;border-radius:8px;padding:5px 9px;margin-top:6px}
+/* L3 Excel 式垂直更表（同主管端一致，冇上班顯示休息） */
+.xls{margin:8px 10px 4px;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13px}
+.xrow{display:grid;grid-template-columns:52px 30px 1fr;align-items:stretch;border-bottom:1px solid var(--line);background:#fff}
+.xrow:last-child{border-bottom:none}
+.xrow.xhead{background:var(--psoft);color:var(--p);font-weight:700;font-size:12px}
+.xrow>span{padding:8px 7px;border-right:1px solid var(--line);display:flex;align-items:center;flex-wrap:wrap;gap:3px}
+.xrow>span:last-child{border-right:none}
+.xrow.wknd{background:#fdecec}
+.xrow.lock{color:var(--sub);background:#f4f5f7}
+.xrow.lock.wknd{background:#f6e0e0;color:#a9736f}
+.xc .seg{display:inline-block;background:var(--psoft);color:var(--p);border-radius:4px;padding:1px 6px;font-size:12px;cursor:pointer}
+.xc.off{color:var(--sub);font-weight:400}
+.xw{justify-content:center;font-weight:600}
+/* L5 WhatsApp 式會話列表 */
+.l5pane{display:none;flex-direction:column;height:100%}
+.l5pane.on{display:flex}
+.conv{display:flex;align-items:center;gap:11px;padding:11px 14px;background:#fff;border-bottom:1px solid var(--line);cursor:pointer}
+.conv .av{width:44px;height:44px;border-radius:50%;background:var(--psoft);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex-shrink:0}
+.conv .cbody{flex:1;min-width:0}
+.conv .nm{font-weight:700;font-size:15px}
+.conv .lm{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.conv .meta{margin-left:auto;text-align:right;font-size:11px;color:var(--sub);flex-shrink:0}
+.unread{background:#25d366;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;display:inline-block;margin-top:4px;font-weight:700}
+.chat{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:78%;border-radius:12px;padding:8px 11px;font-size:13px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06);align-self:flex-start}
+.msg.me{align-self:flex-end;background:var(--psoft)}
+.pcard{border:1.5px solid var(--p);border-radius:12px;background:#fff;padding:10px;max-width:85%;align-self:flex-start}
+.pcard .pt{font-weight:800;font-size:14px;color:var(--p)}
+.inputrow{display:flex;gap:8px;padding:8px 12px;background:#fff;border-top:1px solid var(--line);flex-shrink:0}
+.inputrow input{flex:1;border:1px solid var(--line);border-radius:18px;padding:8px 12px;font-size:13px}
+.inputrow span{color:var(--p);font-weight:700;font-size:13px;align-self:center;cursor:pointer}
+input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:16px;margin-top:5px;background:#fff}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2733;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;max-width:80%;text-align:center}
+</style>
+<body data-style="A" data-color="blue">
+<div class="bar">
+  <b>機型：</b>
+  <button id="d-se" onclick="setD('se')">SE 375</button>
+  <button id="d-i17" class="on" onclick="setD('i17')">iPhone 17</button>
+  <button id="d-max" onclick="setD('max')">17 Pro Max</button>
+  <button id="d-an" onclick="setD('an')">Android 360</button>
+  <b style="margin-left:6px">風格：</b>
+  <button id="sA" class="on" onclick="setS('A')">A</button>
+  <button id="sC" onclick="setS('C')">C</button>
+  <b>色：</b>
+  <span class="sw on" id="c-blue" style="background:#2a6f97" onclick="setC('blue')"></span>
+  <span class="sw" id="c-teal" style="background:#0e7c7b" onclick="setC('teal')"></span>
+  <span class="sw" id="c-orange" style="background:#d9660e" onclick="setC('orange')"></span>
+  <span class="sw" id="c-purple" style="background:#5f55c5" onclick="setC('purple')"></span>
+  <span style="font-size:11px;opacity:.65">流程：L1 註冊 → L2 搵工報名 → L5 傾更 → L3 更表 → L4 工資</span>
+</div>
+<div id="toast"></div>
+
+<div class="frame">
+  <span class="pid" id="pidbox">L1</span>
+
+  <!-- L1 註冊 -->
+  <div class="scr on" id="L1">
+    <div class="top">註冊 <span class="mini">已有帳號？登入</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">1. 用戶名（永久，唔改得）</div>
+        <input class="f" id="uname" placeholder="例：chan_tai_man" oninput="ck()">
+        <div class="sub" id="unameOk" style="margin-top:4px"></div></div>
+      <div class="card"><div class="t">2. 密碼</div><input class="f" id="pw" type="password" placeholder="至少 8 位" oninput="ck()"></div>
+      <div class="card"><div class="t">3. 真實姓名（只喺你個人資料頁顯示）</div><input class="f" id="rname" placeholder="陳大文" oninput="ck()"></div>
+      <div class="card"><div class="t">4. 救生員證照片</div>
+        <label class="btn ghost" style="display:block;margin:4px 0">📷 上傳證件相<input type="file" style="display:none" onchange="upl()"></label>
+        <div class="sub" id="uplOk"></div>
+        <div class="shell">【測試殼】任意相片即通過；正式版 OCR 比對姓名＋證號</div></div>
+      <div class="card"><div class="t">5. WhatsApp 驗證（免費，綁定你嘅聯繫號碼）</div>
+        <div style="font-size:24px;font-weight:800;color:var(--p);letter-spacing:2px">PM-4827</div>
+        <div class="btn" id="waBtn" style="margin:8px 0 4px;background:#25d366" onclick="waVerify()">跳轉 WhatsApp 發送呢個碼 ↗</div>
+        <div class="sub" id="waOk"></div>
+        <div class="shell">【測試殼】點掣後 3 秒自動驗證成功；正式版收你由 WhatsApp 發嚟嘅碼</div></div>
+      <div class="btn dis" id="regBtn" onclick="reg()">完成註冊</div>
+    </div>
+  </div>
+
+  <!-- L2 搵工 -->
+  <div class="scr" id="L2">
+    <div class="top">搵工 <span class="mini">波哥發布 ✕（清除過濾）</span></div>
+    <div class="pbody">
+      <div class="card"><div class="item"><div><b>週六早更 7:00–15:00</b><div class="sub">南區・近港鐵・時薪 $85・大池兩崗位</div></div></div>
+        <div style="display:flex;gap:8px" id="rowA"><span class="btn" style="flex:1;margin:6px 0 0" onclick="apply()">報名</span><span class="btn ghost" style="flex:1;margin:6px 0 0" onclick="openBo()">入聊天傾</span></div>
+        <div class="sub" style="margin-top:6px">情形 A：公開咗工資 → 可以直接報名</div></div>
+      <div class="card"><div class="item"><div><b>週日晚更 14:00–22:00</b><div class="sub">北區・詳情請聯繫</div></div></div>
+        <div class="btn ghost" style="margin:6px 0 0" onclick="openBo()">聯繫以報更</div>
+        <div class="sub" style="margin-top:6px">情形 B：保密 → 冇直接報名掣，入聊天先傾</div></div>
+      <div class="card"><div class="item"><div><b>8 月整月長更</b><div class="sub">南區・逐日勾選你得閒嘅更次</div></div></div>
+        <div class="btn" style="margin:6px 0 0" onclick="toast('長更報名：勾選 8 月你得閒嘅更次（正式版先有月曆勾選）')">報可上班日子</div></div>
+    </div>
+    <div class="nav"><div class="on">搵工</div><div onclick="go('L3')">我的更</div><div onclick="go('L5')">訊息</div><div onclick="go('L4')">工資</div><div onclick="toast('個人資料頁（demo 未做）')">我的</div></div>
+  </div>
+
+  <!-- L3 我的更表（Excel 式垂直，週六日淺紅底，冇上班顯示休息） -->
+  <div class="scr" id="L3">
+    <div class="top">我的更表 <span class="mini">陳大文・Excel 式</span></div>
+    <div class="pbody">
+      <div class="xls">
+        <div class="xrow xhead"><span>日期</span><span class="xw">星期</span><span>我嘅更</span></div>
+        <div class="xrow lock"><span>7/14</span><span class="xw">一</span><span class="xc off">休息</span></div>
+        <div class="xrow lock"><span>7/15</span><span class="xw">二</span><span class="xc off">休息</span></div>
+        <div class="xrow lock"><span>7/16</span><span class="xw">三</span><span class="xc off">休息</span></div>
+        <div class="xrow lock"><span>7/17</span><span class="xw">四</span><span class="xc off">休息</span></div>
+        <div class="xrow lock"><span>7/18</span><span class="xw">五</span><span class="xc off">休息</span></div>
+        <div class="xrow wknd" id="lg19"><span>7/19</span><span class="xw">六</span><span class="xc off">休息</span></div>
+        <div class="xrow wknd"><span>7/20</span><span class="xw">日</span><span class="xc"><span class="seg" onclick="go('L5')">黃埔全日 9–18</span></span></div>
+        <div class="xrow"><span>7/21</span><span class="xw">一</span><span class="xc off">休息</span></div>
+        <div class="xrow"><span>7/22</span><span class="xw">二</span><span class="xc off">休息</span></div>
+        <div class="xrow"><span>7/23</span><span class="xw">三</span><span class="xc off">休息</span></div>
+        <div class="xrow"><span>7/24</span><span class="xw">四</span><span class="xc off">休息</span></div>
+        <div class="xrow"><span>7/25</span><span class="xw">五</span><span class="xc off">休息</span></div>
+        <div class="xrow wknd"><span>7/26</span><span class="xw">六</span><span class="xc"><span class="seg" onclick="go('L5')">嘉湖晚更 14–22</span></span></div>
+        <div class="xrow wknd"><span>7/27</span><span class="xw">日</span><span class="xc off">休息</span></div>
+      </div>
+      <div class="card"><div class="t">7/20（日）・黃埔花園 全日 9:00–18:00</div>
+        <div class="item"><span>同池同事：細龍（14:00 接更）</span><span class="wa" onclick="toast('跳轉 WhatsApp（demo）')">WhatsApp</span></div>
+        <div class="item"><span>管轄主管：明哥</span><span class="wa" onclick="toast('跳轉 WhatsApp（demo）')">WhatsApp</span></div></div>
+      <div class="card"><div class="sub">Excel 式：一行一日，<b>週六、週日淺紅底</b>，冇上班嘅日子顯示「休息」；點更次可入聊天搵同事／主管；取消已確認班次會即時通知主管，請先諗清楚。</div></div>
+    </div>
+    <div class="nav"><div onclick="go('L2')">搵工</div><div class="on">我的更</div><div onclick="go('L5')">訊息</div><div onclick="go('L4')">工資</div><div onclick="toast('個人資料頁（demo 未做）')">我的</div></div>
+  </div>
+
+  <!-- L4 我的工資 -->
+  <div class="scr" id="L4">
+    <div class="top">我的工資 <span class="mini">按主管分組</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">波哥（海怡半島）</div>
+        <div class="item"><span>7/14（一）8 小時</span><span class="green">已收 ✓</span></div>
+        <div class="item"><span>7/15（二）8 小時</span><span class="green">已收 ✓</span></div>
+        <div class="item"><span>7/19（六）8 小時 $704</span><span class="btn" id="rcvBtn" style="margin:0;padding:4px 10px;font-size:12px" onclick="rcv()">確認已收</span></div></div>
+      <div class="card"><div class="t">明哥（黃埔花園）</div>
+        <div class="item"><span>7/20（日）9 小時 $720</span><span class="sub">待支付</span></div></div>
+      <div class="card"><div class="sub">你確認後 7 日內主管冇回應，系統自動幫佢確認；留意你永遠只見到自己嘅時薪</div></div>
+    </div>
+    <div class="nav"><div onclick="go('L2')">搵工</div><div onclick="go('L3')">我的更</div><div onclick="go('L5')">訊息</div><div class="on">工資</div><div onclick="toast('個人資料頁（demo 未做）')">我的</div></div>
+  </div>
+
+  <!-- L5 訊息（WhatsApp 式會話列表 → 點入聊天線程） -->
+  <div class="scr" id="L5">
+    <div class="l5pane on" id="l5list">
+      <div class="top">訊息 <span class="mini">全部聊過嘅會話</span></div>
+      <div class="pbody">
+        <div class="conv" onclick="openChat()">
+          <div class="av">波</div>
+          <div class="cbody"><div class="nm">波哥 <span class="badge" style="font-size:10px;padding:1px 6px">主管</span></div><div class="lm">請！你邊區方便？</div></div>
+          <div class="meta">14:22<div class="unread">1</div></div>
+        </div>
+        <div class="conv" onclick="toast('demo 只做咗波哥呢個會話')">
+          <div class="av">明</div>
+          <div class="cbody"><div class="nm">明哥 <span class="badge" style="font-size:10px;padding:1px 6px">主管</span></div><div class="lm">7/20 黃埔全日，記得 9 點到</div></div>
+          <div class="meta">昨天</div>
+        </div>
+        <div class="conv" onclick="toast('demo 只做咗波哥呢個會話')">
+          <div class="av">華</div>
+          <div class="cbody"><div class="nm">華哥 <span class="badge" style="font-size:10px;padding:1px 6px">主管</span></div><div class="lm">8 月長更你邊幾日得閒？</div></div>
+          <div class="meta">昨天</div>
+        </div>
+        <div class="conv" onclick="toast('demo 只做咗波哥呢個會話')">
+          <div class="av">龍</div>
+          <div class="cbody"><div class="nm">細龍 <span class="sub" style="font-size:10px">同事</span></div><div class="lm">聽日 14:00 我接你更</div></div>
+          <div class="meta">週三</div>
+        </div>
+        <div class="conv" onclick="toast('平台通知會話（demo 未做）')">
+          <div class="av">🛎</div>
+          <div class="cbody"><div class="nm">PoolMind 平台通知</div><div class="lm">你嘅帳號已完成 WhatsApp 驗證</div></div>
+          <div class="meta">週二</div>
+        </div>
+      </div>
+      <div class="nav"><div onclick="go('L2')">搵工</div><div onclick="go('L3')">我的更</div><div class="on">訊息</div><div onclick="go('L4')">工資</div><div onclick="toast('個人資料頁（demo 未做）')">我的</div></div>
+    </div>
+    <div class="l5pane" id="l5chat">
+      <div class="top"><span><span class="back" onclick="backList5()">‹</span> 波哥（主管）</span><span class="mini">人對人永久會話</span></div>
+      <div class="pbody"><div class="chat" id="chatbox">
+        <div class="msg me">你好，想問週日晚更仲請唔請人？</div>
+        <div class="msg">請！你邊區方便？</div>
+      </div></div>
+      <div class="inputrow"><input id="chatin" placeholder="輸入訊息…"><span onclick="sendMsg()">發送</span></div>
+      <div class="nav"><div onclick="go('L2')">搵工</div><div onclick="go('L3')">我的更</div><div class="on">訊息</div><div onclick="go('L4')">工資</div><div onclick="toast('個人資料頁（demo 未做）')">我的</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 通用切換 ============ */
+const DEV={se:[375,667],i17:[402,874],max:[440,956],an:[360,800]};
+function setD(k){const r=document.documentElement.style;r.setProperty('--fw',DEV[k][0]+'px');r.setProperty('--fh',DEV[k][1]+'px');['se','i17','max','an'].forEach(x=>document.getElementById('d-'+x).classList.toggle('on',x==k))}
+function setS(s){document.body.dataset.style=s;document.getElementById('sA').classList.toggle('on',s=='A');document.getElementById('sC').classList.toggle('on',s=='C')}
+function setC(c){document.body.dataset.color=c;['blue','teal','orange','purple'].forEach(x=>document.getElementById('c-'+x).classList.toggle('on',x==c))}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.opacity=1;clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,2400)}
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById('pidbox').textContent=id;if(id=='L5')backList5()}
+
+/* ============ L5 會話列表 ⇄ 聊天線程 ============ */
+function openChat(){document.getElementById('l5list').classList.remove('on');document.getElementById('l5chat').classList.add('on')}
+function backList5(){document.getElementById('l5chat').classList.remove('on');document.getElementById('l5list').classList.add('on')}
+function openBo(){go('L5');openChat()}
+
+/* ============ L1 註冊（五樣一次過）——【測試殼】OCR 與 WhatsApp 驗證均自動通過 ============ */
+let up=false,wa=false;
+function ck(){
+  const u=document.getElementById('uname').value.trim();
+  document.getElementById('unameOk').innerHTML=u?(u.length>2?'<span class="green">✓ 可用（demo 假查重）</span>':'太短'):'';
+  ready();
+}
+function upl(){up=true;document.getElementById('uplOk').innerHTML='<span class="green">已上傳 ✓（測試殼：跳過 OCR，直接通過）</span>';ready()}
+function waVerify(){
+  const b=document.getElementById('waBtn'),o=document.getElementById('waOk');
+  let n=3;b.textContent='等緊你喺 WhatsApp 發送… '+n;b.classList.add('dis');
+  const t=setInterval(()=>{n--;
+    if(n>0){b.textContent='等緊你喺 WhatsApp 發送… '+n}
+    else{clearInterval(t);wa=true;b.style.display='none';
+      o.innerHTML='<span class="green">✅ 驗證成功，號碼已綁定（測試殼：3 秒自動通過）</span>';ready()}
+  },1000);
+}
+function ready(){
+  const ok=document.getElementById('uname').value.trim().length>2&&document.getElementById('pw').value&&document.getElementById('rname').value&&up&&wa;
+  document.getElementById('regBtn').classList.toggle('dis',!ok);
+}
+function reg(){toast('註冊成功！帳號狀態【未認證】，唔阻你報名，平台管理員審核後變【已認證】');go('L2')}
+
+/* ============ L2 情形 A 直接報名 → L3 更表 7/19 由休息變海怡早更 ============ */
+function apply(){
+  document.getElementById('rowA').outerHTML='<div class="sub" style="margin-top:6px"><span class="badge">待主管確認</span>　可隨時撤回（撤回唔會通知任何人）</div>';
+  toast('已報名，等主管確認；佢一確認你就會喺「我的更表」見到');
+  setTimeout(()=>{
+    const r=document.getElementById('lg19');
+    r.querySelector('.xc').outerHTML='<span class="xc"><span class="seg" onclick="go(\'L5\')">海怡早更 7–15 <span class="green">新 ✓</span></span></span>';
+    toast('主管已確認！7/19 早更已入你更表');
+  },3000);
+}
+
+/* ============ L5 聊天：發訊息 → 主管回覆並發卡片 → 接受 ============ */
+let replied=false;
+function sendMsg(){
+  const i=document.getElementById('chatin');if(!i.value.trim())return;
+  const d=document.createElement('div');d.className='msg me';d.textContent=i.value;
+  document.getElementById('chatbox').appendChild(d);i.value='';sc();
+  if(!replied){replied=true;setTimeout(()=>{
+    const m=document.createElement('div');m.className='msg';m.textContent='OK，呢個更詳情你睇下，時薪 $86';
+    document.getElementById('chatbox').appendChild(m);
+    const c=document.createElement('div');c.className='pcard';
+    c.innerHTML='<div class="pt">📍 泳池詳情卡片</div><div class="sub" style="margin:4px 0">嘉湖山莊泳池・7月20日（日）晚更 14:00–22:00<br>時薪 $86</div><div class="btn" style="margin:6px 0 0" id="acc" onclick="accept()">接受此更</div>';
+    document.getElementById('chatbox').appendChild(c);sc();
+  },1200)}
+}
+function accept(){
+  document.getElementById('acc').outerHTML='<div class="sub" style="color:var(--p);font-weight:700;margin-top:6px">✓ 已接受，等主管最終確認先入更表</div>';
+  toast('已接受卡片；主管最終確認後先正式入表（佢係唯一入表觸發者）');sc();
+}
+function sc(){const b=document.querySelector('#l5chat .pbody');b.scrollTop=b.scrollHeight}
+
+/* ============ L4 確認收款 ============ */
+function rcv(){
+  document.getElementById('rcvBtn').outerHTML='<span class="green">已確認（7日內主管冇回應會自動雙向確認）</span>';
+  toast('已確認收款，狀態：員工已確認（待自動）');
+}
+</script>
+</body>

@@ -1,0 +1,285 @@
+<meta charset="utf-8">
+<title>PoolMind R2・全頁總覽（S1–S8 / L1–L5 / A1–A2）</title>
+<style>
+:root{--p:#2a6f97;--psoft:#eaf3f8;--ink:#22303e;--sub:#7b8c9c;--warn:#c9463d;--ok:#2e8b57;--bg:#f2f4f7;--line:#e6eaef}
+body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#dfe3e8;margin:0;padding:20px;color:var(--ink)}
+h1{font-size:20px;margin:0 0 4px}
+.lead{color:#556;font-size:13px;margin:0 0 18px}
+h2{font-size:15px;color:var(--p);margin:22px 0 10px;border-left:4px solid var(--p);padding-left:8px}
+.wrap{display:flex;flex-wrap:wrap;gap:18px}
+.frame{width:300px;height:600px;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.16);position:relative;display:flex;flex-direction:column}
+.pid{position:absolute;top:8px;right:11px;background:rgba(0,0,0,.35);color:#fff;font-size:10px;border-radius:6px;padding:1px 7px;z-index:5;font-weight:700}
+.cap{font-size:12px;color:#556;text-align:center;margin-top:5px;font-weight:600}
+.cell-wrap{width:300px}
+.top{background:var(--p);color:#fff;padding:11px 13px;font-size:14px;font-weight:700;display:flex;justify-content:space-between;align-items:center;padding-right:44px;flex-shrink:0}
+.top .mini{font-size:10px;opacity:.85;font-weight:400}
+.top .back{margin-right:6px}
+.pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:6px}
+.nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:7px 0 12px;flex-shrink:0}
+.nav div{flex:1;text-align:center;font-size:10px;color:var(--sub)}
+.nav .on{color:var(--p);font-weight:700}
+.red{color:var(--warn);font-weight:700}.green{color:var(--ok);font-weight:700}
+.badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:11px}
+.btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:10px;margin:8px 12px;font-size:13px;font-weight:700}
+.btn.ghost{background:#fff;color:var(--p);border:1.5px solid var(--p)}
+.card{margin:9px 11px;padding:11px;background:#fff;border-radius:13px;box-shadow:0 1px 5px rgba(20,40,60,.07)}
+.t{font-size:12px;color:var(--sub);margin-bottom:5px;font-weight:600}
+.item{display:flex;justify-content:space-between;padding:7px 0;font-size:13px;border-bottom:1px solid var(--line);align-items:center}
+.item:last-child{border-bottom:none}
+.sub{font-size:11px;color:var(--sub)}
+.shell{font-size:10px;color:#a06a10;background:#fdf3dd;border-radius:8px;padding:5px 9px;margin-top:6px}
+.gaprow{display:flex;gap:9px}
+.gapbox{flex:1;background:var(--psoft);border-radius:10px;padding:12px 8px;text-align:center}
+.gnum{font-size:30px;font-weight:800;color:var(--warn);line-height:1}
+.gcap{font-size:11px;color:var(--sub);margin-top:4px}
+.fbar{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#fff4d9;border-bottom:1px solid #f0e2c0;font-size:11px;color:#a06a10}
+.fbar .x{margin-left:auto;color:var(--p);font-weight:700}
+.fab{position:absolute;right:13px;bottom:66px;z-index:7;background:var(--p);color:#fff;border-radius:24px;padding:10px 15px;font-size:13px;font-weight:800;box-shadow:0 5px 16px rgba(20,60,90,.38)}
+.xls{margin:8px 10px 4px;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:12px}
+.xrow{display:grid;grid-template-columns:44px 26px 1fr;border-bottom:1px solid var(--line);background:#fff}
+.xrow:last-child{border-bottom:none}
+.xrow.xhead{background:var(--psoft);color:var(--p);font-weight:700;font-size:11px}
+.xrow>span{padding:6px 6px;border-right:1px solid var(--line);display:flex;align-items:center;flex-wrap:wrap;gap:3px}
+.xrow>span:last-child{border-right:none}
+.xrow.wknd{background:#fdecec}
+.xrow.lock{color:var(--sub);background:#f4f5f7}
+.xrow.lock.wknd{background:#f6e0e0;color:#a9736f}
+.xrow.gap .xc{color:var(--warn);font-weight:700}
+.xc .seg{display:inline-block;background:var(--psoft);color:var(--p);border-radius:4px;padding:1px 5px;font-size:11px}
+.xc.off{color:var(--sub);font-weight:400}
+.xw{justify-content:center;font-weight:600}
+.conv{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#fff;border-bottom:1px solid var(--line)}
+.conv .av{width:38px;height:38px;border-radius:50%;background:var(--psoft);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0}
+.conv .cbody{flex:1;min-width:0}
+.conv .nm{font-weight:700;font-size:14px}
+.conv .lm{font-size:11px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.conv .meta{margin-left:auto;text-align:right;font-size:10px;color:var(--sub);flex-shrink:0}
+.unread{background:#25d366;color:#fff;border-radius:10px;font-size:9px;padding:1px 6px;display:inline-block;margin-top:3px;font-weight:700}
+.chat{padding:9px 11px;display:flex;flex-direction:column;gap:7px}
+.msg{max-width:80%;border-radius:12px;padding:7px 10px;font-size:12px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.06);align-self:flex-start}
+.msg.me{align-self:flex-end;background:var(--psoft)}
+.wa{display:inline-block;background:#25d366;color:#fff;border-radius:7px;padding:2px 9px;font-size:11px;font-weight:700}
+.inputrow{display:flex;gap:8px;padding:7px 11px;background:#fff;border-top:1px solid var(--line)}
+.inputrow input{flex:1;border:1px solid var(--line);border-radius:16px;padding:7px 11px;font-size:12px}
+.inputrow span{color:var(--p);font-weight:700;font-size:12px;align-self:center}
+input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;padding:8px 9px;font-size:14px;margin-top:5px;background:#fff}
+</style>
+<body>
+<h1>PoolMind R2・全頁總覽</h1>
+<p class="lead">2026-07-20 第二輪。主管端恢復 5 分頁（總覽／更表／訊息／工資／我的）；首頁今明缺人數字入 S2 篩選、招募情報用 L2 卡片組件置底、發布招募改右下角懸浮掣、待處理入 S4 最新訊息篩選；救生員 L3 改 Excel 式更表（休息）、L5 加會話列表層。交互請開對應單頁 HTML。</p>
+
+<h2>主管端 Supervisor（S1–S8）</h2>
+<div class="wrap">
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S1</span>
+    <div class="top">今日總覽 <span class="mini">7/19（六）・波哥</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">缺人總數（點數字睇邊個池缺）</div>
+        <div class="gaprow"><div class="gapbox"><div class="gnum">1</div><div class="gcap">今日缺人 ›</div></div><div class="gapbox"><div class="gnum">1</div><div class="gcap">明日缺人 ›</div></div></div></div>
+      <div class="card"><div class="t">待處理</div>
+        <div class="item"><span>陳大文 報名 週六短更</span><span class="badge">新</span></div>
+        <div class="item"><span>最新收到訊息</span><span class="badge">未讀 2 ›</span></div></div>
+      <div class="card"><div class="t">招募情報（L2 卡片組件・置底）</div></div>
+      <div class="card"><div class="item"><div><b>週六早更 7–15</b><div class="sub">波哥（我）・南區・$85</div></div><span class="badge">我發布</span></div>
+        <div style="display:flex;gap:8px"><span class="btn" style="flex:1;margin:6px 0 0">管理此招募</span><span class="btn ghost" style="flex:1;margin:6px 0 0">睇報名</span></div></div>
+      <div class="card"><div class="item"><div><b>週日晚更 14–22</b><div class="sub">明哥・北區・詳情請聯繫</div></div></div>
+        <div class="btn ghost" style="margin:6px 0 0">聯繫以報更</div></div>
+    </div>
+    <div class="fab">＋ 發布招募</div>
+    <div class="nav"><div class="on">總覽</div><div>更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">S1 首頁：今明缺人數字＋待處理＋招募情報＋懸浮發布掣</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S2</span>
+    <div class="top">更表 <span class="mini">泳池一覽</span></div>
+    <div class="fbar"><span>只顯示「今日缺人」泳池</span><span class="x">✕ 取消篩選</span></div>
+    <div class="pbody">
+      <div class="card"><div class="item"><div><b>海怡半島</b><div class="sub">早 7–15・晚 14–22｜夏季</div></div><span class="red">今日缺 1 ›</span></div></div>
+      <div class="card"><div class="item"><div><b>黃埔花園</b><div class="sub">全日 9–18｜平日</div></div><span class="green">齊人 ›</span></div></div>
+      <div class="card"><div class="item"><div><b>嘉湖山莊</b><div class="sub">晚 14–22｜夏季</div></div><span class="red">明日缺 1 ›</span></div></div>
+      <div class="btn ghost">一鍵排班（偏好名單＋連續性）</div>
+    </div>
+    <div class="nav"><div>總覽</div><div class="on">更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">S2 更表：泳池一覽，頂部為缺人篩選條（可取消）</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S3</span>
+    <div class="top"><span><span class="back">‹</span> 海怡半島</span><span class="mini">早更・位置 1</span></div>
+    <div class="pbody">
+      <div class="xls">
+        <div class="xrow xhead"><span>日期</span><span class="xw">星期</span><span>排班</span></div>
+        <div class="xrow lock"><span>7/18</span><span class="xw">五</span><span class="xc">阿明</span></div>
+        <div class="xrow wknd gap"><span>7/19</span><span class="xw">六</span><span class="xc">缺人＋</span></div>
+        <div class="xrow wknd"><span>7/20</span><span class="xw">日</span><span class="xc"><span class="seg">細龍 7–14</span><span class="seg">肥波 14–22</span></span></div>
+        <div class="xrow"><span>7/21</span><span class="xw">一</span><span class="xc"><span class="seg">阿明</span></span></div>
+        <div class="xrow gap"><span>7/24</span><span class="xw">四</span><span class="xc">缺人＋</span></div>
+        <div class="xrow wknd"><span>7/26</span><span class="xw">六</span><span class="xc"><span class="seg">細龍</span></span></div>
+      </div>
+      <div class="card"><div class="sub">Excel 式垂直：一行一日，週六日淺紅底；灰行＝鎖定；紅字「缺人＋」＝空位。</div></div>
+    </div>
+    <div class="nav"><div>總覽</div><div class="on">更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">S3 月更表：Excel 式垂直日曆</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S4</span>
+    <div class="top">訊息 <span class="mini">救生員會話</span></div>
+    <div class="fbar"><span>只顯示最新收到嘅訊息</span><span class="x">✕ 取消</span></div>
+    <div class="pbody">
+      <div class="conv"><div class="av">陳</div><div class="cbody"><div class="nm">陳大文</div><div class="lm">$90 啦，我有五年經驗</div></div><div class="meta">14:20<div class="unread">2</div></div></div>
+      <div class="conv"><div class="av">明</div><div class="cbody"><div class="nm">阿明</div><div class="lm">星期日得唔得？我想調更</div></div><div class="meta">13:05<div class="unread">1</div></div></div>
+      <div class="conv"><div class="av">強</div><div class="cbody"><div class="nm">阿強</div><div class="lm">收到，聽日 7 點見</div></div><div class="meta">昨天</div></div>
+      <div class="conv"><div class="av">水</div><div class="cbody"><div class="nm">阿水</div><div class="lm">我週六都得閒，有更嗎？</div></div><div class="meta">週三</div></div>
+    </div>
+    <div class="nav"><div>總覽</div><div>更表</div><div class="on">訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">S4 訊息：WhatsApp 式會話列表（可篩選最新收到）→ 點入聊天</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S5</span>
+    <div class="top"><span><span class="back">‹</span> 週六短更・海怡</span><span class="mini">缺 1 人</span></div>
+    <div class="pbody">
+      <div class="card"><div class="item"><div><b>陳大文</b> <span class="badge">未認證</span><div class="sub">3 分鐘前・傾好 $88/時</div></div><span class="btn" style="margin:0;padding:6px 12px">確認入表</span></div></div>
+      <div class="card"><div class="item"><div><b>阿水</b> <span class="green">已認證</span><div class="sub">18 分鐘前・未傾價</div></div><span class="btn ghost" style="margin:0;padding:6px 12px">入聊天傾價</span></div></div>
+      <div class="card"><div class="sub">別池主管確認咗會自動隱藏；對方取消恢復顯示（搶人機制）</div></div>
+    </div>
+    <div class="nav"><div>總覽</div><div class="on">更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">S5 待處理報名：確認入表（要約-接受）</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S6</span>
+    <div class="top">工資 <span class="mini">7 月・匯出 Excel ⬇</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">未結清總額</div><div style="font-size:26px;font-weight:800;color:var(--warn)">$12,460</div><div class="sub">每晚 00:00 自動更新</div></div>
+      <div class="card">
+        <div class="item"><div><b>阿明</b><div class="sub">96 小時・$82/時</div></div><span class="red">$4,320 未清</span></div>
+        <div class="item"><div><b>阿強</b><div class="sub">64 小時・$85/時</div></div><span class="red">$5,440 未清</span></div>
+        <div class="item"><div><b>細龍</b><div class="sub">88 小時＋遲到扣</div></div><span class="green">雙向已確認 ✓</span></div>
+      </div>
+      <div class="btn ghost">阿明・一鍵確認已支付</div>
+    </div>
+    <div class="nav"><div>總覽</div><div>更表</div><div>訊息</div><div class="on">工資</div><div>我的</div></div>
+  </div><div class="cap">S6 工資：未結清＋雙向確認</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S7</span>
+    <div class="top"><span><span class="back">‹</span> 發布招募</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">招募類型</div><div class="item"><span>◉ 單日短更　○ 整月長更</span></div>
+        <div class="item"><span>泳池</span><span>海怡半島 ▾</span></div>
+        <div class="item"><span>日期・更次</span><span>7/26（六）早更 ▾</span></div></div>
+      <div class="card"><div class="t">公開哪啲字段？</div>
+        <div class="item"><span>☑ 日期時間　☑ 區域</span></div>
+        <div class="item"><span>☑ 地鐵站　☐ 泳池名　☐ 工資</span></div></div>
+      <div class="btn">生成 WhatsApp 文案並轉發 ↗</div>
+    </div>
+    <div class="nav"><div class="on">總覽</div><div>更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">S7 發布招募：由首頁懸浮掣入</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">S8</span>
+    <div class="top">設定 <span class="mini">波哥</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">界面風格（只影響你自己）</div>
+        <div class="item"><span>A 卡片式</span><span>◉</span></div>
+        <div class="item"><span>C 磁貼式</span><span>○</span></div></div>
+      <div class="card"><div class="t">主題色（即時生效）</div><div class="sub">藍／青／橙／紫 四色</div></div>
+      <div class="card"><div class="t">帳號</div>
+        <div class="item"><span>對外顯示名</span><span>波哥 ›</span></div>
+        <div class="item"><span>換綁 WhatsApp 號碼</span><span>›</span></div></div>
+    </div>
+    <div class="nav"><div>總覽</div><div>更表</div><div>訊息</div><div>工資</div><div class="on">我的</div></div>
+  </div><div class="cap">S8 我的：界面個性化（風格／主題色）</div></div>
+
+</div>
+
+<h2>救生員端 Lifeguard（L1–L5）</h2>
+<div class="wrap">
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">L1</span>
+    <div class="top">註冊 <span class="mini">已有帳號？登入</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">1. 用戶名（永久）</div><input class="f" placeholder="chan_tai_man"></div>
+      <div class="card"><div class="t">4. 救生員證照片</div><div class="btn ghost" style="margin:4px 0">📷 上傳證件相</div><div class="shell">【測試殼】任意相片即通過</div></div>
+      <div class="card"><div class="t">5. WhatsApp 驗證</div><div style="font-size:20px;font-weight:800;color:var(--p);letter-spacing:2px">PM-4827</div><div class="btn" style="margin:8px 0 4px;background:#25d366">跳轉 WhatsApp 發送 ↗</div><div class="shell">【測試殼】3 秒自動通過</div></div>
+    </div>
+  </div><div class="cap">L1 註冊：五樣一次過＋兩個測試殼</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">L2</span>
+    <div class="top">搵工 <span class="mini">招募列表</span></div>
+    <div class="pbody">
+      <div class="card"><div class="item"><div><b>週六早更 7–15</b><div class="sub">南區・$85・大池兩崗位</div></div></div>
+        <div style="display:flex;gap:8px"><span class="btn" style="flex:1;margin:6px 0 0">報名</span><span class="btn ghost" style="flex:1;margin:6px 0 0">入聊天傾</span></div></div>
+      <div class="card"><div class="item"><div><b>週日晚更 14–22</b><div class="sub">北區・詳情請聯繫</div></div></div>
+        <div class="btn ghost" style="margin:6px 0 0">聯繫以報更</div></div>
+      <div class="card"><div class="item"><div><b>8 月整月長更</b><div class="sub">逐日勾選得閒更次</div></div></div>
+        <div class="btn" style="margin:6px 0 0">報可上班日子</div></div>
+    </div>
+    <div class="nav"><div class="on">搵工</div><div>我的更</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">L2 搵工：招募卡片組件（主管首頁沿用此組件）</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">L3</span>
+    <div class="top">我的更表 <span class="mini">陳大文・Excel 式</span></div>
+    <div class="pbody">
+      <div class="xls">
+        <div class="xrow xhead"><span>日期</span><span class="xw">星期</span><span>我嘅更</span></div>
+        <div class="xrow lock"><span>7/18</span><span class="xw">五</span><span class="xc off">休息</span></div>
+        <div class="xrow wknd"><span>7/19</span><span class="xw">六</span><span class="xc off">休息</span></div>
+        <div class="xrow wknd"><span>7/20</span><span class="xw">日</span><span class="xc"><span class="seg">黃埔全日 9–18</span></span></div>
+        <div class="xrow"><span>7/21</span><span class="xw">一</span><span class="xc off">休息</span></div>
+        <div class="xrow wknd"><span>7/26</span><span class="xw">六</span><span class="xc"><span class="seg">嘉湖晚更 14–22</span></span></div>
+        <div class="xrow wknd"><span>7/27</span><span class="xw">日</span><span class="xc off">休息</span></div>
+      </div>
+      <div class="card"><div class="sub">Excel 式：週六日淺紅底，冇上班嘅日子顯示「休息」（同主管端一致）。</div></div>
+    </div>
+    <div class="nav"><div>搵工</div><div class="on">我的更</div><div>訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">L3 我的更表：Excel 式（休息）</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">L4</span>
+    <div class="top">我的工資 <span class="mini">按主管分組</span></div>
+    <div class="pbody">
+      <div class="card"><div class="t">波哥（海怡半島）</div>
+        <div class="item"><span>7/14 8 小時</span><span class="green">已收 ✓</span></div>
+        <div class="item"><span>7/19 8 小時 $704</span><span class="btn" style="margin:0;padding:4px 10px;font-size:11px">確認已收</span></div></div>
+      <div class="card"><div class="t">明哥（黃埔花園）</div>
+        <div class="item"><span>7/20 9 小時 $720</span><span class="sub">待支付</span></div></div>
+    </div>
+    <div class="nav"><div>搵工</div><div>我的更</div><div>訊息</div><div class="on">工資</div><div>我的</div></div>
+  </div><div class="cap">L4 我的工資：只見自己時薪</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">L5</span>
+    <div class="top">訊息 <span class="mini">全部聊過嘅會話</span></div>
+    <div class="pbody">
+      <div class="conv"><div class="av">波</div><div class="cbody"><div class="nm">波哥 <span class="badge" style="font-size:9px">主管</span></div><div class="lm">請！你邊區方便？</div></div><div class="meta">14:22<div class="unread">1</div></div></div>
+      <div class="conv"><div class="av">明</div><div class="cbody"><div class="nm">明哥 <span class="badge" style="font-size:9px">主管</span></div><div class="lm">7/20 黃埔全日，記得 9 點到</div></div><div class="meta">昨天</div></div>
+      <div class="conv"><div class="av">華</div><div class="cbody"><div class="nm">華哥 <span class="badge" style="font-size:9px">主管</span></div><div class="lm">8 月長更你邊幾日得閒？</div></div><div class="meta">昨天</div></div>
+      <div class="conv"><div class="av">龍</div><div class="cbody"><div class="nm">細龍 <span class="sub" style="font-size:9px">同事</span></div><div class="lm">聽日 14:00 我接你更</div></div><div class="meta">週三</div></div>
+      <div class="conv"><div class="av">🛎</div><div class="cbody"><div class="nm">PoolMind 平台通知</div><div class="lm">你嘅帳號已完成 WhatsApp 驗證</div></div><div class="meta">週二</div></div>
+    </div>
+    <div class="nav"><div>搵工</div><div>我的更</div><div class="on">訊息</div><div>工資</div><div>我的</div></div>
+  </div><div class="cap">L5 訊息：新增 WhatsApp 式會話列表層 → 點入聊天</div></div>
+
+</div>
+
+<h2>平台管理員端 Admin（A1–A2）</h2>
+<div class="wrap">
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">A1</span>
+    <div class="top">認證審核 <span class="mini">待審 3</span></div>
+    <div class="pbody">
+      <div class="card"><div class="item"><div><b>陳大文</b><div class="sub">OCR 姓名相符・LG-88123</div></div><span class="badge">看證件圖 ›</span></div>
+        <div style="display:flex;gap:8px;margin-top:8px"><span class="btn" style="flex:1;margin:0">✓ 通過</span><span class="btn ghost" style="flex:1;margin:0">✗ 駁回</span></div></div>
+      <div class="card"><div class="item"><div><b>肥波</b> <span class="badge">待復審</span><div class="sub">續期重傳・新證 2029-05</div></div><span class="badge">看證件圖 ›</span></div></div>
+      <div class="card"><div class="sub">證件圖經後端加密串流，全站無公開連結（SPEC §10）；未認證唔卡業務。</div></div>
+    </div>
+    <div class="nav"><div class="on">審核</div><div>用戶</div><div>設定</div></div>
+  </div><div class="cap">A1 證件審核：通過/駁回聯動 A2</div></div>
+
+  <div class="cell-wrap"><div class="frame"><span class="pid">A2</span>
+    <div class="top">用戶 <span class="mini">全部 ▾｜搜索 🔍</span></div>
+    <div class="pbody">
+      <div style="display:flex;gap:8px;padding:10px 12px 0;font-size:11px;flex-wrap:wrap"><span class="badge">全部 46</span><span class="badge" style="background:#fdecec;color:var(--warn)">未認證 5</span><span class="badge">待復審 2</span></div>
+      <div class="card">
+        <div class="item"><div><b>陳大文</b> <span class="sub">@chan_tai_man</span></div><span class="badge" style="background:#fdecec;color:var(--warn)">未認證</span></div>
+        <div class="item"><div><b>阿明</b> <span class="sub">@ming2019</span></div><span class="green">已認證</span></div>
+        <div class="item"><div><b>波哥</b> <span class="sub">@bogor・主管兼救生員</span></div><span class="green">已認證</span></div>
+        <div class="item"><div><b>黑仔</b> <span class="sub">@hakzai</span></div><span class="red">已駁回 ❗</span></div>
+      </div>
+      <div class="card"><div class="sub">用戶名永久唔改得、永不釋放復用；駁回者全界面紅色警告。</div></div>
+    </div>
+    <div class="nav"><div>審核</div><div class="on">用戶</div><div>設定</div></div>
+  </div><div class="cap">A2 用戶列表：狀態隨審核聯動</div></div>
+
+</div>
+</body>

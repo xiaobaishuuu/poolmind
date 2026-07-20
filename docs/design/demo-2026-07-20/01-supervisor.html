@@ -1,5 +1,5 @@
 <meta charset="utf-8">
-<title>PoolMind R1・主管端交互 demo</title>
+<title>PoolMind R2・主管端交互 demo</title>
 <style>
 :root{--p:#2a6f97;--psoft:#eaf3f8;--ink:#22303e;--sub:#7b8c9c;--warn:#c9463d;--ok:#2e8b57;--bg:#f2f4f7;--line:#e6eaef;--fw:402px;--fh:874px}
 body[data-color=teal]{--p:#0e7c7b;--psoft:#e6f4f3}
@@ -34,11 +34,17 @@ body[data-style=C] .card{background:#fff;border-radius:6px;border:1px solid var(
 .item:last-child{border-bottom:none}
 .item.link{cursor:pointer}
 .sub{font-size:12px;color:var(--sub)}
-/* 天氣欄（S1 頂部，可點跳香港天文台） */
-.wx{display:flex;align-items:center;gap:9px;padding:7px 14px;background:#fff7e6;border-bottom:1px solid #f0e2c0;font-size:12px;flex-shrink:0}
-.wx .sig{font-weight:800;border-radius:6px;padding:2px 9px;color:#fff;cursor:pointer}
-.sig.ts{background:#6b5bd0}.sig.amber{background:#e0a800}.sig.red{background:#c9463d}.sig.black{background:#242b33}.sig.clear{background:#2e8b57}
-.wx .hko{margin-left:auto;color:var(--p);font-weight:700;cursor:pointer;white-space:nowrap}
+/* 首頁：今明兩日缺人總數（點入篩選缺人泳池） */
+.gaprow{display:flex;gap:10px}
+.gapbox{flex:1;background:var(--psoft);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer}
+.gnum{font-size:34px;font-weight:800;color:var(--warn);line-height:1}
+.gcap{font-size:12px;color:var(--sub);margin-top:5px}
+/* 篩選提示條（S2 缺人泳池 / S4 最新訊息） */
+.fbar{display:none;align-items:center;gap:8px;padding:8px 13px;background:#fff4d9;border-bottom:1px solid #f0e2c0;font-size:12px;color:#a06a10;flex-shrink:0}
+.fbar.on{display:flex}
+.fbar .x{margin-left:auto;color:var(--p);font-weight:700;cursor:pointer;white-space:nowrap}
+/* 發布招募 懸浮按鈕（一直固定喺右下角） */
+.fab{position:absolute;right:15px;bottom:74px;z-index:7;background:var(--p);color:#fff;border-radius:26px;padding:12px 18px;font-size:14px;font-weight:800;box-shadow:0 5px 16px rgba(20,60,90,.38);cursor:pointer}
 /* S3 Excel 式垂直日曆 */
 .xls{margin:8px 10px 4px;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:13px}
 .xrow{display:grid;grid-template-columns:52px 30px 1fr;align-items:stretch;border-bottom:1px solid var(--line);background:#fff}
@@ -94,42 +100,52 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
 <div class="frame">
   <span class="pid" id="pidbox">S1</span>
 
-  <!-- S1 首頁（天氣欄＋招募情報＋泳池管理＋今日待處理；已併入舊 S2） -->
+  <!-- S1 首頁（今明缺人總數＋待處理＋招募情報；發布招募為右下角懸浮掣） -->
   <div class="scr on" id="S1">
-    <div class="top">首頁 <span class="mini">波哥</span></div>
-    <div class="wx">
-      <span class="sig ts" id="wxsig" onclick="cycSig()">⛈ 雷暴</span>
-      <span id="wxdate">7月19日（六）</span>
-      <span id="wxtime" style="font-weight:700">14:32</span>
-      <span class="hko" onclick="openHKO()">🌐 香港天文台 ›</span>
-    </div>
+    <div class="top">今日總覽 <span class="mini">7月19日（六）・波哥</span></div>
     <div class="pbody">
-      <div class="card"><div class="t">招募情報（全港・含我發布，可報名／聯繫）</div>
-        <div class="item"><div><b>週六早更 7:00–15:00</b><div class="sub">波哥（我）・南區近港鐵・$85・大池兩崗位</div></div><span class="badge">我發布</span></div>
-        <div class="item link" onclick="toast('入聊天同明哥傾（demo 簡化）')"><div><b>週日晚更 14:00–22:00</b><div class="sub">明哥・北區・詳情請聯繫</div></div><span class="btn ghost" style="margin:0;padding:5px 11px">聯繫</span></div>
-        <div class="item link" onclick="toast('主管可兼救生員，一樣報得名（資歷同過管理員審核）')"><div><b>8 月整月長更</b><div class="sub">華哥・沙田・逐日勾選得閒更次</div></div><span class="btn" style="margin:0;padding:5px 11px">報名</span></div>
+      <div class="card"><div class="t">缺人總數（點數字睇邊個泳池缺）</div>
+        <div class="gaprow">
+          <div class="gapbox" onclick="toS2('today')"><div class="gnum" id="gTod">1</div><div class="gcap">今日缺人 ›</div></div>
+          <div class="gapbox" onclick="toS2('tmr')"><div class="gnum" id="gTmr">1</div><div class="gcap">明日缺人 ›</div></div>
+        </div>
       </div>
-      <div class="card"><div class="t">我的泳池（點入排更）</div>
-        <div class="item link" onclick="go('S3')"><div><b>海怡半島</b><div class="sub">早更 7–15・晚更 14–22｜夏季模板</div></div><span class="red" id="gapS1">明日缺 1 ›</span></div>
-        <div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>黃埔花園</b><div class="sub">全日 9–18｜平日模板</div></div><span class="green">齊人 ›</span></div>
-        <div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>嘉湖山莊</b><div class="sub">晚更 14–22｜夏季模板</div></div><span class="red">缺 1 ›</span></div>
-        <div class="btn ghost" style="margin:8px 0 0" onclick="toast('一鍵排班：偏好名單 → 連續性 → 盡力而為（正式版先有）')">一鍵排班</div>
-      </div>
-      <div class="card"><div class="t">今日待處理</div>
+      <div class="card"><div class="t">待處理</div>
         <div class="item link" onclick="go('S5')"><span>陳大文 報名 週六短更</span><span class="badge">新</span></div>
-        <div class="item link" onclick="go('S4')"><span>陳大文：「$90 啦…」</span><span class="badge">未讀 2</span></div>
+        <div class="item link" onclick="toS4newest()"><span>最新收到訊息</span><span class="badge">未讀 2 ›</span></div>
         <div class="item"><span>今日在崗・海怡半島</span><span>阿明・阿強</span></div>
       </div>
-      <div class="btn" onclick="go('S7')">＋ 發布招募</div>
+      <!-- 招募情報：組件同 L2 一致，固定喺首頁最下面 -->
+      <div class="card" style="padding-bottom:2px"><div class="t">招募情報（全港・含我發布，可管理／報名／聯繫）</div></div>
+      <div class="card"><div class="item"><div><b>週六早更 7:00–15:00</b><div class="sub">波哥（我）・南區近港鐵・$85・大池兩崗位</div></div><span class="badge">我發布</span></div>
+        <div style="display:flex;gap:8px"><span class="btn" style="flex:1;margin:6px 0 0" onclick="go('S7')">管理此招募</span><span class="btn ghost" style="flex:1;margin:6px 0 0" onclick="go('S5')">睇報名</span></div></div>
+      <div class="card"><div class="item"><div><b>週日晚更 14:00–22:00</b><div class="sub">明哥・北區・詳情請聯繫</div></div></div>
+        <div style="display:flex;gap:8px"><span class="btn ghost" style="flex:1;margin:6px 0 0" onclick="toast('入聊天同明哥傾（demo 簡化）')">聯繫以報更</span></div>
+        <div class="sub" style="margin-top:6px">情形 B：保密 → 入聊天先傾</div></div>
+      <div class="card"><div class="item"><div><b>8 月整月長更</b><div class="sub">華哥・沙田・逐日勾選得閒更次</div></div></div>
+        <div style="display:flex;gap:8px"><span class="btn" style="flex:1;margin:6px 0 0" onclick="toast('主管可兼救生員，一樣報得名（資歷同過管理員審核）')">報名</span></div>
+        <div class="sub" style="margin-top:6px">情形 A：公開工資 → 可直接報名</div></div>
     </div>
-    <div class="nav"><div class="on">首頁</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+    <div class="fab" onclick="go('S7')">＋ 發布招募</div>
+    <div class="nav"><div class="on">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
   </div>
 
-  <!-- S2 已併入 S1，ID 作廢留空（DEMO-RULES §3：舊號永不復用） -->
+  <!-- S2 更表（泳池一覽；可由首頁缺人數字自動篩選出缺人泳池，可取消） -->
+  <div class="scr" id="S2">
+    <div class="top">更表 <span class="mini">泳池一覽</span></div>
+    <div class="fbar" id="s2fbar"><span id="s2ftxt">只顯示缺人泳池</span><span class="x" onclick="cancelS2Filter()">✕ 取消篩選・顯示全部</span></div>
+    <div class="pbody" id="s2body">
+      <div class="card pool" data-gap="today"><div class="item link" onclick="go('S3')"><div><b>海怡半島</b><div class="sub">早更 7–15・晚更 14–22｜夏季模板</div></div><span class="red" id="gapHoi">今日缺 1 ›</span></div></div>
+      <div class="card pool" data-gap=""><div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>黃埔花園</b><div class="sub">全日 9–18｜平日模板</div></div><span class="green">齊人 ›</span></div></div>
+      <div class="card pool" data-gap="tmr"><div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>嘉湖山莊</b><div class="sub">晚更 14–22｜夏季模板</div></div><span class="red">明日缺 1 ›</span></div></div>
+      <div class="btn ghost" onclick="toast('一鍵排班：偏好名單 → 連續性 → 盡力而為（正式版先有）')">一鍵排班（按偏好名單＋連續性）</div>
+    </div>
+    <div class="nav"><div onclick="go('S1')">總覽</div><div class="on">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+  </div>
 
   <!-- S3 月更表（Excel 式垂直日曆，週六日淺紅底） -->
   <div class="scr" id="S3">
-    <div class="top"><span><span class="back" onclick="go('S1')">‹</span> 海怡半島</span><span class="mini">早更・位置 1</span></div>
+    <div class="top"><span><span class="back" onclick="go('S2')">‹</span> 海怡半島</span><span class="mini">早更・位置 1</span></div>
     <div class="pbody">
       <div class="xls">
         <div class="xrow xhead"><span>日期</span><span class="xw">星期</span><span>排班</span></div>
@@ -150,44 +166,43 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
       </div>
       <div class="card"><div class="sub">Excel 式垂直排列：一行一日，<b>週六、週日淺紅底</b>；灰行＝已鎖定（過去日期，只可加加錢/扣錢調整項）；紅字「缺人＋」＝空位，點去處理報名；點名字段＝交換/移除選單（demo 簡化為提示）。</div></div>
     </div>
-    <div class="nav"><div onclick="go('S1')">首頁</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+    <div class="nav"><div onclick="go('S1')">總覽</div><div class="on">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
   </div>
 
-  <!-- S4 訊息（WhatsApp 式會話列表 → 點入聊天線程） -->
+  <!-- S4 訊息（WhatsApp 式會話列表 → 點入聊天線程；可由首頁待處理自動篩選最新收到） -->
   <div class="scr" id="S4">
-    <!-- 會話列表層 -->
     <div class="s4pane on" id="s4list">
       <div class="top">訊息 <span class="mini">救生員會話</span></div>
+      <div class="fbar" id="s4fbar"><span>只顯示最新收到嘅訊息</span><span class="x" onclick="cancelS4Filter()">✕ 取消篩選・顯示全部</span></div>
       <div class="pbody">
-        <div class="conv" onclick="openChat()">
+        <div class="conv" data-recv="1" onclick="openChat()">
           <div class="av">陳</div>
           <div class="cbody"><div class="nm">陳大文 <span class="badge" style="font-size:10px;padding:1px 6px">未認證</span></div><div class="lm">$90 啦，我有五年經驗</div></div>
           <div class="meta">14:20<div class="unread">2</div></div>
         </div>
-        <div class="conv" onclick="toast('demo 只做咗陳大文呢個會話')">
+        <div class="conv" data-recv="1" onclick="toast('demo 只做咗陳大文呢個會話')">
           <div class="av">明</div>
           <div class="cbody"><div class="nm">阿明</div><div class="lm">星期日得唔得？我想調更</div></div>
-          <div class="meta">13:05</div>
+          <div class="meta">13:05<div class="unread">1</div></div>
         </div>
-        <div class="conv" onclick="toast('demo 只做咗陳大文呢個會話')">
+        <div class="conv" data-recv="0" onclick="toast('demo 只做咗陳大文呢個會話')">
           <div class="av">強</div>
           <div class="cbody"><div class="nm">阿強</div><div class="lm">收到，聽日 7 點見</div></div>
           <div class="meta">昨天</div>
         </div>
-        <div class="conv" onclick="toast('demo 只做咗陳大文呢個會話')">
+        <div class="conv" data-recv="0" onclick="toast('demo 只做咗陳大文呢個會話')">
           <div class="av">龍</div>
           <div class="cbody"><div class="nm">細龍</div><div class="lm">好，我 14:00 接更</div></div>
           <div class="meta">昨天</div>
         </div>
-        <div class="conv" onclick="toast('demo 只做咗陳大文呢個會話')">
+        <div class="conv" data-recv="0" onclick="toast('demo 只做咗陳大文呢個會話')">
           <div class="av">水</div>
           <div class="cbody"><div class="nm">阿水 <span class="green" style="font-size:10px">已認證</span></div><div class="lm">我週六都得閒，有更嗎？</div></div>
           <div class="meta">週三</div>
         </div>
       </div>
-      <div class="nav"><div onclick="go('S1')">首頁</div><div class="on">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+      <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div class="on">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
     </div>
-    <!-- 聊天線程層 -->
     <div class="s4pane" id="s4chat">
       <div class="top"><span><span class="back" onclick="backList()">‹</span> 陳大文</span><span class="mini">未認證 ⚠︎｜救生員證 ›</span></div>
       <div class="pbody"><div class="chat" id="chatbox">
@@ -196,7 +211,7 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
         <div class="msg">$90 啦，我有五年經驗</div>
       </div></div>
       <div class="inputrow"><input id="chatin" placeholder="輸入訊息…"><span onclick="sendMsg()">發送</span><span onclick="sendCard()">📍卡片</span></div>
-      <div class="nav"><div onclick="go('S1')">首頁</div><div class="on">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+      <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div class="on">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
     </div>
   </div>
 
@@ -208,7 +223,7 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
       <div class="card"><div class="item"><div><b>阿水</b> <span class="green">已認證</span><div class="sub">18 分鐘前報名・未傾價</div></div><span class="btn ghost" style="margin:0;padding:6px 12px" onclick="go('S4')">入聊天傾價</span></div></div>
       <div class="card"><div class="sub">別池主管確認咗嘅人會自動隱藏；對方取消會恢復顯示（搶人機制）</div></div>
     </div>
-    <div class="nav"><div class="on" onclick="go('S1')">首頁</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+    <div class="nav"><div onclick="go('S1')">總覽</div><div class="on" onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
   </div>
 
   <!-- S6 工資 -->
@@ -224,7 +239,7 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
       <div class="btn ghost" onclick="payAll()">阿明・整人一鍵確認已支付</div>
       <div class="card"><div class="sub" id="payNote">確認後等阿明點「已收」→ 雙向已確認；佢唔郁，你嘅確認一直有效</div></div>
     </div>
-    <div class="nav"><div onclick="go('S1')">首頁</div><div onclick="go('S4')">訊息</div><div class="on">工資</div><div onclick="go('S8')">我的</div></div>
+    <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div class="on">工資</div><div onclick="go('S8')">我的</div></div>
   </div>
 
   <!-- S7 發布招募 -->
@@ -241,7 +256,7 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
       <div class="btn" onclick="genText()">生成 WhatsApp 文案並轉發 ↗</div>
       <div class="card" id="waText" style="display:none"><div class="sub">『【招人】7/26 週六早更 7-15 南區近港鐵，大池兩崗位，有意 click： poolmind.hk/r/bogor』</div><div class="btn ghost" style="margin:8px 0 0" onclick="toast('已複製，跳轉 WhatsApp（demo）')">複製並跳轉 WhatsApp</div></div>
     </div>
-    <div class="nav"><div class="on" onclick="go('S1')">首頁</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+    <div class="nav"><div class="on" onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
   </div>
 
   <!-- S8 設定（界面個性化，可真操作） -->
@@ -264,7 +279,7 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
         <div class="item"><span>換綁 WhatsApp 號碼</span><span>›</span></div></div>
       <div class="card"><div class="sub">揀完風格/色即刻全 app 生效——呢個就係正式版存喺你帳號嘅個人偏好</div></div>
     </div>
-    <div class="nav"><div onclick="go('S1')">首頁</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div class="on">我的</div></div>
+    <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div class="on">我的</div></div>
   </div>
 
   <!-- 時薪確認彈窗 -->
@@ -289,15 +304,33 @@ function setD(k){const r=document.documentElement.style;r.setProperty('--fw',DEV
 function setS(s){document.body.dataset.style=s;ckA.textContent=s=='A'?'◉':'○';ckC.textContent=s=='C'?'◉':'○';toast('已切換為 '+(s=='A'?'A 卡片式':'C 磁貼式'))}
 function setC(c){document.body.dataset.color=c;['blue','teal','orange','purple'].forEach(x=>document.getElementById('c-'+x).classList.toggle('on',x==c))}
 function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.opacity=1;clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,2200)}
-function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById('pidbox').textContent=id;if(id=='S4')backList()}
+function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById('pidbox').textContent=id;
+  if(id=='S2')filterPools(null);
+  if(id=='S4'){backList();filterConv(false)}
+}
 
-/* ============ S1 天氣欄（點警告循環香港天氣警告；掣跳香港天文台） ============ */
-const SIGS=[['⛈ 雷暴','ts'],['🌧 黃雨','amber'],['🌧 紅雨','red'],['🌧 黑雨','black'],['☀ 天晴','clear']];
-let si=0;
-function cycSig(){si=(si+1)%SIGS.length;const el=document.getElementById('wxsig');el.textContent=SIGS[si][0];el.className='sig '+SIGS[si][1];toast('天氣警告：'+SIGS[si][0].split(' ')[1])}
-function openHKO(){toast('跳轉香港天文台（demo）');window.open('https://www.hko.gov.hk/tc/','_blank')}
-function tickClock(){const d=new Date(),p=n=>String(n).padStart(2,'0');document.getElementById('wxtime').textContent=p(d.getHours())+':'+p(d.getMinutes())}
-tickClock();setInterval(tickClock,20000);
+/* ============ S1 缺人數字 → S2 自動篩選缺人泳池（可取消） ============ */
+function toS2(day){go('S2');filterPools(day)}
+function filterPools(day){
+  document.querySelectorAll('#s2body .pool').forEach(p=>{
+    const d=p.dataset.gap;
+    p.style.display=(day && d!==day)?'none':'';
+  });
+  const b=document.getElementById('s2fbar');
+  if(day){b.classList.add('on');document.getElementById('s2ftxt').textContent='只顯示「'+(day=='today'?'今日':'明日')+'缺人」泳池';}
+  else b.classList.remove('on');
+}
+function cancelS2Filter(){filterPools(null);toast('已取消篩選，顯示全部泳池')}
+
+/* ============ S1 待處理 → S4 自動篩選最新收到訊息（可取消） ============ */
+function toS4newest(){go('S4');filterConv(true)}
+function filterConv(on){
+  document.querySelectorAll('#s4list .conv').forEach(c=>{
+    c.style.display=(on && c.dataset.recv!=='1')?'none':'';
+  });
+  document.getElementById('s4fbar').classList.toggle('on',on);
+}
+function cancelS4Filter(){filterConv(false);toast('已取消篩選，顯示全部會話')}
 
 /* ============ S4 會話列表 ⇄ 聊天線程 ============ */
 function openChat(){document.getElementById('s4list').classList.remove('on');document.getElementById('s4chat').classList.add('on')}
@@ -314,7 +347,9 @@ function confirmWage(){
   c.classList.remove('gap');
   c.querySelector('.xc').innerHTML='<span class="seg">陳大文 7–15</span>';
   document.getElementById('btnChan').outerHTML='<span class="green">已入表 ✓ $'+w+'/時</span>';
-  document.getElementById('gapS1').outerHTML='<span class="green">已補齊 ✓</span>';
+  const g=document.getElementById('gapHoi');if(g)g.outerHTML='<span class="green">齊人 ›</span>';
+  const pool=document.querySelector('#s2body .pool[data-gap="today"]');if(pool)pool.dataset.gap='';
+  const gt=document.getElementById('gTod');gt.textContent='0';gt.style.color='var(--ok)';
   toast('陳大文已入 7/19 早更・$'+w+'/時，已通知對方');
   setTimeout(()=>go('S3'),600);
 }
@@ -333,7 +368,7 @@ function sendCard(){
 }
 function scrollChat(){const b=document.querySelector('#s4chat .pbody');b.scrollTop=b.scrollHeight}
 
-/* ============ S3 名字選單 / S6 工資 ============ */
+/* ============ S3 名字選單 / S6 工資 / S7 招募文案 ============ */
 function swapMenu(){toast('長按選單：交換（列出全部泳池雙表對拖）／移除——正式版先做，demo 只提示')}
 let paid=false;
 function payAll(){if(paid)return;paid=true;
@@ -341,8 +376,6 @@ function payAll(){if(paid)return;paid=true;
   document.getElementById('oweTotal').textContent='$8,140';
   toast('阿明 7 月全部標為已支付，等佢確認收款');
 }
-
-/* ============ S7 招募文案 ============ */
 function genText(){document.getElementById('waText').style.display='block';toast('已生成 WhatsApp 文案')}
 </script>
 </body>

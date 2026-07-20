@@ -16,8 +16,9 @@ h2{font-size:15px;color:var(--p);margin:22px 0 10px;border-left:4px solid var(--
 .top .back{margin-right:6px}
 .pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:6px}
 .nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:7px 0 12px;flex-shrink:0}
-.nav div{flex:1;text-align:center;font-size:10px;color:var(--sub)}
+.nav div{flex:1;text-align:center;font-size:10px;color:var(--sub);position:relative}
 .nav .on{color:var(--p);font-weight:700}
+.nb{position:absolute;top:-4px;left:calc(50% + 4px);background:var(--warn);color:#fff;border-radius:9px;min-width:14px;height:14px;line-height:14px;font-size:9px;font-weight:700;padding:0 3px;box-sizing:border-box;text-align:center;box-shadow:0 0 0 1.5px #fff}
 .red{color:var(--warn);font-weight:700}.green{color:var(--ok);font-weight:700}
 .badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:11px}
 .btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:10px;margin:8px 12px;font-size:13px;font-weight:700}
@@ -66,7 +67,7 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
 </style>
 <body>
 <h1>PoolMind R2・全頁總覽</h1>
-<p class="lead">2026-07-20 第二輪。主管端恢復 5 分頁（總覽／更表／訊息／工資／我的）；首頁今明缺人數字入 S2 篩選、招募情報用 L2 卡片組件置底、發布招募改右下角懸浮掣、待處理入 S4 最新訊息篩選；救生員 L3 改 Excel 式更表（休息）、L5 加會話列表層。交互請開對應單頁 HTML。</p>
+<p class="lead">2026-07-20 第二輪。主管端恢復 5 分頁（總覽／更表／訊息／工資／我的）；首頁今明缺人數字入 S2 篩選、招募情報用 L2 卡片組件置底、發布招募改右下角懸浮掣、待處理入 S4 最新訊息篩選；救生員 L3 改 Excel 式更表（休息）、L5 加會話列表層。<b>新增全局功能：底部 5 個分頁按鈕右上角微信式紅點角標</b>（未讀/待辦數量，所有帳號類型必備，當前分頁自動清零）。交互請開對應單頁 HTML。</p>
 
 <h2>主管端 Supervisor（S1–S8）</h2>
 <div class="wrap">
@@ -74,8 +75,6 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
   <div class="cell-wrap"><div class="frame"><span class="pid">S1</span>
     <div class="top">今日總覽 <span class="mini">7/19（六）・波哥</span></div>
     <div class="pbody">
-      <div class="card"><div class="t">缺人總數（點數字睇邊個池缺）</div>
-        <div class="gaprow"><div class="gapbox"><div class="gnum">1</div><div class="gcap">今日缺人 ›</div></div><div class="gapbox"><div class="gnum">1</div><div class="gcap">明日缺人 ›</div></div></div></div>
       <div class="card"><div class="t">待處理</div>
         <div class="item"><span>陳大文 報名 週六短更</span><span class="badge">新</span></div>
         <div class="item"><span>最新收到訊息</span><span class="badge">未讀 2 ›</span></div></div>
@@ -87,19 +86,21 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
     </div>
     <div class="fab">＋ 發布招募</div>
     <div class="nav"><div class="on">總覽</div><div>更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
-  </div><div class="cap">S1 首頁：今明缺人數字＋待處理＋招募情報＋懸浮發布掣</div></div>
+  </div><div class="cap">S1 首頁：待處理＋招募情報（L2 卡片）＋懸浮發布掣</div></div>
 
   <div class="cell-wrap"><div class="frame"><span class="pid">S2</span>
     <div class="top">更表 <span class="mini">泳池一覽</span></div>
     <div class="fbar"><span>只顯示「今日缺人」泳池</span><span class="x">✕ 取消篩選</span></div>
     <div class="pbody">
+      <div class="card"><div class="t">缺人總數（點數字篩選下面缺人泳池）</div>
+        <div class="gaprow"><div class="gapbox"><div class="gnum">1</div><div class="gcap">今日缺人 ›</div></div><div class="gapbox"><div class="gnum">1</div><div class="gcap">明日缺人 ›</div></div></div></div>
       <div class="card"><div class="item"><div><b>海怡半島</b><div class="sub">早 7–15・晚 14–22｜夏季</div></div><span class="red">今日缺 1 ›</span></div></div>
       <div class="card"><div class="item"><div><b>黃埔花園</b><div class="sub">全日 9–18｜平日</div></div><span class="green">齊人 ›</span></div></div>
       <div class="card"><div class="item"><div><b>嘉湖山莊</b><div class="sub">晚 14–22｜夏季</div></div><span class="red">明日缺 1 ›</span></div></div>
       <div class="btn ghost">一鍵排班（偏好名單＋連續性）</div>
     </div>
     <div class="nav"><div>總覽</div><div class="on">更表</div><div>訊息</div><div>工資</div><div>我的</div></div>
-  </div><div class="cap">S2 更表：泳池一覽，頂部為缺人篩選條（可取消）</div></div>
+  </div><div class="cap">S2 更表：頂部今明缺人數字（由 S1 移入）＋缺人篩選條（可取消）＋泳池一覽</div></div>
 
   <div class="cell-wrap"><div class="frame"><span class="pid">S3</span>
     <div class="top"><span><span class="back">‹</span> 海怡半島</span><span class="mini">早更・位置 1</span></div>
@@ -282,4 +283,15 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
   </div><div class="cap">A2 用戶列表：狀態隨審核聯動</div></div>
 
 </div>
+
+<script>
+/* 全局底部導航角標（微信式紅點）——所有帳號類型必備；當前分頁自動清零。此處為靜態示意，
+   實際交互版喺各單頁 HTML。標籤語義：總覽/搵工＝新事物；更表＝缺人數；我的更＝新入表；
+   訊息＝未讀人數；工資＝待結清；審核＝待審數；我的/用戶/設定＝提醒（通常 0）。 */
+const BADGE={'總覽':3,'更表':2,'訊息':2,'工資':2,'我的':0,'搵工':3,'我的更':1,'審核':3,'用戶':0,'設定':0};
+document.querySelectorAll('.nav div').forEach(d=>{
+  const n=BADGE[d.textContent.trim()]||0;
+  if(n>0&&!d.classList.contains('on')){const b=document.createElement('span');b.className='nb';b.textContent=n>99?'99+':n;d.appendChild(b)}
+});
+</script>
 </body>

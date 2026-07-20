@@ -19,8 +19,10 @@ body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;bac
 .top .back{cursor:pointer;margin-right:8px}
 .pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
 .nav{display:flex;background:#fff;border-top:1px solid var(--line);padding:8px 0 16px;flex-shrink:0}
-.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer}
+.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer;position:relative}
 .nav .on{color:var(--p);font-weight:700}
+/* 底部導航角標（全局・微信式：未讀/待辦數量紅點） */
+.nb{position:absolute;top:-4px;left:calc(50% + 5px);background:var(--warn);color:#fff;border-radius:9px;min-width:15px;height:15px;line-height:15px;font-size:9px;font-weight:700;padding:0 3px;box-sizing:border-box;text-align:center;box-shadow:0 0 0 1.5px #fff}
 .red{color:var(--warn);font-weight:700}
 .green{color:var(--ok);font-weight:700}
 .badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:12px}
@@ -104,12 +106,6 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
   <div class="scr on" id="S1">
     <div class="top">今日總覽 <span class="mini">7月19日（六）・波哥</span></div>
     <div class="pbody">
-      <div class="card"><div class="t">缺人總數（點數字睇邊個泳池缺）</div>
-        <div class="gaprow">
-          <div class="gapbox" onclick="toS2('today')"><div class="gnum" id="gTod">1</div><div class="gcap">今日缺人 ›</div></div>
-          <div class="gapbox" onclick="toS2('tmr')"><div class="gnum" id="gTmr">1</div><div class="gcap">明日缺人 ›</div></div>
-        </div>
-      </div>
       <div class="card"><div class="t">待處理</div>
         <div class="item link" onclick="go('S5')"><span>陳大文 報名 週六短更</span><span class="badge">新</span></div>
         <div class="item link" onclick="toS4newest()"><span>最新收到訊息</span><span class="badge">未讀 2 ›</span></div>
@@ -135,6 +131,12 @@ input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-rad
     <div class="top">更表 <span class="mini">泳池一覽</span></div>
     <div class="fbar" id="s2fbar"><span id="s2ftxt">只顯示缺人泳池</span><span class="x" onclick="cancelS2Filter()">✕ 取消篩選・顯示全部</span></div>
     <div class="pbody" id="s2body">
+      <div class="card"><div class="t">缺人總數（點數字篩選下面缺人嘅泳池）</div>
+        <div class="gaprow">
+          <div class="gapbox" onclick="toS2('today')"><div class="gnum" id="gTod">1</div><div class="gcap">今日缺人 ›</div></div>
+          <div class="gapbox" onclick="toS2('tmr')"><div class="gnum" id="gTmr">1</div><div class="gcap">明日缺人 ›</div></div>
+        </div>
+      </div>
       <div class="card pool" data-gap="today"><div class="item link" onclick="go('S3')"><div><b>海怡半島</b><div class="sub">早更 7–15・晚更 14–22｜夏季模板</div></div><span class="red" id="gapHoi">今日缺 1 ›</span></div></div>
       <div class="card pool" data-gap=""><div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>黃埔花園</b><div class="sub">全日 9–18｜平日模板</div></div><span class="green">齊人 ›</span></div></div>
       <div class="card pool" data-gap="tmr"><div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>嘉湖山莊</b><div class="sub">晚更 14–22｜夏季模板</div></div><span class="red">明日缺 1 ›</span></div></div>
@@ -309,6 +311,18 @@ function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove(
   if(id=='S4'){backList();filterConv(false)}
 }
 
+/* ============ 底部導航角標（全局功能・所有帳號類型必備，參考微信）============
+   規則：每個分頁按鈕右上角顯示未讀/待辦數量紅點；當前所在分頁（.on）自動清零唔顯示。
+   總覽＝新消息/事物；更表＝缺人更表數；訊息＝未讀人數；工資＝未結清賬單數；我的＝帳號提醒（通常為 0）。*/
+const BADGE={'總覽':3,'更表':2,'訊息':2,'工資':2,'我的':0};
+function renderBadges(){
+  document.querySelectorAll('.nav div').forEach(d=>{
+    const old=d.querySelector('.nb');if(old)old.remove();
+    const n=BADGE[d.textContent.trim()]||0;
+    if(n>0&&!d.classList.contains('on')){const b=document.createElement('span');b.className='nb';b.textContent=n>99?'99+':n;d.appendChild(b)}
+  });
+}
+
 /* ============ S1 缺人數字 → S2 自動篩選缺人泳池（可取消） ============ */
 function toS2(day){go('S2');filterPools(day)}
 function filterPools(day){
@@ -350,6 +364,7 @@ function confirmWage(){
   const g=document.getElementById('gapHoi');if(g)g.outerHTML='<span class="green">齊人 ›</span>';
   const pool=document.querySelector('#s2body .pool[data-gap="today"]');if(pool)pool.dataset.gap='';
   const gt=document.getElementById('gTod');gt.textContent='0';gt.style.color='var(--ok)';
+  BADGE['更表']=1;BADGE['總覽']=2;renderBadges();
   toast('陳大文已入 7/19 早更・$'+w+'/時，已通知對方');
   setTimeout(()=>go('S3'),600);
 }
@@ -377,5 +392,6 @@ function payAll(){if(paid)return;paid=true;
   toast('阿明 7 月全部標為已支付，等佢確認收款');
 }
 function genText(){document.getElementById('waText').style.display='block';toast('已生成 WhatsApp 文案')}
+renderBadges();
 </script>
 </body>

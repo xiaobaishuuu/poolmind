@@ -1,15 +1,37 @@
-# # OMC 运行时产物：默认全部忽略，只保留有价值的规范/状态文件
-# .omc/*
-# !.omc/specs/
-# !.omc/project-memory.json
-# !.omc/state/
-# .omc/state/*
-# !.omc/state/deep-interview-state.json
+# .claude/ 和 .omc/ 文件夹本身不忽略（跨设备同步需要），只忽略里面机器/会话相关的运行时产物。
 
-# # 常规
-# node_modules/
-# dist/
-# build/
-# *.log
-# .env
-# .env.*
+# ---- .claude/ ----
+# settings.local.json 是本机专属覆盖设置，按惯例不跨设备同步
+.claude/settings.local.json
+
+# ---- .omc/ ----
+# 默认忽略 .omc/ 下的一切，再显式放行需要跨设备同步的文档类文件
+.omc/*
+!.omc/specs/
+!.omc/plans/
+!.omc/skills/
+!.omc/project-memory.json
+!.omc/state/
+
+# .omc/state/ 内部：只保留可恢复的访谈状态，其余是每次会话生成的运行时垃圾
+.omc/state/*
+!.omc/state/deep-interview-state.json
+
+# 明确是机器/会话级运行时产物，永远不跨设备同步
+.omc/sessions/
+.omc/state/sessions/
+.omc/state/checkpoints/
+.omc/logs/
+.omc/artifacts/
+.omc/handoffs/
+.omc/ultragoal/
+.omc/research/
+.omc/notepad.md
+
+# 常规
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.*

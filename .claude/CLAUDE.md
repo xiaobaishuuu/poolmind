@@ -72,18 +72,28 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 
 ## PoolMind 文档约定（每次会话必须遵守）
 
-所有项目文档只保存在本仓库，**禁止写入全局目录**（`~/.claude/plans`、`~/.claude` 下任何位置）：
+所有项目文档只保存在本仓库，**禁止写入全局目录**（`~/.claude/plans`、`~/.claude` 下任何位置）。
 
-| 文件 | 用途 | 更新时机 |
-|------|------|---------|
-| `docs/SPEC.md` | **正式规格书 v1.0+（唯一事实来源）** | 有新决定时直接合并进正文对应章节，不另开增量文件 |
-| `docs/deep-interview-spec.md` | 访谈过程档案（历史，含逐轮评分与本体收敛） | 已冻结，不再更新 |
-| `docs/PROGRESS.md` | 进度速览 + 恢复指引 | 每次会话结束前更新 |
-| `docs/interview-sessions/YYYY-MM-DD.md` | 当日访谈/对话记录 | 每个访谈日新建一份，逐轮记录问答与定案 |
-| `.omc/specs/poolmind-spec.md` | 正式规格书副本（OMC 下游技能用） | SPEC.md 改完后同步复制 |
-| `.omc/state/deep-interview-state.json` | 访谈恢复状态 | 会话结束前更新 |
+**每次会话/任务开始前，先扫一遍下表，判断本次涉及哪几份要读、收尾时哪几份要写——不要只凭记忆，容易看漏：**
 
-会话收尾固定顺序：**合并决定进 spec → 写当日 interview-sessions 记录 → 更新 PROGRESS.md → 同步 .omc 副本与状态 → 更新记忆**。
+| 文件 | 什么时候要读 | 什么时候要改 |
+|------|------|------|
+| `docs/SPEC.md` | **正式规格书 v1.0+（唯一事实来源）**；任何涉及业务规则/需求的问题、写代码前必读 | 有新决定/需求变更时直接合并进对应章节，不另开增量文件 |
+| `docs/PROGRESS.md` | 每次会话开始/恢复时先读 | 每次会话结束前更新 |
+| `docs/HANDOFF.md` | 恢复会话、要知道"上次做到哪、卡在哪"时 | 每次会话结束前追加当日条目（最新在上） |
+| `docs/interview-sessions/YYYY-MM-DD.md` | 想知道某个决定"当初为什么这样定"时 | 已冻结的历史访谈存档，不再更新（除非用户明确要求重开访谈） |
+| `docs/dev-log/README.md` | 写代码前先看日志格式规范 | 规则本身变了才改 |
+| `docs/dev-log/YYYY-MM-DD-<功能名>.md` | 要改某个已完成/更新过的功能前，先翻对应日志 | 每完成/更新一个功能就新增一份 |
+| `docs/design/DEMO-RULES.md` | 做任何新一轮 demo 前必读 | demo 规则本身有变化才改（如尺寸规则、四件套结构） |
+| `docs/design/DEMO-INDEX.md` | 想找"上一轮 demo 长什么样、改了什么"时 | 每轮 demo 做完在顶部加一行索引 |
+| `docs/design/demo-YYYY-MM-DD/*.html` + `TREE.md` | 用户提到某个页面 ID（如 S3、L2）要看/要改时 | **已保存的旧 demo 除非用户明确要求，绝不回写**；新一轮改动一律新建 `demo-YYYY-MM-DD/` 文件夹；该端已在 `confirmed/` 确认过的，本轮跳过不重做 |
+| `docs/design/confirmed/0X-角色.html` | 要确认"某端定案的样式长什么样"时；用户要求改已确认样式时直接改这里 | 用户明确认可某端/某页面样式后才新增；改动直接改本体，不必重开一轮 demo |
+| `.omc/plans/poolmind-phase1-plan.md` | 要确认当前该做哪个里程碑、技术选型是什么时 | 只有实施计划本身要修订（技术方案/里程碑变化）才改，跟改 SPEC.md 不是一回事 |
+| `.omc/specs/poolmind-spec.md` | OMC 下游技能读取正式规格用 | SPEC.md 改完后同步复制（纯同步，不单独做决策） |
+| `.omc/state/deep-interview-state.json` | 恢复访谈会话时 | 会话结束前更新 |
+| `.omc/project-memory.json` | 一般不用主动读，hooks 自动维护 | 不必手动改；只在发现内容明显过期/出错（如指向已删除文件的 hotPath）时顺手纠正 |
+
+会话收尾固定顺序：**合并决定进 spec → 写当日 interview-sessions 记录（如有访谈）/ dev-log（如完成功能）→ 更新 PROGRESS.md → 更新 HANDOFF.md → 同步 .omc 副本与状态 → 更新记忆**。
 
 ### Demo 与开发硬规则（2026-07-19 用户定案，做 demo / 写代码前必读）
 

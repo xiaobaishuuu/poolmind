@@ -4,7 +4,7 @@
 |---|---|
 | 输入规格 | `docs/SPEC.md` v1.0（唯一事实来源，2026-07-17 定稿，含救生员同事联系补充） |
 | 模式 | ralplan consensus（deliberate：涉及身份认证、支付确认、合规/PII） |
-| 状态 | **共识达成，PENDING APPROVAL**（v1 → Architect APPROVE_WITH_IMPROVEMENTS → v2 → Critic REVISE → v3 → Critic APPROVED 2026-07-18）。执行需用户另行明确批准 |
+| 状态 | **v3 已获用户批准（2026-07-18）**，进入 UI demo 设计阶段（v1 → Architect APPROVE_WITH_IMPROVEMENTS → v2 → Critic REVISE → v3 → Critic APPROVED 2026-07-18 → 用户批准执行） |
 | 范围 | 第一期：响应式网页全功能；原生 App 为第二期，不在本计划内 |
 
 ---

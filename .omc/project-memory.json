@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1784476632459,
+  "lastScanned": 1784563527298,
   "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
     "languages": [],
@@ -32,13 +32,17 @@
       "branchingStrategy": null
     }
   },
-  "customNotes": [],
+  "customNotes": [
+    "SPEC v1.0 已定稿（2026-07-17），docs/SPEC.md 为唯一事实来源",
+    "第一期实施计划 v3 已获用户批准（2026-07-18），见 .omc/plans/poolmind-phase1-plan.md",
+    "当前处于 UI demo 设计阶段（docs/design/），尚未开始写正式后端/前端代码"
+  ],
   "directoryMap": {
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
       "fileCount": 3,
-      "lastAccessed": 1784476632403,
+      "lastAccessed": 1784563527247,
       "keyFiles": [
         "HANDOFF.md",
         "PROGRESS.md",
@@ -48,39 +52,135 @@
   },
   "hotPaths": [
     {
-      "path": "docs/deep-interview-spec.md",
-      "accessCount": 35,
-      "lastAccessed": 1784305055396,
+      "path": "docs/SPEC.md",
+      "accessCount": 16,
+      "lastAccessed": 1784562974368,
       "type": "file"
     },
     {
       "path": "docs/PROGRESS.md",
-      "accessCount": 9,
-      "lastAccessed": 1784475498865,
-      "type": "file"
-    },
-    {
-      "path": "docs/SPEC.md",
-      "accessCount": 8,
-      "lastAccessed": 1784390429415,
-      "type": "file"
-    },
-    {
-      "path": "docs/interview-sessions/2026-07-17.md",
-      "accessCount": 6,
-      "lastAccessed": 1784305334454,
+      "accessCount": 11,
+      "lastAccessed": 1784560339361,
       "type": "file"
     },
     {
       "path": ".claude/CLAUDE.md",
+      "accessCount": 9,
+      "lastAccessed": 1784563407716,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/00-all-pages.html",
+      "accessCount": 8,
+      "lastAccessed": 1784560786412,
+      "type": "file"
+    },
+    {
+      "path": "docs/interview-sessions/2026-07-17.md",
+      "accessCount": 7,
+      "lastAccessed": 1784560340247,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/01-supervisor.html",
       "accessCount": 6,
-      "lastAccessed": 1784475946438,
+      "lastAccessed": 1784560557373,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/02-lifeguard.html",
+      "accessCount": 6,
+      "lastAccessed": 1784560640617,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/DEMO-RULES.md",
+      "accessCount": 6,
+      "lastAccessed": 1784563387837,
       "type": "file"
     },
     {
       "path": "docs/HANDOFF.md",
-      "accessCount": 3,
-      "lastAccessed": 1784390450230,
+      "accessCount": 5,
+      "lastAccessed": 1784560339911,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/03-admin.html",
+      "accessCount": 5,
+      "lastAccessed": 1784560662705,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-20/01-supervisor.html",
+      "accessCount": 4,
+      "lastAccessed": 1784560695076,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-20/02-lifeguard.html",
+      "accessCount": 4,
+      "lastAccessed": 1784560729941,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-20/03-admin.html",
+      "accessCount": 4,
+      "lastAccessed": 1784560754935,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/DEMO-INDEX.md",
+      "accessCount": 4,
+      "lastAccessed": 1784563396545,
+      "type": "file"
+    },
+    {
+      "path": "docs/interview-sessions/2026-07-14.md",
+      "accessCount": 2,
+      "lastAccessed": 1784560345852,
+      "type": "file"
+    },
+    {
+      "path": "docs/dev-log/README.md",
+      "accessCount": 2,
+      "lastAccessed": 1784560353279,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-20/00-all-pages.html",
+      "accessCount": 2,
+      "lastAccessed": 1784560770766,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/TREE.md",
+      "accessCount": 2,
+      "lastAccessed": 1784560778895,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-20/TREE.md",
+      "accessCount": 2,
+      "lastAccessed": 1784560779503,
+      "type": "file"
+    },
+    {
+      "path": "docs/design",
+      "accessCount": 2,
+      "lastAccessed": 1784560846080,
+      "type": "directory"
+    },
+    {
+      "path": "docs",
+      "accessCount": 2,
+      "lastAccessed": 1784561273284,
+      "type": "directory"
+    },
+    {
+      "path": "docs/design/confirmed/03-admin.html",
+      "accessCount": 2,
+      "lastAccessed": 1784563366181,
       "type": "file"
     },
     {
@@ -90,58 +190,16 @@
       "type": "file"
     },
     {
-      "path": "docs/interview-sessions/2026-07-14.md",
+      "path": "docs/design/demo-2026-07-19",
       "accessCount": 1,
-      "lastAccessed": 1784047436569,
-      "type": "file"
-    },
-    {
-      "path": "docs",
-      "accessCount": 1,
-      "lastAccessed": 1784475349685,
+      "lastAccessed": 1784560853381,
       "type": "directory"
     },
     {
-      "path": "docs/design/DEMO-RULES.md",
+      "path": "docs/design/demo-2026-07-20",
       "accessCount": 1,
-      "lastAccessed": 1784475894421,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/DEMO-INDEX.md",
-      "accessCount": 1,
-      "lastAccessed": 1784475895665,
-      "type": "file"
-    },
-    {
-      "path": "docs/dev-log/README.md",
-      "accessCount": 1,
-      "lastAccessed": 1784475896930,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/demo-2026-07-19/00-all-pages.html",
-      "accessCount": 1,
-      "lastAccessed": 1784476060500,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/demo-2026-07-19/01-supervisor.html",
-      "accessCount": 1,
-      "lastAccessed": 1784476164352,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/demo-2026-07-19/02-lifeguard.html",
-      "accessCount": 1,
-      "lastAccessed": 1784476242688,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/demo-2026-07-19/03-admin.html",
-      "accessCount": 1,
-      "lastAccessed": 1784476298524,
-      "type": "file"
+      "lastAccessed": 1784560854071,
+      "type": "directory"
     }
   ],
   "userDirectives": []

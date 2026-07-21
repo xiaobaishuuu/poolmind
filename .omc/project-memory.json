@@ -52,6 +52,12 @@
   },
   "hotPaths": [
     {
+      "path": "docs/design/demo-2026-07-21/01-supervisor.html",
+      "accessCount": 20,
+      "lastAccessed": 1784631879476,
+      "type": "file"
+    },
+    {
       "path": "docs/SPEC.md",
       "accessCount": 19,
       "lastAccessed": 1784626557439,
@@ -193,12 +199,6 @@
       "path": "docs/design/confirmed/03-admin.html",
       "accessCount": 2,
       "lastAccessed": 1784563366181,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/demo-2026-07-21/01-supervisor.html",
-      "accessCount": 2,
-      "lastAccessed": 1784625669248,
       "type": "file"
     },
     {

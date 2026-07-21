@@ -1,15 +1,24 @@
-# PoolMind 项目进度（deep-interview 阶段）
+# PoolMind 项目进度
 
-> 最后更新：2026-07-17。继续时让 Claude 先读这份文件 + `docs/deep-interview-spec.md`。
+> 最后更新：2026-07-21。继续时先读这份文件 + `docs/HANDOFF.md`（最新交接）+ `docs/SPEC.md`；做 demo 前再读 `docs/design/DEMO-RULES.md` + `DEMO-INDEX.md`。
 
-## 当前状态
+## 当前状态（2026-07-21）
 
-- **阶段**：需求访谈全部完成，**正式规格书 `docs/SPEC.md` v1.0 已定稿（2026-07-17）**，含香港上架安全合规两条（AES-256 静态加密、证件照 Private Storage + Stream 读取禁公开 URL）
+- **阶段**：**UI 设计 / demo 迭代**（尚未写业务代码，greenfield）。需求 `docs/SPEC.md` v1.0 与实施计划 `.omc/plans/poolmind-phase1-plan.md` v3 均已冻结批准。
+- **设计进度**：管理员端（A）已定稿 `docs/design/confirmed/03-admin.html`；主管端（S）、救生员端（L）仍在迭代。最新一轮 **R3 = `docs/design/demo-2026-07-21/`**（全局改 iOS 明暗配色＋主管/救生员一批改动，含更表格子系统/筛选器/工资大卡片/注册 3 步/登录页，详见 HANDOFF 2026-07-21），**未提交，等用户审核**。
+- **设计阶段事实来源**：`docs/design/DEMO-RULES.md`（规则）+ `DEMO-INDEX.md`（每轮索引）+ 各 `demo-YYYY-MM-DD/TREE.md`。全部设计文档变更（07-14 起）仍未 commit。
+- **下一步**：按用户对 R3 的反馈继续改 S/L 端；某端确认后复制进 `docs/design/confirmed/`；三端都定稿后再进 Spike 周 + M0 脚手架。
+
+<details><summary>历史里程碑（deep-interview → 规划，已完成）</summary>
+
+- **需求访谈全部完成**，**正式规格书 `docs/SPEC.md` v1.0 已定稿（2026-07-17）**，含香港上架安全合规两条（AES-256 静态加密、证件照 Private Storage + Stream 读取禁公开 URL）
 - **唯一事实来源**：`docs/SPEC.md`（14 章 + 38+ 条验收标准）；`docs/deep-interview-spec.md` 已冻结为访谈档案
 - **对话记录**：`docs/interview-sessions/`（2026-07-14、2026-07-17）
 - **代码**：还没写任何代码（greenfield）
 - **文档约定**：已固化在 `.claude/CLAUDE.md`；`.gitignore` 已建，`.omc` 运行时产物不进 git
-- **下一步（已获用户同意开展）**：以 `docs/SPEC.md` 为输入运行 `omc-plan --consensus --direct`（技术选型、数据库设计、分期实施计划），产出计划后仍需用户批准才动工
+- 之后经 omc-plan consensus 产出实施计划 v3 并获用户批准（详见 HANDOFF 2026-07-17/18），再进入 UI 设计阶段
+
+</details>
 
 ## 全部已定案的核心决策（速览）
 

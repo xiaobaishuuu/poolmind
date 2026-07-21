@@ -1,0 +1,269 @@
+<meta charset="utf-8">
+<title>PoolMind R3・平台管理員端交互 demo</title>
+<style>
+:root{
+  --bg:#f2f2f7; --card:#ffffff; --elev:#ffffff;
+  --ink:#1c1c1e; --sub:#8e8e93; --line:#e5e5ea;
+  --p:#007aff; --psoft:#e8f0fe;
+  --warn:#ff3b30; --ok:#34c759;
+  --navbar:#f9f9f9; --navtext:#1c1c1e;
+  --fw:402px; --fh:871px; --cellfs:13px;
+}
+body.dark{
+  --bg:#000000; --card:#1c1c1e; --elev:#2c2c2e;
+  --ink:#ffffff; --sub:#8e8e93; --line:#38383a;
+  --p:#0a84ff; --psoft:rgba(10,132,255,.20);
+  --warn:#ff453a; --ok:#30d158;
+  --navbar:#1c1c1e; --navtext:#ffffff;
+}
+body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#dfe3e8;margin:0;padding:56px 14px 30px;color:var(--ink);display:flex;justify-content:center}
+.bar{position:fixed;top:0;left:0;right:0;background:#1c2733;color:#fff;padding:8px 14px;display:flex;gap:9px;align-items:center;z-index:99;flex-wrap:wrap;font-size:13px}
+.bar b{opacity:.85}
+.bar button{border:1px solid #4a5a6a;background:#2a3947;color:#dfe8f0;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer}
+.bar button.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:700}
+.frame{width:var(--fw);height:var(--fh);background:var(--bg);border-radius:26px;overflow:hidden;box-shadow:0 8px 26px rgba(0,0,0,.18);position:relative;flex-shrink:0}
+.pid{position:absolute;top:9px;right:12px;background:rgba(0,0,0,.35);color:#fff;font-size:11px;border-radius:6px;padding:1px 7px;z-index:5;font-weight:700}
+.scr{display:none;flex-direction:column;height:100%}
+.scr.on{display:flex}
+/* iOS 系統列風格頂栏 */
+.top{background:var(--navbar);color:var(--navtext);padding:13px 15px;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;padding-right:10px;flex-shrink:0;border-bottom:1px solid var(--line)}
+.top .mini{font-size:11px;color:var(--sub);font-weight:400}
+.top .topact{font-size:13px;color:var(--p);cursor:pointer;padding:4px 8px}
+.pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
+.nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding:8px 0 16px;flex-shrink:0}
+.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer;position:relative}
+.nav .on{color:var(--p);font-weight:700}
+/* 底部導航角標 */
+.nb{position:absolute;top:-4px;left:calc(50% + 5px);background:var(--warn);color:#fff;border-radius:9px;min-width:15px;height:15px;line-height:15px;font-size:9px;font-weight:700;padding:0 3px;box-sizing:border-box;text-align:center;box-shadow:0 0 0 1.5px var(--card)}
+.red{color:var(--warn);font-weight:700}
+.green{color:var(--ok);font-weight:700}
+.badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:12px;cursor:pointer}
+.badge.warn{background:rgba(255,59,48,.12);color:var(--warn)}
+.btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:11px;margin:8px 12px;font-size:14px;font-weight:700;cursor:pointer}
+.btn.ghost{background:var(--card);color:var(--p);border:1.5px solid var(--p);margin:8px 12px}
+.card{margin:10px 12px;padding:12px;background:var(--card);border-radius:14px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
+body.dark .card{box-shadow:none}
+.t{font-size:13px;color:var(--sub);margin-bottom:6px;font-weight:600}
+.item{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);align-items:center}
+.item:last-child{border-bottom:none}
+.sub{font-size:12px;color:var(--sub)}
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2733;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;max-width:80%;text-align:center}
+.overlay{position:absolute;inset:0;background:rgba(10,20,30,.55);z-index:8;display:none;align-items:center;justify-content:center}
+.overlay.on{display:flex}
+.certbox{background:var(--card);border-radius:14px;padding:14px;width:84%;text-align:center}
+.certimg{background:var(--elev);border-radius:10px;height:180px;display:flex;align-items:center;justify-content:center;font-size:52px;margin:8px 0}
+/* toggle switch */
+.tgl{position:relative;display:inline-block;width:40px;height:24px}
+.tgl input{display:none}
+.tgl i{position:absolute;inset:0;background:var(--line);border-radius:12px;transition:.2s;cursor:pointer}
+.tgl i:before{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s}
+.tgl input:checked+i{background:var(--ok)}
+.tgl input:checked+i:before{transform:translateX(16px)}
+</style>
+<body>
+<div class="bar">
+  <b>機型：</b>
+  <button id="d-se" onclick="setD('se')">SE 375</button>
+  <button id="d-i17" class="on" onclick="setD('i17')">iPhone 17</button>
+  <button id="d-max" onclick="setD('max')">17 Pro Max</button>
+  <button id="d-an" onclick="setD('an')">Android 360</button>
+  <span style="font-size:11px;opacity:.65;margin-left:4px">試下：睇證件圖 → 通過/駁回，A2 睇狀態變化</span>
+</div>
+<div id="toast"></div>
+
+<div class="frame">
+  <span class="pid" id="pidbox">A1</span>
+
+  <!-- A1 證件審核 -->
+  <div class="scr on" id="A1">
+    <div class="top">
+      <span>認證審核 <span class="mini">待審 <span id="pend">3</span></span></span>
+      <span class="topact" data-darktoggle onclick="toggleDark()">☾ 夜間</span>
+    </div>
+    <div class="pbody">
+      <div class="card">
+        <div class="item">
+          <div><b>陳大文</b><div class="sub">OCR：姓名相符・證號 LG-88123・2027-03 到期</div></div>
+          <span class="badge" onclick="viewCert('陳大文')">看證件圖 ›</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="actChan">
+          <span class="btn" style="flex:1;margin:0" onclick="pass('Chan')">✓ 通過認證</span>
+          <span class="btn ghost" style="flex:1;margin:0" onclick="reject('Chan')">✗ 駁回</span>
+        </div>
+        <div id="resChan"></div>
+      </div>
+      <div class="card">
+        <div class="item">
+          <div><b>阿水</b><div class="sub">OCR：姓名相符・證號 LG-77045・2026-11 到期</div></div>
+          <span class="badge" onclick="viewCert('阿水')">看證件圖 ›</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="actSui">
+          <span class="btn" style="flex:1;margin:0" onclick="pass('Sui')">✓ 通過認證</span>
+          <span class="btn ghost" style="flex:1;margin:0" onclick="reject('Sui')">✗ 駁回</span>
+        </div>
+        <div id="resSui"></div>
+      </div>
+      <div class="card">
+        <div class="item">
+          <div><b>肥波</b> <span class="badge">待復審</span><div class="sub">續期重傳・新證 2029-05 到期（舊排班工資不受影響）</div></div>
+          <span class="badge" onclick="viewCert('肥波')">看證件圖 ›</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px" id="actBo">
+          <span class="btn" style="flex:1;margin:0" onclick="pass('Bo')">✓ 通過認證</span>
+          <span class="btn ghost" style="flex:1;margin:0" onclick="reject('Bo')">✗ 駁回</span>
+        </div>
+        <div id="resBo"></div>
+      </div>
+      <div class="card"><div class="sub">證件圖經後端加密通道串流顯示，全站無公開連結（合規 SPEC §10）；未認證唔卡業務，只喺主管界面高亮</div></div>
+    </div>
+    <div class="nav">
+      <div class="on">審核</div>
+      <div onclick="go('A2')">用戶</div>
+      <div onclick="go('A3')">設定</div>
+    </div>
+  </div>
+
+  <!-- A2 用戶列表 -->
+  <div class="scr" id="A2">
+    <div class="top">
+      <span>用戶 <span class="mini">全部 ▾｜搜索 🔍</span></span>
+      <span class="topact" data-darktoggle onclick="toggleDark()">☾ 夜間</span>
+    </div>
+    <div class="pbody">
+      <div style="display:flex;gap:8px;padding:10px 12px 0;font-size:12px;flex-wrap:wrap">
+        <span class="badge">全部 46</span>
+        <span class="badge warn">未認證 <span id="unv">5</span></span>
+        <span class="badge">待復審 <span id="rev">2</span></span>
+        <span class="badge warn">駁回 <span id="rej">1</span></span>
+      </div>
+      <div class="card">
+        <div class="item"><div><b>陳大文</b> <span class="sub">@chan_tai_man</span><div class="sub">LG-88123・救生員</div></div><span class="badge warn" id="stChan">未認證</span></div>
+        <div class="item"><div><b>阿水</b> <span class="sub">@ah_sui</span><div class="sub">LG-77045・救生員</div></div><span class="badge warn" id="stSui">未認證</span></div>
+        <div class="item"><div><b>肥波</b> <span class="sub">@fatbo</span><div class="sub">LG-52290・救生員</div></div><span class="badge" id="stBo">待復審</span></div>
+        <div class="item"><div><b>阿明</b> <span class="sub">@ming2019</span><div class="sub">LG-65001・救生員</div></div><span class="green">已認證</span></div>
+        <div class="item"><div><b>波哥</b> <span class="sub">@bogor</span><div class="sub">主管兼救生員</div></div><span class="green">已認證</span></div>
+        <div class="item"><div><b>黑仔</b> <span class="sub">@hakzai</span><div class="sub">LG-40011・救生員</div></div><span class="red">已駁回 ❗</span></div>
+      </div>
+      <div class="card"><div class="sub">用戶名永久唔改得、永不釋放復用；駁回嘅人全界面紅色警告，排唔排佢主管自己負責</div></div>
+    </div>
+    <div class="nav">
+      <div onclick="go('A1')">審核</div>
+      <div class="on">用戶</div>
+      <div onclick="go('A3')">設定</div>
+    </div>
+  </div>
+
+  <!-- A3 設定 -->
+  <div class="scr" id="A3">
+    <div class="top">
+      <span>設定</span>
+      <span class="topact" data-darktoggle onclick="toggleDark()">☾ 夜間</span>
+    </div>
+    <div class="pbody">
+      <div class="card">
+        <div class="t">外觀</div>
+        <div class="item">
+          <span>深色模式</span>
+          <label class="tgl"><input type="checkbox" id="darkSwitch" onchange="toggleDarkSwitch(this)"><i></i></label>
+        </div>
+      </div>
+      <div class="card">
+        <div class="t">帳號</div>
+        <div class="item" onclick="toast('修改對外顯示名（demo）')"><span>對外顯示名</span><span class="sub">管理員 ›</span></div>
+        <div class="item" onclick="toast('修改密碼（demo）')"><span>修改密碼</span><span class="sub" style="color:var(--p)">›</span></div>
+        <div class="item" onclick="toast('換綁 WhatsApp（demo）')"><span>換綁 WhatsApp</span><span class="sub" style="color:var(--p)">›</span></div>
+      </div>
+      <div class="card">
+        <div class="t">系統</div>
+        <div class="item" onclick="toast('平台公告（demo）')"><span>平台公告</span><span class="sub" style="color:var(--p)">›</span></div>
+        <div class="item" onclick="toast('數據備份（demo）')"><span>數據備份</span><span class="sub" style="color:var(--p)">›</span></div>
+      </div>
+    </div>
+    <div class="nav">
+      <div onclick="go('A1')">審核</div>
+      <div onclick="go('A2')">用戶</div>
+      <div class="on">設定</div>
+    </div>
+  </div>
+
+  <!-- 證件圖彈窗 -->
+  <div class="overlay" id="certDlg">
+    <div class="certbox">
+      <b id="certName">陳大文</b>
+      <div class="certimg">🪪</div>
+      <div class="sub">示意圖。正式版：後端權限驗證後以 Stream 串流讀取，嚴禁公開 URL（SPEC §10）</div>
+      <div class="btn" style="margin:10px 0 0" onclick="certDlg.classList.remove('on')">關閉</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== 機型切換 ===== */
+const DEV={se:[375,667],i17:[402,871],max:[440,956],an:[360,800]};
+function setD(k){
+  const r=document.documentElement.style;
+  r.setProperty('--fw',DEV[k][0]+'px');
+  r.setProperty('--fh',DEV[k][1]+'px');
+  ['se','i17','max','an'].forEach(x=>document.getElementById('d-'+x).classList.toggle('on',x==k));
+}
+
+/* ===== iOS 日/夜切換（兩處聯動） ===== */
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  const on=document.body.classList.contains('dark');
+  document.querySelectorAll('[data-darktoggle]').forEach(e=>e.textContent=on?'☀︎ 日間':'☾ 夜間');
+  const sw=document.getElementById('darkSwitch');
+  if(sw)sw.checked=on;
+}
+function toggleDarkSwitch(el){
+  document.body.classList.toggle('dark',el.checked);
+  document.querySelectorAll('[data-darktoggle]').forEach(e=>e.textContent=el.checked?'☀︎ 日間':'☾ 夜間');
+}
+
+/* ===== 通用 ===== */
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.opacity=1;clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,2400)}
+function go(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  document.getElementById('pidbox').textContent=id;
+  renderBadges();
+}
+
+/* ===== 底部導航角標 ===== */
+const BADGE={'審核':3,'用戶':0,'設定':0};
+function renderBadges(){
+  document.querySelectorAll('.nav div').forEach(d=>{
+    const old=d.querySelector('.nb');if(old)old.remove();
+    const label=d.textContent.trim();
+    const n=BADGE[label]||0;
+    if(n>0&&!d.classList.contains('on')){
+      const b=document.createElement('span');b.className='nb';b.textContent=n>99?'99+':n;d.appendChild(b);
+    }
+  });
+}
+
+/* ===== A1 審核動作 → A2 狀態聯動 ===== */
+let pend=3;
+function viewCert(n){document.getElementById('certName').textContent=n+' 的救生員證';document.getElementById('certDlg').classList.add('on')}
+function done(key,html,st,stCls){
+  document.getElementById('act'+key).style.display='none';
+  document.getElementById('res'+key).innerHTML=html;
+  const s=document.getElementById('st'+key);if(s){s.textContent=st;s.className=stCls}
+  pend--;document.getElementById('pend').textContent=pend;
+  BADGE['審核']=pend;renderBadges();
+}
+function pass(key){
+  done(key,'<div class="green" style="padding-top:8px">✓ 已認證，用戶會收到站內通知</div>','已認證','green');
+  if(key!='Bo'){const u=document.getElementById('unv');u.textContent=Math.max(0,parseInt(u.textContent)-1)}
+  toast('已通過認證');
+}
+function reject(key){
+  done(key,'<div class="red" style="padding-top:8px">✗ 已駁回，該用戶全界面會出紅色警告（唔封鎖業務）</div>','已駁回 ❗','red');
+  const rj=document.getElementById('rej');rj.textContent=parseInt(rj.textContent)+1;
+  if(key!='Bo'){const u=document.getElementById('unv');u.textContent=Math.max(0,parseInt(u.textContent)-1)}
+  toast('已駁回，主管端見到呢個人會有紅色警告');
+}
+
+renderBadges();
+</script>
+</body>

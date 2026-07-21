@@ -53,14 +53,20 @@
   "hotPaths": [
     {
       "path": "docs/SPEC.md",
-      "accessCount": 16,
-      "lastAccessed": 1784562974368,
+      "accessCount": 19,
+      "lastAccessed": 1784626557439,
       "type": "file"
     },
     {
       "path": "docs/PROGRESS.md",
       "accessCount": 11,
       "lastAccessed": 1784560339361,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/DEMO-RULES.md",
+      "accessCount": 10,
+      "lastAccessed": 1784626516923,
       "type": "file"
     },
     {
@@ -73,6 +79,12 @@
       "path": "docs/design/demo-2026-07-19/00-all-pages.html",
       "accessCount": 8,
       "lastAccessed": 1784560786412,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-21/02-lifeguard.html",
+      "accessCount": 8,
+      "lastAccessed": 1784625727957,
       "type": "file"
     },
     {
@@ -94,9 +106,9 @@
       "type": "file"
     },
     {
-      "path": "docs/design/DEMO-RULES.md",
+      "path": "docs/design/DEMO-INDEX.md",
       "accessCount": 6,
-      "lastAccessed": 1784563387837,
+      "lastAccessed": 1784626345540,
       "type": "file"
     },
     {
@@ -112,15 +124,15 @@
       "type": "file"
     },
     {
-      "path": "docs/design/demo-2026-07-20/01-supervisor.html",
-      "accessCount": 4,
-      "lastAccessed": 1784560695076,
+      "path": "docs/design/demo-2026-07-20/02-lifeguard.html",
+      "accessCount": 5,
+      "lastAccessed": 1784624758515,
       "type": "file"
     },
     {
-      "path": "docs/design/demo-2026-07-20/02-lifeguard.html",
-      "accessCount": 4,
-      "lastAccessed": 1784560729941,
+      "path": "docs/design/demo-2026-07-20/01-supervisor.html",
+      "accessCount": 5,
+      "lastAccessed": 1784624759107,
       "type": "file"
     },
     {
@@ -130,9 +142,9 @@
       "type": "file"
     },
     {
-      "path": "docs/design/DEMO-INDEX.md",
+      "path": "docs/design/demo-2026-07-21/03-admin.html",
       "accessCount": 4,
-      "lastAccessed": 1784563396545,
+      "lastAccessed": 1784625351080,
       "type": "file"
     },
     {
@@ -184,6 +196,12 @@
       "type": "file"
     },
     {
+      "path": "docs/design/demo-2026-07-21/01-supervisor.html",
+      "accessCount": 2,
+      "lastAccessed": 1784625669248,
+      "type": "file"
+    },
+    {
       "path": "README.md",
       "accessCount": 1,
       "lastAccessed": 1783854988215,
@@ -200,6 +218,12 @@
       "accessCount": 1,
       "lastAccessed": 1784560854071,
       "type": "directory"
+    },
+    {
+      "path": "docs/design/demo-2026-07-21/TREE.md",
+      "accessCount": 1,
+      "lastAccessed": 1784626152378,
+      "type": "file"
     }
   ],
   "userDirectives": []

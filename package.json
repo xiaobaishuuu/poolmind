@@ -1,0 +1,19 @@
+{
+  "name": "poolmind",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter ./apps/* dev",
+    "build": "pnpm --filter ./packages/* build && pnpm --filter ./apps/* build",
+    "test": "cross-env NODE_ENV=test pnpm --filter api test:e2e",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+  }
+}

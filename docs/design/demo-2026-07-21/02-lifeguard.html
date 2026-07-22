@@ -3,7 +3,7 @@
 <style>
 /* ===== iOS token system ===== */
 :root{
-  --bg:#f2f2f7; --card:#ffffff; --elev:#ffffff;
+  --bg:#f2f2f7; --card:#ffffff; --elev:#ffffff; --inset:#e9e9ee;
   --ink:#1c1c1e; --sub:#8e8e93; --line:#e5e5ea;
   --p:#007aff; --psoft:#e8f0fe;
   --warn:#ff3b30; --ok:#34c759;
@@ -11,7 +11,7 @@
   --fw:402px; --fh:871px; --cellfs:13px;
 }
 body.dark{
-  --bg:#000000; --card:#1c1c1e; --elev:#2c2c2e;
+  --bg:#000000; --card:#1c1c1e; --elev:#2c2c2e; --inset:#2c2c2e;
   --ink:#ffffff; --sub:#8e8e93; --line:#38383a;
   --p:#0a84ff; --psoft:rgba(10,132,255,.20);
   --warn:#ff453a; --ok:#30d158;
@@ -39,6 +39,13 @@ body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;bac
 .top .back{cursor:pointer;margin-right:8px;color:var(--p)}
 .top .act{color:var(--p);font-size:13px;font-weight:600;cursor:pointer}
 .top-dark-btn{background:none;border:none;color:var(--navtext);font-size:18px;cursor:pointer;padding:0;line-height:1}
+
+/* 天文台天氣欄（三端共用；點警告循環，掣跳天文台） */
+.wx{display:flex;align-items:center;gap:9px;padding:9px 14px;background:var(--card);border-bottom:1px solid var(--line);font-size:12px;color:var(--ink);flex-shrink:0}
+.wx .sig{font-weight:800;border-radius:7px;padding:2px 9px;color:#fff;cursor:pointer}
+.sig.ts{background:#5e5ce6}.sig.amber{background:#ff9f0a}.sig.red{background:#ff3b30}.sig.black{background:#3a3a3c}.sig.clear{background:#34c759}
+.wx .wxtime{font-weight:700}
+.wx .hko{margin-left:auto;color:var(--p);font-weight:600;cursor:pointer;white-space:nowrap}
 
 /* ===== body + nav ===== */
 .pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
@@ -182,12 +189,7 @@ body.dark .wkndc{background:rgba(255,69,58,.18)}
 <body>
 <!-- ===== top control bar ===== -->
 <div class="bar">
-  <b>機型：</b>
-  <button id="d-se" onclick="setD('se')">SE 375</button>
-  <button id="d-i17" class="on" onclick="setD('i17')">iPhone 17</button>
-  <button id="d-max" onclick="setD('max')">17 Pro Max</button>
-  <button id="d-an" onclick="setD('an')">Android 360</button>
-  <span style="font-size:11px;opacity:.65;margin-left:6px">流程：L6 登入 → L1 註冊 → L2 搵工 → L3 更表 → L4 工資 → L5 訊息</span>
+  <span style="font-size:11px;opacity:.65">救生員端 demo（19.5:9 固定比例）｜流程：L6 登入 → L1 註冊 → L2 搵工 → L3 更表 → L4 工資 → L5 訊息</span>
 </div>
 <div id="toast"></div>
 
@@ -308,6 +310,12 @@ body.dark .wkndc{background:rgba(255,69,58,.18)}
     <div class="top">
       <span>搵工</span>
       <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+    </div>
+    <div class="wx">
+      <span class="sig ts" id="wxsig" onclick="cycSig()">⛈ 雷暴</span>
+      <span class="wxdate" id="wxdate">7月21日（一）</span>
+      <span class="wxtime" id="wxtime">14:32</span>
+      <span class="hko" onclick="openHKO()">🌐 香港天文台 ›</span>
     </div>
     <div class="pbody">
       <!-- §1 筛选器（救生员版：无「只我发布」行） -->
@@ -615,15 +623,6 @@ body.dark .wkndc{background:rgba(255,69,58,.18)}
 </div><!-- end .frame -->
 
 <script>
-/* ===== device switcher ===== */
-const DEV={se:[375,667],i17:[402,871],max:[440,956],an:[360,800]};
-function setD(k){
-  const r=document.documentElement.style;
-  r.setProperty('--fw',DEV[k][0]+'px');
-  r.setProperty('--fh',DEV[k][1]+'px');
-  ['se','i17','max','an'].forEach(x=>document.getElementById('d-'+x).classList.toggle('on',x==k));
-}
-
 /* ===== toast ===== */
 function toast(t){
   const e=document.getElementById('toast');
@@ -879,6 +878,14 @@ function cellFont(d){
   cfs=Math.max(11,Math.min(22,cfs+d));
   document.documentElement.style.setProperty('--cellfs',cfs+'px');
 }
+
+/* ===== 天文台天氣欄（三端共用；點警告循環，掣跳天文台） ===== */
+const SIGS=[['⛈ 雷暴','ts'],['🌧 黃雨','amber'],['🌧 紅雨','red'],['🌧 黑雨','black'],['☀ 天晴','clear']];
+let si=0;
+function cycSig(){si=(si+1)%SIGS.length;const el=document.getElementById('wxsig');el.textContent=SIGS[si][0];el.className='sig '+SIGS[si][1];toast('天氣警告：'+SIGS[si][0].split(' ')[1]);}
+function openHKO(){toast('跳轉香港天文台（demo）');window.open('https://www.hko.gov.hk/tc/','_blank');}
+function tickClock(){const d=new Date(),p=n=>String(n).padStart(2,'0');const t=document.getElementById('wxtime');if(t)t.textContent=p(d.getHours())+':'+p(d.getMinutes());}
+tickClock();setInterval(tickClock,20000);
 
 /* ===== init ===== */
 setStep(1);

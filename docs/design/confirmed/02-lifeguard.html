@@ -1,0 +1,895 @@
+<meta charset="utf-8">
+<title>PoolMind・救生員端（已確認樣式，定稿於 2026-07-21）</title>
+<style>
+/* ===== iOS token system ===== */
+:root{
+  --bg:#f2f2f7; --card:#ffffff; --elev:#ffffff; --inset:#e9e9ee;
+  --ink:#1c1c1e; --sub:#8e8e93; --line:#e5e5ea;
+  --p:#007aff; --psoft:#e8f0fe;
+  --warn:#ff3b30; --ok:#34c759;
+  --navbar:#f9f9f9; --navtext:#1c1c1e;
+  --fw:402px; --fh:871px; --cellfs:13px;
+}
+body.dark{
+  --bg:#000000; --card:#1c1c1e; --elev:#2c2c2e; --inset:#2c2c2e;
+  --ink:#ffffff; --sub:#8e8e93; --line:#38383a;
+  --p:#0a84ff; --psoft:rgba(10,132,255,.20);
+  --warn:#ff453a; --ok:#30d158;
+  --navbar:#1c1c1e; --navtext:#ffffff;
+}
+body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#dfe3e8;margin:0;padding:76px 14px 30px;color:var(--ink);display:flex;justify-content:center}
+
+/* ===== top control bar ===== */
+.bar{position:fixed;top:0;left:0;right:0;background:#1c2733;color:#fff;padding:8px 14px;display:flex;gap:9px;align-items:center;z-index:99;flex-wrap:wrap;font-size:13px}
+.bar b{opacity:.85}
+.bar button{border:1px solid #4a5a6a;background:#2a3947;color:#dfe8f0;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer}
+.bar button.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:700}
+
+/* ===== phone frame ===== */
+.frame{width:var(--fw);height:var(--fh);background:var(--bg);border-radius:26px;overflow:hidden;box-shadow:0 8px 26px rgba(0,0,0,.18);position:relative;flex-shrink:0}
+.pid{position:absolute;top:9px;right:12px;background:rgba(0,0,0,.35);color:#fff;font-size:11px;border-radius:6px;padding:1px 7px;z-index:5;font-weight:700}
+
+/* ===== screen system ===== */
+.scr{display:none;flex-direction:column;height:100%}
+.scr.on{display:flex}
+
+/* ===== iOS system top bar ===== */
+.top{background:var(--navbar);color:var(--navtext);padding:13px 15px;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;padding-right:52px;flex-shrink:0;border-bottom:1px solid var(--line)}
+.top .mini{font-size:11px;color:var(--sub);font-weight:400}
+.top .back{cursor:pointer;margin-right:8px;color:var(--p)}
+.top .act{color:var(--p);font-size:13px;font-weight:600;cursor:pointer}
+.top-dark-btn{background:none;border:none;color:var(--navtext);font-size:18px;cursor:pointer;padding:0;line-height:1}
+
+/* 天文台天氣欄（三端共用；點警告循環，掣跳天文台） */
+.wx{display:flex;align-items:center;gap:9px;padding:9px 14px;background:var(--card);border-bottom:1px solid var(--line);font-size:12px;color:var(--ink);flex-shrink:0}
+.wx .sig{font-weight:800;border-radius:7px;padding:2px 9px;color:#fff;cursor:pointer}
+.sig.ts{background:#5e5ce6}.sig.amber{background:#ff9f0a}.sig.red{background:#ff3b30}.sig.black{background:#3a3a3c}.sig.clear{background:#34c759}
+.wx .wxtime{font-weight:700}
+.wx .hko{margin-left:auto;color:var(--p);font-weight:600;cursor:pointer;white-space:nowrap}
+
+/* ===== body + nav ===== */
+.pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
+.nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding:8px 0 16px;flex-shrink:0}
+.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer;position:relative}
+.nav .on{color:var(--p);font-weight:700}
+
+/* ===== badge / .nb ===== */
+.nb{position:absolute;top:-4px;left:calc(50% + 5px);background:var(--warn);color:#fff;border-radius:9px;min-width:15px;height:15px;line-height:15px;font-size:9px;font-weight:700;padding:0 3px;box-sizing:border-box;text-align:center;box-shadow:0 0 0 1.5px var(--card)}
+
+/* ===== card ===== */
+.card{margin:10px 12px;padding:12px;background:var(--card);border-radius:14px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
+.t{font-size:13px;color:var(--sub);margin-bottom:6px;font-weight:600}
+.item{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);align-items:center}
+.item:last-child{border-bottom:none}
+.sub{font-size:12px;color:var(--sub)}
+.shell{font-size:11px;color:#a06a10;background:#fdf3dd;border-radius:8px;padding:5px 9px;margin-top:6px}
+body.dark .shell{background:rgba(160,106,16,.2);color:#f5c842}
+
+/* ===== buttons ===== */
+.btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:11px;margin:8px 12px;font-size:14px;font-weight:700;cursor:pointer;display:block}
+.btn.ghost{background:var(--card);color:var(--p);border:1.5px solid var(--p)}
+.btn.dis{opacity:.4;pointer-events:none}
+.btn.ok-btn{background:var(--ok)}
+.red{color:var(--warn);font-weight:700}
+.green{color:var(--ok);font-weight:700}
+.badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:12px}
+
+/* ===== WhatsApp ===== */
+.wa{display:inline-block;background:#25d366;color:#fff;border-radius:7px;padding:3px 10px;font-size:12px;font-weight:700;cursor:pointer}
+
+/* ===== input ===== */
+input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:16px;margin-top:5px;background:var(--card);color:var(--ink)}
+input.f:focus{outline:none;border-color:var(--p)}
+
+/* ===== toggle switch ===== */
+.tgl{position:relative;display:inline-block;width:40px;height:24px}
+.tgl input{display:none}
+.tgl i{position:absolute;inset:0;background:var(--line);border-radius:12px;transition:.2s;cursor:pointer}
+.tgl i:before{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s}
+.tgl input:checked+i{background:var(--ok)}
+.tgl input:checked+i:before{transform:translateX(16px)}
+
+/* ===== 3-step register progress bar ===== */
+.reg-steps{display:flex;align-items:center;padding:16px 16px 8px;gap:0}
+.reg-step{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.step-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;background:var(--line);color:var(--sub);transition:.3s;flex-shrink:0}
+.step-circle.active{background:var(--p);color:#fff}
+.step-circle.done{background:var(--ok);color:#fff}
+.step-label{font-size:10px;color:var(--sub);margin-top:4px;text-align:center;white-space:nowrap}
+.step-line{height:2px;flex:1;background:var(--line);margin:0 -2px;margin-bottom:18px;transition:.3s}
+.step-line.done{background:var(--ok)}
+.reg-encourage{text-align:center;font-size:15px;font-weight:700;color:var(--p);padding:4px 16px 8px}
+
+/* ===== shared filter §1 ===== */
+.filt{margin:10px 12px;background:var(--card);border-radius:14px;box-shadow:0 1px 5px rgba(0,0,0,.06);overflow:hidden}
+.filthead{padding:12px 14px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;cursor:pointer;color:var(--ink)}
+.filtbody{display:none;padding:4px 12px 12px;border-top:1px solid var(--line)}
+.filt.open .filtbody{display:block}
+.filt.open .fchev{transform:rotate(180deg)}
+.frow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid var(--line)}
+.frow:last-child{border-bottom:none}
+.flab{font-size:12px;color:var(--sub);width:56px;flex-shrink:0}
+.chip{font-size:12px;padding:4px 11px;border-radius:15px;background:var(--bg);color:var(--ink);cursor:pointer;border:1px solid var(--line)}
+.chip.on{background:var(--p);color:#fff;border-color:var(--p)}
+
+/* ===== recruit card §2 ===== */
+.reccard{margin:10px 12px;padding:14px;background:var(--card);border-radius:14px;box-shadow:0 1px 5px rgba(0,0,0,.06)}
+.recloc{font-size:20px;font-weight:800;color:var(--ink);line-height:1.15}
+.recmeta{font-size:13px;color:var(--sub);margin-top:5px}
+.recwage{font-size:13px;color:var(--p);font-weight:700;margin-top:4px}
+.recbtns{display:flex;gap:8px;margin-top:10px}
+.recbtns .btn{flex:1;margin:0}
+
+/* ===== wage card §3 ===== */
+.wcard{margin:10px 12px;padding:14px;background:var(--card);border-radius:14px;box-shadow:0 1px 5px rgba(0,0,0,.06);cursor:pointer}
+.wtop{display:flex;justify-content:space-between;align-items:flex-start}
+.wname{font-size:18px;font-weight:800;color:var(--ink)}
+.wamt{font-size:18px;font-weight:800}
+.wamt.red{color:var(--warn)}
+.wamt.ok{color:var(--ok)}
+.wsub{font-size:12px;color:var(--sub);margin-top:4px}
+.wcard .btn{margin:10px 0 0}
+
+/* ===== L3 xls table §4 ===== */
+.xls{margin:8px 10px;border:1px solid var(--line);border-radius:8px;overflow:auto;font-size:var(--cellfs);max-height:52vh}
+.xgrid{display:grid;grid-template-columns:46px 26px 1fr;min-width:max-content}
+.xg{padding:7px 5px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;text-align:center}
+.xg:last-child{border-right:none}
+.xhead .xg{background:var(--psoft);color:var(--p);font-weight:700;font-size:12px;position:sticky;top:0}
+.xdate,.xwk{color:var(--sub);font-weight:600}
+/* holiday: only date+weekday cells get tinted */
+.wkndc{background:#ffe9e7}
+body.dark .wkndc{background:rgba(255,69,58,.18)}
+.xcell{min-height:30px}
+.seg{display:inline-block;background:var(--psoft);color:var(--p);border-radius:4px;padding:1px 6px;font-size:12px;cursor:pointer}
+.xoff{color:var(--sub);font-size:12px}
+/* font-size controls */
+.xls-controls{display:flex;align-items:center;gap:6px;padding:8px 12px 4px}
+.xls-controls .fs-btn{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:4px 12px;font-size:13px;font-weight:700;cursor:pointer;color:var(--ink)}
+
+/* ===== L5 WhatsApp conversation ===== */
+.l5pane{display:none;flex-direction:column;height:100%}
+.l5pane.on{display:flex}
+.conv{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--card);border-bottom:1px solid var(--line);cursor:pointer}
+.conv .av{width:44px;height:44px;border-radius:50%;background:var(--psoft);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex-shrink:0}
+.conv .cbody{flex:1;min-width:0}
+.conv .nm{font-weight:700;font-size:15px;color:var(--ink)}
+.conv .lm{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.conv .meta{margin-left:auto;text-align:right;font-size:11px;color:var(--sub);flex-shrink:0}
+.unread{background:#25d366;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;display:inline-block;margin-top:4px;font-weight:700}
+.chat{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:78%;border-radius:12px;padding:8px 11px;font-size:13px;background:var(--card);box-shadow:0 1px 3px rgba(0,0,0,.06);align-self:flex-start;color:var(--ink)}
+.msg.me{align-self:flex-end;background:var(--psoft)}
+.pcard{border:1.5px solid var(--p);border-radius:12px;background:var(--card);padding:10px;max-width:85%;align-self:flex-start}
+.pcard .pt{font-weight:800;font-size:14px;color:var(--p)}
+.inputrow{display:flex;gap:8px;padding:8px 12px;background:var(--card);border-top:1px solid var(--line);flex-shrink:0}
+.inputrow input{flex:1;border:1px solid var(--line);border-radius:18px;padding:8px 12px;font-size:13px;background:var(--bg);color:var(--ink)}
+.inputrow span{color:var(--p);font-weight:700;font-size:13px;align-self:center;cursor:pointer}
+
+/* ===== wage detail sub-screen ===== */
+.wdetail{display:none;flex-direction:column;height:100%}
+.wdetail.on{display:flex}
+
+/* ===== L6 login ===== */
+.login-logo{text-align:center;padding:28px 0 8px;font-size:28px;font-weight:800;color:var(--p)}
+.login-sub{text-align:center;font-size:13px;color:var(--sub);margin-bottom:4px}
+.login-links{display:flex;justify-content:space-between;padding:10px 12px 0;font-size:13px}
+.login-links span{color:var(--p);cursor:pointer}
+.passkey-row{margin:12px 12px 0;padding:12px;background:var(--card);border-radius:14px;box-shadow:0 1px 5px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;font-size:13px;color:var(--sub)}
+.passkey-icon{font-size:22px}
+
+/* ===== dark mode row in L8 my page ===== */
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;color:var(--ink)}
+.setting-row:last-child{border-bottom:none}
+
+/* toast */
+#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2733;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;max-width:80%;text-align:center}
+</style>
+
+<body>
+<!-- ===== top control bar ===== -->
+<div class="bar">
+  <span style="font-size:11px;opacity:.65">救生員端 demo（19.5:9 固定比例）｜流程：L6 登入 → L1 註冊 → L2 搵工 → L3 更表 → L4 工資 → L5 訊息</span>
+</div>
+<div id="toast"></div>
+
+<div class="frame">
+  <span class="pid" id="pidbox">L6</span>
+
+  <!-- ==================== L6 登入 ==================== -->
+  <div class="scr on" id="L6">
+    <div class="top">
+      <span>PoolMind</span>
+      <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+    </div>
+    <div class="pbody">
+      <div class="login-logo">🏊 PoolMind</div>
+      <div class="login-sub">救生員平台</div>
+      <div class="card">
+        <div class="t">用戶名或手機號</div>
+        <input class="f" id="loginUser" placeholder="用戶名 / +852 XXXX XXXX">
+        <div class="t" style="margin-top:10px">密碼</div>
+        <input class="f" id="loginPw" type="password" placeholder="輸入密碼">
+      </div>
+      <div class="btn" onclick="doLogin()" style="margin-top:4px">登入</div>
+      <div class="login-links">
+        <span onclick="toast('忘記密碼：重設連結會發去你已綁定嘅 WhatsApp（demo）')">忘記密碼？</span>
+        <span onclick="go('L1')">還沒有帳號？註冊</span>
+      </div>
+      <div class="passkey-row">
+        <span class="passkey-icon">🔑</span>
+        <span>你的裝置支援 <b>Passkey</b> 免密碼登入（正式版啟用）</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== L1 註冊（3 步驟） ==================== -->
+  <div class="scr" id="L1">
+    <div class="top">
+      <span id="l1-title">註冊・步驟 1/3</span>
+      <span class="act" onclick="go('L6')">已有帳號？登入</span>
+    </div>
+    <div class="pbody">
+      <!-- progress bar -->
+      <div class="reg-steps" id="regSteps">
+        <div class="reg-step">
+          <div class="step-circle active" id="sc1">1</div>
+          <div class="step-label">基本資料</div>
+        </div>
+        <div class="step-line" id="sl1"></div>
+        <div class="reg-step">
+          <div class="step-circle" id="sc2">2</div>
+          <div class="step-label">上傳證件</div>
+        </div>
+        <div class="step-line" id="sl2"></div>
+        <div class="reg-step">
+          <div class="step-circle" id="sc3">3</div>
+          <div class="step-label">WhatsApp 驗證</div>
+        </div>
+      </div>
+      <div class="reg-encourage" id="regEncourage">填寫基本資料，幾秒搞掂！</div>
+
+      <!-- step 1 -->
+      <div id="regStep1">
+        <div class="card">
+          <div class="t">用戶名（永久，唔改得）</div>
+          <input class="f" id="uname" placeholder="例：chan_tai_man" oninput="ck1()">
+          <div class="sub" id="unameOk" style="margin-top:4px"></div>
+        </div>
+        <div class="card">
+          <div class="t">密碼</div>
+          <input class="f" id="pw" type="password" placeholder="至少 8 位" oninput="ck1()">
+        </div>
+        <div class="card">
+          <div class="t">電話號碼（WhatsApp 驗證用）</div>
+          <input class="f" id="phone" placeholder="+852 9XXX XXXX" oninput="ck1()">
+        </div>
+        <div class="btn dis" id="step1Btn" onclick="goStep2()">下一步 →</div>
+      </div>
+
+      <!-- step 2 -->
+      <div id="regStep2" style="display:none">
+        <div class="card">
+          <div class="t">真實姓名（只喺個人資料顯示）</div>
+          <input class="f" id="rname" placeholder="陳大文" oninput="ck2()">
+        </div>
+        <div class="card">
+          <div class="t">救生員證照片</div>
+          <label class="btn ghost" style="display:block;margin:4px 0;cursor:pointer">📷 上傳證件相
+            <input type="file" style="display:none" onchange="upl()">
+          </label>
+          <div class="sub" id="uplOk"></div>
+          <div class="shell">【測試殼】任意相片即通過；正式版 OCR 比對姓名＋證號</div>
+        </div>
+        <div style="display:flex;gap:8px;margin:0 12px">
+          <span class="btn ghost" style="flex:1;margin:0" onclick="goStep1()">← 返回</span>
+          <span class="btn dis" style="flex:1;margin:0" id="step2Btn" onclick="goStep3()">下一步 →</span>
+        </div>
+      </div>
+
+      <!-- step 3 -->
+      <div id="regStep3" style="display:none">
+        <div class="card">
+          <div style="font-size:13px;color:var(--sub);margin-bottom:8px">驗證碼已發送至</div>
+          <div style="font-size:15px;font-weight:700;color:var(--ink)" id="waPhone">+852 9XXX XXXX 的 WhatsApp</div>
+          <div style="font-size:30px;font-weight:800;color:var(--p);letter-spacing:4px;margin:14px 0 6px">PM-4827</div>
+          <div class="btn" id="waBtn" style="margin:8px 0 4px;background:#25d366" onclick="waVerify()">跳轉 WhatsApp 發送呢個碼 ↗</div>
+          <div class="sub" id="waOk"></div>
+          <div class="shell">【測試殼】點掣後 3 秒自動驗證成功；正式版收你由 WhatsApp 發嚟嘅碼</div>
+        </div>
+        <div style="display:flex;gap:8px;margin:0 12px">
+          <span class="btn ghost" style="flex:1;margin:0" onclick="goStep2()">← 返回</span>
+          <span class="btn dis" style="flex:1;margin:0" id="regBtn" onclick="reg()">完成註冊</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== L2 搵工 ==================== -->
+  <div class="scr" id="L2">
+    <div class="top">
+      <span>搵工</span>
+      <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+    </div>
+    <div class="wx">
+      <span class="sig ts" id="wxsig" onclick="cycSig()">⛈ 雷暴</span>
+      <span class="wxdate" id="wxdate">7月21日（一）</span>
+      <span class="wxtime" id="wxtime">14:32</span>
+      <span class="hko" onclick="openHKO()">🌐 香港天文台 ›</span>
+    </div>
+    <div class="pbody">
+      <!-- §1 筛选器（救生员版：无「只我发布」行） -->
+      <div class="filt" id="l2filt">
+        <div class="filthead" onclick="toggleFilt(this)">
+          <span>🔍 篩選（工種 / 地區 / 顯示時薪）</span>
+          <span class="fchev">▾</span>
+        </div>
+        <div class="filtbody">
+          <div class="frow">
+            <span class="flab">工種</span>
+            <span class="chip on" onclick="chipSel(this)">全部</span>
+            <span class="chip" onclick="chipSel(this)">短工</span>
+            <span class="chip" onclick="chipSel(this)">長工</span>
+          </div>
+          <div class="frow">
+            <span class="flab">地區</span>
+            <span class="chip on" onclick="chipSel(this);hideL2Sub()">全港</span>
+            <span class="chip" onclick="chipSel(this);hideL2Sub()">港島</span>
+            <span class="chip" onclick="chipSel(this);showL2Sub('九龍')">九龍</span>
+            <span class="chip" onclick="chipSel(this);hideL2Sub()">新界</span>
+          </div>
+          <div class="frow sub2" id="l2sub2" style="display:none">
+            <span class="flab">九龍→</span>
+            <span class="chip" onclick="chipSel(this)">旺角</span>
+            <span class="chip" onclick="chipSel(this)">油麻地</span>
+            <span class="chip" onclick="chipSel(this)">深水埗</span>
+          </div>
+          <div class="frow">
+            <span class="flab">顯示時薪</span>
+            <label class="tgl"><input type="checkbox" id="showWage" onchange="toggleWage()"><i></i></label>
+          </div>
+        </div>
+      </div>
+
+      <!-- §2 recruit cards（最大字=地区） -->
+      <div class="reccard">
+        <div class="recloc">九龍・旺角</div>
+        <div class="recmeta">週六早更 7:00–15:00 ・ 近港鐵 ・ 大池兩崗位</div>
+        <div class="recwage wage-field" style="display:none">時薪 $85</div>
+        <div class="recbtns" id="rowA">
+          <span class="btn" onclick="apply()">報名</span>
+          <span class="btn ghost" onclick="openBo()">入聊天傾</span>
+        </div>
+      </div>
+
+      <div class="reccard">
+        <div class="recloc">南區</div>
+        <div class="recmeta">週日晚更 14:00–22:00 ・ 詳情請聯繫</div>
+        <div class="recwage wage-field" style="display:none">（保密）</div>
+        <div class="recbtns">
+          <span class="btn ghost" onclick="openBo()">聯繫以報更</span>
+        </div>
+      </div>
+
+      <div class="reccard">
+        <div class="recloc">新界・嘉湖</div>
+        <div class="recmeta">8 月整月長更 ・ 逐日勾選得閒日子</div>
+        <div class="recwage wage-field" style="display:none">時薪 $80</div>
+        <div class="recbtns">
+          <span class="btn" onclick="toast('長更報名：勾選 8 月你得閒嘅更次（正式版月曆勾選）')">報可上班日子</span>
+        </div>
+      </div>
+
+      <div class="reccard">
+        <div class="recloc">港島・柴灣</div>
+        <div class="recmeta">平日早更 8:00–16:00 ・ 長更優先</div>
+        <div class="recwage wage-field" style="display:none">時薪 $83</div>
+        <div class="recbtns">
+          <span class="btn" onclick="toast('已報名，等主管確認')">報名</span>
+          <span class="btn ghost" onclick="openBo()">入聊天傾</span>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <div class="on">搵工</div>
+      <div onclick="go('L3')">我的更</div>
+      <div onclick="go('L5')">訊息</div>
+      <div onclick="go('L4')">工資</div>
+      <div onclick="go('L8')">我的</div>
+    </div>
+  </div>
+
+  <!-- ==================== L3 我的更表 ==================== -->
+  <div class="scr" id="L3">
+    <div class="top">
+      <span>我的更表</span>
+      <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+    </div>
+    <div class="pbody">
+      <!-- font size controls A− / A+ -->
+      <div class="xls-controls">
+        <span style="font-size:13px;color:var(--sub);flex:1">陳大文・2025年7月</span>
+        <span class="fs-btn" onclick="cellFont(-1)">A−</span>
+        <span class="fs-btn" onclick="cellFont(1)">A+</span>
+      </div>
+
+      <!-- §4 xls visual (single-person, no drag) -->
+      <div class="xls">
+        <div class="xgrid xhead">
+          <div class="xg xdate">日期</div>
+          <div class="xg xwk">星期</div>
+          <div class="xg">我嘅更</div>
+        </div>
+        <!-- weekdays: plain -->
+        <div class="xgrid"><div class="xg xdate">7/14</div><div class="xg xwk">一</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/15</div><div class="xg xwk">二</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/16</div><div class="xg xwk">三</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/17</div><div class="xg xwk">四</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/18</div><div class="xg xwk">五</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <!-- weekend: only date+weekday cells tinted (.wkndc) -->
+        <div class="xgrid">
+          <div class="xg xdate wkndc">7/19</div>
+          <div class="xg xwk wkndc">六</div>
+          <div class="xg xcell" id="lg19"><span class="xoff">休息</span></div>
+        </div>
+        <div class="xgrid">
+          <div class="xg xdate wkndc">7/20</div>
+          <div class="xg xwk wkndc">日</div>
+          <div class="xg xcell"><span class="seg" onclick="go('L5')">黃埔全日 9–18</span></div>
+        </div>
+        <div class="xgrid"><div class="xg xdate">7/21</div><div class="xg xwk">一</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/22</div><div class="xg xwk">二</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/23</div><div class="xg xwk">三</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/24</div><div class="xg xwk">四</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid"><div class="xg xdate">7/25</div><div class="xg xwk">五</div><div class="xg xcell"><span class="xoff">休息</span></div></div>
+        <div class="xgrid">
+          <div class="xg xdate wkndc">7/26</div>
+          <div class="xg xwk wkndc">六</div>
+          <div class="xg xcell"><span class="seg" onclick="go('L5')">嘉湖晚更 14–22</span></div>
+        </div>
+        <div class="xgrid">
+          <div class="xg xdate wkndc">7/27</div>
+          <div class="xg xwk wkndc">日</div>
+          <div class="xg xcell"><span class="xoff">休息</span></div>
+        </div>
+      </div>
+
+      <!-- same-pool teammates / supervisor WhatsApp -->
+      <div class="card">
+        <div class="t">7/20（日）・黃埔花園 全日 9:00–18:00</div>
+        <div class="item">
+          <span>同池同事：細龍（14:00 接更）</span>
+          <span class="wa" onclick="toast('跳轉 WhatsApp（demo）')">WhatsApp</span>
+        </div>
+        <div class="item">
+          <span>管轄主管：明哥</span>
+          <span class="wa" onclick="toast('跳轉 WhatsApp（demo）')">WhatsApp</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sub">一行一日；週六、週日日期與星期欄淺紅底；點更次進訊息搵同事/主管；取消已確認班次會即時通知主管。</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div onclick="go('L2')">搵工</div>
+      <div class="on">我的更</div>
+      <div onclick="go('L5')">訊息</div>
+      <div onclick="go('L4')">工資</div>
+      <div onclick="go('L8')">我的</div>
+    </div>
+  </div>
+
+  <!-- ==================== L4 工資（§3 wage cards）==================== -->
+  <div class="scr" id="L4">
+    <div class="top">
+      <span>我的工資</span>
+      <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+    </div>
+    <div class="pbody" id="l4body">
+      <!-- outer: supervisor name + total only; tap whole card = detail -->
+      <div class="wcard" onclick="openWageDetail('波哥','海怡半島','$1,408','未結清')">
+        <div class="wtop">
+          <div class="wname">波哥</div>
+          <div class="wamt red">$1,408</div>
+        </div>
+        <div class="wsub">海怡半島 ・ 應付總額</div>
+        <div class="wsub red">未結清 ・ 點入查看明細</div>
+      </div>
+      <div class="wcard" onclick="openWageDetail('明哥','黃埔花園','$720','待支付')">
+        <div class="wtop">
+          <div class="wname">明哥</div>
+          <div class="wamt red">$720</div>
+        </div>
+        <div class="wsub">黃埔花園 ・ 應付總額</div>
+        <div class="wsub red">待支付 ・ 點入查看明細</div>
+      </div>
+      <div class="card">
+        <div class="sub">你確認後 7 日內主管冇回應，系統自動幫佢確認；你永遠只見到自己嘅時薪。</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div onclick="go('L2')">搵工</div>
+      <div onclick="go('L3')">我的更</div>
+      <div onclick="go('L5')">訊息</div>
+      <div class="on">工資</div>
+      <div onclick="go('L8')">我的</div>
+    </div>
+  </div>
+
+  <!-- L4 wage detail sub-screen -->
+  <div class="wdetail" id="L4detail">
+    <div class="top">
+      <span><span class="back" onclick="closeWageDetail()">‹</span> <span id="wdTitle">明細</span></span>
+      <span class="mini" id="wdPool"></span>
+    </div>
+    <div class="pbody" id="wdBody"></div>
+  </div>
+
+  <!-- ==================== L5 訊息 ==================== -->
+  <div class="scr" id="L5">
+    <div class="l5pane on" id="l5list">
+      <div class="top">
+        <span>訊息</span>
+        <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+      </div>
+      <div class="pbody">
+        <div class="conv" onclick="openChat()">
+          <div class="av">波</div>
+          <div class="cbody"><div class="nm">波哥 <span class="badge" style="font-size:10px;padding:1px 6px">主管</span></div><div class="lm">請！你邊區方便？</div></div>
+          <div class="meta">14:22<div class="unread">1</div></div>
+        </div>
+        <div class="conv" onclick="toast('demo 只做咗波哥呢個會話')">
+          <div class="av">明</div>
+          <div class="cbody"><div class="nm">明哥 <span class="badge" style="font-size:10px;padding:1px 6px">主管</span></div><div class="lm">7/20 黃埔全日，記得 9 點到</div></div>
+          <div class="meta">昨天</div>
+        </div>
+        <div class="conv" onclick="toast('demo 只做咗波哥呢個會話')">
+          <div class="av">華</div>
+          <div class="cbody"><div class="nm">華哥 <span class="badge" style="font-size:10px;padding:1px 6px">主管</span></div><div class="lm">8 月長更你邊幾日得閒？</div></div>
+          <div class="meta">昨天</div>
+        </div>
+        <div class="conv" onclick="toast('demo 只做咗波哥呢個會話')">
+          <div class="av">龍</div>
+          <div class="cbody"><div class="nm">細龍 <span class="sub" style="font-size:10px">同事</span></div><div class="lm">聽日 14:00 我接你更</div></div>
+          <div class="meta">週三</div>
+        </div>
+        <div class="conv" onclick="toast('平台通知會話（demo 未做）')">
+          <div class="av">🛎</div>
+          <div class="cbody"><div class="nm">PoolMind 平台通知</div><div class="lm">你嘅帳號已完成 WhatsApp 驗證</div></div>
+          <div class="meta">週二</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('L2')">搵工</div>
+        <div onclick="go('L3')">我的更</div>
+        <div class="on">訊息</div>
+        <div onclick="go('L4')">工資</div>
+        <div onclick="go('L8')">我的</div>
+      </div>
+    </div>
+    <div class="l5pane" id="l5chat">
+      <div class="top"><span><span class="back" onclick="backList5()">‹</span> 波哥（主管）</span><span class="mini">人對人永久會話</span></div>
+      <div class="pbody"><div class="chat" id="chatbox">
+        <div class="msg me">你好，想問週日晚更仲請唔請人？</div>
+        <div class="msg">請！你邊區方便？</div>
+      </div></div>
+      <div class="inputrow"><input id="chatin" placeholder="輸入訊息…"><span onclick="sendMsg()">發送</span></div>
+      <div class="nav">
+        <div onclick="go('L2')">搵工</div>
+        <div onclick="go('L3')">我的更</div>
+        <div class="on">訊息</div>
+        <div onclick="go('L4')">工資</div>
+        <div onclick="go('L8')">我的</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== L8 我的（含深色模式開關）==================== -->
+  <div class="scr" id="L8">
+    <div class="top">
+      <span>我的</span>
+      <button class="top-dark-btn" data-darktoggle onclick="toggleDark()">☾ 夜間</button>
+    </div>
+    <div class="pbody">
+      <div class="card">
+        <div class="t">帳號設定</div>
+        <div class="setting-row"><span>對外顯示名</span><span class="sub" style="color:var(--p)">陳大文 ›</span></div>
+        <div class="setting-row"><span>更改密碼</span><span class="sub" style="color:var(--p)">› </span></div>
+        <div class="setting-row"><span>換綁 WhatsApp</span><span class="sub" style="color:var(--p)">+852 9xxx xxxx ›</span></div>
+      </div>
+      <div class="card">
+        <div class="t">外觀</div>
+        <div class="setting-row">
+          <span>深色模式</span>
+          <div class="tgl" style="display:inline-block">
+            <input type="checkbox" id="darkSwitch" onchange="toggleDarkSwitch()">
+            <i></i>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="sub" style="font-size:13px;text-align:center">PoolMind v1.0・香港救生員管理平台</div>
+      </div>
+    </div>
+    <div class="nav">
+      <div onclick="go('L2')">搵工</div>
+      <div onclick="go('L3')">我的更</div>
+      <div onclick="go('L5')">訊息</div>
+      <div onclick="go('L4')">工資</div>
+      <div class="on">我的</div>
+    </div>
+  </div>
+
+</div><!-- end .frame -->
+
+<script>
+/* ===== toast ===== */
+function toast(t){
+  const e=document.getElementById('toast');
+  e.textContent=t;e.style.opacity=1;
+  clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,2400);
+}
+
+/* ===== dark mode ===== */
+function toggleDark(){
+  document.body.classList.toggle('dark');
+  const on=document.body.classList.contains('dark');
+  document.querySelectorAll('[data-darktoggle]').forEach(e=>e.textContent=on?'☀︎ 日間':'☾ 夜間');
+  const sw=document.getElementById('darkSwitch');
+  if(sw)sw.checked=on;
+}
+function toggleDarkSwitch(){
+  const on=document.getElementById('darkSwitch').checked;
+  document.body.classList.toggle('dark',on);
+  document.querySelectorAll('[data-darktoggle]').forEach(e=>e.textContent=on?'☀︎ 日間':'☾ 夜間');
+}
+
+/* ===== screen navigation ===== */
+function go(id){
+  // hide all screens and wage detail
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.querySelectorAll('.wdetail').forEach(s=>s.classList.remove('on'));
+  const el=document.getElementById(id);
+  if(el)el.classList.add('on');
+  document.getElementById('pidbox').textContent=id;
+  if(id==='L5')backList5();
+  renderBadges();
+}
+
+/* ===== badge system ===== */
+const BADGE={'搵工':3,'我的更':1,'訊息':1,'工資':1,'我的':0};
+function renderBadges(){
+  document.querySelectorAll('.nav div').forEach(d=>{
+    const old=d.querySelector('.nb');if(old)old.remove();
+    const label=d.textContent.replace(/\d+/g,'').trim();
+    const n=BADGE[label]||0;
+    if(n>0&&!d.classList.contains('on')){
+      const b=document.createElement('span');
+      b.className='nb';
+      b.textContent=n>99?'99+':n;
+      d.appendChild(b);
+    }
+  });
+}
+
+/* ===== §1 filter ===== */
+function toggleFilt(h){h.closest('.filt').classList.toggle('open');}
+function chipSel(chip){
+  chip.closest('.frow').querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  chip.classList.add('on');
+}
+function showL2Sub(region){
+  const sub=document.getElementById('l2sub2');
+  if(sub){sub.style.display='flex';sub.querySelector('.flab').textContent=region+'→';}
+}
+function hideL2Sub(){
+  const sub=document.getElementById('l2sub2');if(sub)sub.style.display='none';
+}
+function toggleWage(){
+  const show=document.getElementById('showWage').checked;
+  document.querySelectorAll('.wage-field').forEach(el=>el.style.display=show?'block':'none');
+}
+
+/* ===== L6 login ===== */
+function doLogin(){
+  const u=document.getElementById('loginUser').value.trim();
+  const p=document.getElementById('loginPw').value;
+  if(!u||!p){toast('請輸入用戶名同密碼');return;}
+  toast('登入成功（demo）');
+  setTimeout(()=>go('L2'),800);
+}
+
+/* ===== L1 register 3-step ===== */
+let step=1, uploaded=false, verified=false;
+
+function setStep(n){
+  step=n;
+  document.getElementById('regStep1').style.display=n===1?'block':'none';
+  document.getElementById('regStep2').style.display=n===2?'block':'none';
+  document.getElementById('regStep3').style.display=n===3?'block':'none';
+  document.getElementById('l1-title').textContent='註冊・步驟 '+n+'/3';
+  // update circles
+  [1,2,3].forEach(i=>{
+    const c=document.getElementById('sc'+i);
+    c.classList.remove('active','done');
+    if(i<n)c.classList.add('done'),c.textContent='✓';
+    else if(i===n)c.classList.add('active'),c.textContent=i;
+    else c.textContent=i;
+  });
+  // update lines
+  [1,2].forEach(i=>{
+    document.getElementById('sl'+i).classList.toggle('done',i<n);
+  });
+  // encouragement text
+  const enc={
+    1:'填寫基本資料，幾秒搞掂！',
+    2:'仲差一步！上傳證件資料',
+    3:'就快註冊成功！完成 WhatsApp 驗證'
+  };
+  document.getElementById('regEncourage').textContent=enc[n];
+}
+
+function ck1(){
+  const u=document.getElementById('uname').value.trim();
+  document.getElementById('unameOk').innerHTML=u?(u.length>2?'<span class="green">✓ 可用（demo 假查重）</span>':'太短，最少 3 個字符'):'';
+  const ok=u.length>2&&document.getElementById('pw').value.length>=8&&document.getElementById('phone').value.trim().length>6;
+  document.getElementById('step1Btn').classList.toggle('dis',!ok);
+}
+function goStep1(){setStep(1);}
+function goStep2(){setStep(2);ck2();}
+function goStep3(){
+  const phone=document.getElementById('phone').value.trim()||'+852 9XXX XXXX';
+  document.getElementById('waPhone').textContent=phone+' 的 WhatsApp';
+  setStep(3);
+}
+function ck2(){
+  const ok=document.getElementById('rname').value.trim().length>0&&uploaded;
+  document.getElementById('step2Btn').classList.toggle('dis',!ok);
+}
+function upl(){
+  uploaded=true;
+  document.getElementById('uplOk').innerHTML='<span class="green">已上傳 ✓（測試殼：跳過 OCR，直接通過）</span>';
+  ck2();
+}
+function waVerify(){
+  const b=document.getElementById('waBtn'),o=document.getElementById('waOk');
+  let n=3;b.textContent='等緊你喺 WhatsApp 發送… '+n;b.classList.add('dis');
+  const t=setInterval(()=>{
+    n--;
+    if(n>0){b.textContent='等緊你喺 WhatsApp 發送… '+n;}
+    else{
+      clearInterval(t);verified=true;
+      b.style.display='none';
+      o.innerHTML='<span class="green">✅ 驗證成功，號碼已綁定（測試殼：3 秒自動通過）</span>';
+      document.getElementById('regBtn').classList.remove('dis');
+    }
+  },1000);
+}
+function reg(){
+  toast('註冊成功！帳號狀態【未認證】，唔阻你報名，平台管理員審核後變【已認證】');
+  setTimeout(()=>go('L2'),800);
+}
+
+/* ===== L2 apply (situaton A) → L3 update row ===== */
+function apply(){
+  document.getElementById('rowA').outerHTML='<div class="sub" style="margin-top:6px"><span class="badge">待主管確認</span>　可隨時撤回（撤回唔會通知任何人）</div>';
+  toast('已報名，等主管確認；佢一確認你就會喺「我的更表」見到');
+  setTimeout(()=>{
+    const cell=document.getElementById('lg19');
+    if(cell)cell.innerHTML='<span class="seg" onclick="go(\'L5\')">海怡早更 7–15 <span class="green">新 ✓</span></span>';
+    toast('主管已確認！7/19 早更已入你更表');
+  },3000);
+}
+
+/* ===== L5 conversation ===== */
+function openChat(){
+  document.getElementById('l5list').classList.remove('on');
+  document.getElementById('l5chat').classList.add('on');
+}
+function backList5(){
+  document.getElementById('l5chat').classList.remove('on');
+  document.getElementById('l5list').classList.add('on');
+}
+function openBo(){go('L5');openChat();}
+let replied=false;
+function sendMsg(){
+  const i=document.getElementById('chatin');if(!i.value.trim())return;
+  const d=document.createElement('div');d.className='msg me';d.textContent=i.value;
+  document.getElementById('chatbox').appendChild(d);i.value='';sc();
+  if(!replied){replied=true;setTimeout(()=>{
+    const m=document.createElement('div');m.className='msg';m.textContent='OK，呢個更詳情你睇下，時薪 $86';
+    document.getElementById('chatbox').appendChild(m);
+    const c=document.createElement('div');c.className='pcard';
+    c.innerHTML='<div class="pt">📍 泳池詳情卡片</div><div class="sub" style="margin:4px 0">嘉湖山莊泳池・7月20日（日）晚更 14:00–22:00<br>時薪 $86</div><div class="btn" style="margin:6px 0 0" id="acc" onclick="accept()">接受此更</div>';
+    document.getElementById('chatbox').appendChild(c);sc();
+  },1200);}
+}
+function accept(){
+  document.getElementById('acc').outerHTML='<div class="sub" style="color:var(--p);font-weight:700;margin-top:6px">✓ 已接受，等主管最終確認先入更表</div>';
+  toast('已接受卡片；主管最終確認後先正式入表（佢係唯一入表觸發者）');sc();
+}
+function sc(){const b=document.querySelector('#l5chat .pbody');b.scrollTop=b.scrollHeight;}
+
+/* ===== L4 wage detail ===== */
+const wageData={
+  '波哥':{pool:'海怡半島',total:'$1,408',rows:[
+    {date:'7/14（一）',hours:'8 小時',amt:'$704',status:'confirmed'},
+    {date:'7/15（二）',hours:'8 小時',amt:'$704',status:'pending'},
+  ]},
+  '明哥':{pool:'黃埔花園',total:'$720',rows:[
+    {date:'7/20（日）',hours:'9 小時',amt:'$720',status:'pending'},
+  ]},
+};
+let wdConfirmed={};
+function openWageDetail(sup,pool,total,statusLabel){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById('L4detail').classList.add('on');
+  document.getElementById('wdTitle').textContent=sup+'・明細';
+  document.getElementById('wdPool').textContent=pool;
+  document.getElementById('pidbox').textContent='L4';
+  const data=wageData[sup];
+  if(!data){return;}
+  let html='';
+  data.rows.forEach((row,i)=>{
+    const key=sup+'_'+i;
+    const confirmed=wdConfirmed[key];
+    html+=`<div class="card">
+      <div class="item">
+        <div>
+          <div style="font-weight:600;font-size:14px;color:var(--ink)">${row.date}</div>
+          <div class="sub">${row.hours}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:700;font-size:15px;color:var(--ink)">${row.amt}</div>
+          ${confirmed
+            ? '<div class="green" style="font-size:12px">已確認收款 ✓</div>'
+            : row.status==='confirmed'
+              ? '<div class="green" style="font-size:12px">已收 ✓</div>'
+              : '<div class="red" style="font-size:12px">待支付</div>'}
+        </div>
+      </div>
+      ${(!confirmed&&row.status==='pending')
+        ? `<div class="btn" style="margin:8px 0 0;padding:9px" onclick="confirmWage('${sup}',${i})">確認已收</div>`
+        : ''}
+    </div>`;
+  });
+  html+=`<div class="card"><div class="sub">應付總額：<b style="color:var(--p)">${data.total}</b><br>你確認後 7 日內主管冇回應，系統自動雙向確認。</div></div>`;
+  document.getElementById('wdBody').innerHTML=html;
+}
+function confirmWage(sup,idx){
+  const key=sup+'_'+idx;
+  wdConfirmed[key]=true;
+  BADGE['工資']=Math.max(0,(BADGE['工資']||1)-1);
+  // re-render detail
+  const data=wageData[sup];
+  openWageDetail(sup,data.pool,data.total,'');
+  toast('已確認收款，狀態：員工已確認（7日後自動完成）');
+}
+function closeWageDetail(){
+  document.getElementById('L4detail').classList.remove('on');
+  document.getElementById('L4').classList.add('on');
+  document.getElementById('pidbox').textContent='L4';
+  renderBadges();
+}
+
+/* ===== L3 font-size controls ===== */
+let cfs=13;
+function cellFont(d){
+  cfs=Math.max(11,Math.min(22,cfs+d));
+  document.documentElement.style.setProperty('--cellfs',cfs+'px');
+}
+
+/* ===== 天文台天氣欄（三端共用；點警告循環，掣跳天文台） ===== */
+const SIGS=[['⛈ 雷暴','ts'],['🌧 黃雨','amber'],['🌧 紅雨','red'],['🌧 黑雨','black'],['☀ 天晴','clear']];
+let si=0;
+function cycSig(){si=(si+1)%SIGS.length;const el=document.getElementById('wxsig');el.textContent=SIGS[si][0];el.className='sig '+SIGS[si][1];toast('天氣警告：'+SIGS[si][0].split(' ')[1]);}
+function openHKO(){toast('跳轉香港天文台（demo）');window.open('https://www.hko.gov.hk/tc/','_blank');}
+function tickClock(){const d=new Date(),p=n=>String(n).padStart(2,'0');const t=document.getElementById('wxtime');if(t)t.textContent=p(d.getHours())+':'+p(d.getMinutes());}
+tickClock();setInterval(tickClock,20000);
+
+/* ===== init ===== */
+setStep(1);
+renderBadges();
+</script>
+</body>
+</html>

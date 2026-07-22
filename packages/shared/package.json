@@ -1,0 +1,24 @@
+{
+  "name": "@poolmind/shared",
+  "version": "0.0.0",
+  "private": true,
+  "description": "PoolMind 前后端共享的 zod 校验 schema 与类型（同源校验，避免前后端规则漂移）",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

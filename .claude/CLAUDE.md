@@ -88,6 +88,7 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 | `docs/design/DEMO-INDEX.md` | 想找"上一轮 demo 长什么样、改了什么"时 | 每轮 demo 做完在顶部加一行索引 |
 | `docs/design/demo-YYYY-MM-DD/*.html` + `TREE.md` | 用户提到某个页面 ID（如 S3、L2）要看/要改时 | **已保存的旧 demo 除非用户明确要求，绝不回写**；新一轮改动一律新建 `demo-YYYY-MM-DD/` 文件夹；该端已在 `confirmed/` 确认过的，本轮跳过不重做 |
 | `docs/design/confirmed/0X-角色.html` | 要确认"某端定案的样式长什么样"时；用户要求改已确认样式时直接改这里 | 用户明确认可某端/某页面样式后才新增；改动直接改本体，不必重开一轮 demo |
+| `docs/DEV-PROCESS.md` | **正式写代码阶段的团队协作与审核门规则唯一事实来源**；每次开始写正式代码前必读 | 团队编制/审核门颗粒度/流程本身变化时才改 |
 | `.omc/plans/poolmind-phase1-plan.md` | 要确认当前该做哪个里程碑、技术选型是什么时 | 只有实施计划本身要修订（技术方案/里程碑变化）才改，跟改 SPEC.md 不是一回事 |
 | `.omc/specs/poolmind-spec.md` | OMC 下游技能读取正式规格用 | SPEC.md 改完后同步复制（纯同步，不单独做决策） |
 | `.omc/state/deep-interview-state.json` | 恢复访谈会话时 | 会话结束前更新 |
@@ -95,11 +96,12 @@ Say "setup omc" or run `/oh-my-claudecode:omc-setup`.
 
 会话收尾固定顺序：**合并决定进 spec → 写当日 interview-sessions 记录（如有访谈）/ dev-log（如完成功能）→ 更新 PROGRESS.md → 更新 HANDOFF.md → 同步 .omc 副本与状态 → 更新记忆**。
 
-### Demo 与开发硬规则（2026-07-19 用户定案，做 demo / 写代码前必读）
+### Demo 与开发硬规则
 
-- **Demo 四件套**：每轮 demo 一个文件夹 `docs/design/demo-YYYY-MM-DD/`，固定 4 份——`00-all-pages.html`（全页总览）＋ `01-supervisor.html` / `02-lifeguard.html` / `03-admin.html`（三端简单交互）。手机框用**真实机型尺寸且可切换**（iPhone SE 375×667 / iPhone 17 402×874 / 17 Pro Max 440×956 / Android 360×800）。每个页面有**跨轮固定 ID 角标**（S1–S8 主管、L1–L5 救生员、A1–A2 管理员），索引在 `docs/design/DEMO-INDEX.md`，完整规则在 `docs/design/DEMO-RULES.md`。
+- **Demo 制作规则**：完整规则（文件结构、比例、页面 ID、配色、confirmed/ 机制等）唯一事实来源见 `docs/design/DEMO-RULES.md`，做任何新一轮 demo 前必读——不在此处重复摘录，避免和该文件脱节过时。
 - **测试壳**：WhatsApp 验证＝显示验证码后 3 秒自动通过；证件 OCR＝任意照片即通过；正式接入等用户通知。代码标 `【壳-待补】`。
 - **测试代码标记**：`【长期测试】` 或 `【临时测试-用完即删】`，功能收尾时清掉临时测试，防止残留副作用。
 - **功能日志**：每完成/更新一个功能，在 `docs/dev-log/` 新增 `YYYY-MM-DD-<功能名>.md`（格式见该目录 README）。
+- **正式写代码阶段的团队协作与逐功能审核门（前端/后端/其他各一档，做完一个停一个）**：见 `docs/DEV-PROCESS.md`，2026-07-21 用户定案。
 
 `.omc/` 其余内容（sessions、state/sessions、logs 等）为运行时产物，已由 `.gitignore` 排除，不提交、不手动维护。恢复会话时先读 `docs/PROGRESS.md`。

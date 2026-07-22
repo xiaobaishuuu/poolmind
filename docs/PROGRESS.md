@@ -5,9 +5,12 @@
 ## 当前状态（2026-07-21）
 
 - **阶段**：**UI 设计 / demo 迭代**（尚未写业务代码，greenfield）。需求 `docs/SPEC.md` v1.0 与实施计划 `.omc/plans/poolmind-phase1-plan.md` v3 均已冻结批准。
-- **设计进度**：管理员端（A）已定稿 `docs/design/confirmed/03-admin.html`；主管端（S）、救生员端（L）仍在迭代。最新一轮 **R3 = `docs/design/demo-2026-07-21/`**（全局改 iOS 明暗配色＋主管/救生员一批改动，含更表格子系统/筛选器/工资大卡片/注册 3 步/登录页，详见 HANDOFF 2026-07-21），**未提交，等用户审核**。
-- **设计阶段事实来源**：`docs/design/DEMO-RULES.md`（规则）+ `DEMO-INDEX.md`（每轮索引）+ 各 `demo-YYYY-MM-DD/TREE.md`。全部设计文档变更（07-14 起）仍未 commit。
-- **下一步**：按用户对 R3 的反馈继续改 S/L 端；某端确认后复制进 `docs/design/confirmed/`；三端都定稿后再进 Spike 周 + M0 脚手架。
+- **设计进度**：**三端（A/S/L）均已确认定稿**——A `docs/design/confirmed/03-admin.html`（2026-07-20）、S `docs/design/confirmed/01-supervisor.html`（2026-07-21）、L `docs/design/confirmed/02-lifeguard.html`（2026-07-21，基于 R3 同日修订版）。UI demo 迭代阶段结束。
+- **设计阶段事实来源**：`docs/design/DEMO-RULES.md`（规则）+ `DEMO-INDEX.md`（每轮索引）+ 各 `demo-YYYY-MM-DD/TREE.md`；`docs/design/confirmed/` 三端为正式开发阶段的界面事实来源。全部设计文档变更（07-14 起）**用户明确要求暂不 commit**（2026-07-21 问过，先留在工作区）。
+- **遗留小项**：`confirmed/03-admin.html` 仍是旧蓝配色，R3 的 iOS 明暗新配色未回写（待用户决定要不要补套，不影响进入开发）。
+- **2026-07-21 新增**：正式开发阶段的团队分工与逐功能审核门规则已定，见新文件 `docs/DEV-PROCESS.md`（固定团队编制 + 前端/后端/其他各算一个审核单元，做完一个停一个找用户审），并已同步引用进 `.omc/plans/poolmind-phase1-plan.md` 执行方式约束。
+- **2026-07-21 M0 骨架单元已完成**（第一个"其他类"审核单元）：monorepo 骨架搭好，JS 侧全部验证通过，详见 `docs/dev-log/2026-07-21-repo-scaffold.md`。**唯一阻塞**：本机未装 Docker Desktop，数据库相关三步（起库/迁移/e2e）未能实跑，装好后一键可验。**审核门未过**——需用户装 Docker 后实测通过，这个单元才算真正验收。
+- **下一步**：① 用户装 Docker Desktop 并跑通 `docker compose up -d` 等命令验证骨架；② 通过后进入下一个"后端"单元——管理员人工核号验证工具；③ Meta 商业验证/OCR 真实样本实测/375px 交互原型（Spike 周其余项）视用户时间安排。开发时按 `docs/DEV-PROCESS.md` 的团队分工与逐单元审核门执行。
 
 <details><summary>历史里程碑（deep-interview → 规划，已完成）</summary>
 

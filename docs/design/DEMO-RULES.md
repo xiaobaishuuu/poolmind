@@ -25,8 +25,8 @@
 - `confirmed/` 里的文件代表**当前已定案、不用再重做**的样式，是该端的事实来源。
 - 之后新一轮 demo：已确认的端**不需要**再重新生成对应文件，只处理还在改动中的端；`TREE.md` 里注明"已确认，跳过"并指向 `confirmed/` 里的文件。
 - 若确认后又要改（用户提出新要求），直接改 `confirmed/` 里的文件本体，不必重开一轮 demo 文件夹（除非改动大到需要新旧对比）。
-- 当前进度：**A（管理员端）已确认**，见 `docs/design/confirmed/03-admin.html`（定稿于 2026-07-20，基于 demo-2026-07-20 版本）。S（主管端）、L（救生员端）仍在迭代中。
-- **2026-07-21 注**：R3 全局改 iOS 明暗配色，`demo-2026-07-21/03-admin.html` 已套新配色但 `confirmed/03-admin.html` 本体**未回写**（等用户确认新配色后再定稿）；即当前 confirmed 版仍是旧蓝配色，结构一致。
+- 当前进度：**三端（A/S/L）均已确认**。A 见 `docs/design/confirmed/03-admin.html`（定稿于 2026-07-20，基于 demo-2026-07-20 版本）；S 见 `docs/design/confirmed/01-supervisor.html`、L 见 `docs/design/confirmed/02-lifeguard.html`（均定稿于 2026-07-21，基于 demo-2026-07-21 R3 同日修订版）。
+- **遗留事项**：`confirmed/03-admin.html` 本体是旧蓝配色，R3 的 iOS 明暗新配色**未回写进去**（S/L 的 confirmed 版已经是新配色）；管理员端要不要补套新配色待用户决定，决定前三端配色不完全一致属已知差异，不是漏改。
 
 ## 2. 统一比例（19.5:9）
 

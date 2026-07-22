@@ -35,3 +35,13 @@ build/
 *.log
 .env
 .env.*
+
+# ---- monorepo 构建/工具产物（apps 与 packages）----
+# TypeScript 增量编译缓存
+*.tsbuildinfo
+# Vite 本地缓存
+.vite/
+apps/web/dist/
+# pnpm
+.pnpm-store/
+# Prisma 生成产物在 node_modules 内，无需单列

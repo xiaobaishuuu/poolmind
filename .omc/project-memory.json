@@ -9,7 +9,7 @@
     "runtime": null
   },
   "build": {
-    "buildCommand": null,
+    "buildCommand": "cd \"C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind\" && echo \"===== web build (tsc -b + vite build) =====\" && corepack pnpm --filter web run build 2>&1 | tail -20; echo \"EXIT=${PIPESTATUS[0]}\"",
     "testCommand": null,
     "lintCommand": null,
     "devCommand": null,
@@ -53,32 +53,62 @@
   "hotPaths": [
     {
       "path": "docs/design/demo-2026-07-21/01-supervisor.html",
-      "accessCount": 20,
-      "lastAccessed": 1784631879476,
+      "accessCount": 42,
+      "lastAccessed": 1784646097715,
       "type": "file"
     },
     {
       "path": "docs/SPEC.md",
-      "accessCount": 19,
-      "lastAccessed": 1784626557439,
+      "accessCount": 21,
+      "lastAccessed": 1784646297576,
       "type": "file"
     },
     {
       "path": "docs/PROGRESS.md",
-      "accessCount": 13,
-      "lastAccessed": 1784627620892,
+      "accessCount": 18,
+      "lastAccessed": 1784649813734,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-21/02-lifeguard.html",
+      "accessCount": 16,
+      "lastAccessed": 1784646159244,
       "type": "file"
     },
     {
       "path": "docs/design/DEMO-RULES.md",
-      "accessCount": 10,
-      "lastAccessed": 1784626516923,
+      "accessCount": 14,
+      "lastAccessed": 1784647731751,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-21/03-admin.html",
+      "accessCount": 12,
+      "lastAccessed": 1784646212510,
       "type": "file"
     },
     {
       "path": ".claude/CLAUDE.md",
-      "accessCount": 9,
-      "lastAccessed": 1784563407716,
+      "accessCount": 12,
+      "lastAccessed": 1784647494405,
+      "type": "file"
+    },
+    {
+      "path": "docs/HANDOFF.md",
+      "accessCount": 11,
+      "lastAccessed": 1784649800571,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/demo-2026-07-19/01-supervisor.html",
+      "accessCount": 10,
+      "lastAccessed": 1784645470023,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/DEMO-INDEX.md",
+      "accessCount": 10,
+      "lastAccessed": 1784647739862,
       "type": "file"
     },
     {
@@ -88,21 +118,9 @@
       "type": "file"
     },
     {
-      "path": "docs/design/demo-2026-07-21/02-lifeguard.html",
-      "accessCount": 8,
-      "lastAccessed": 1784625727957,
-      "type": "file"
-    },
-    {
       "path": "docs/interview-sessions/2026-07-17.md",
       "accessCount": 7,
       "lastAccessed": 1784560340247,
-      "type": "file"
-    },
-    {
-      "path": "docs/design/demo-2026-07-19/01-supervisor.html",
-      "accessCount": 6,
-      "lastAccessed": 1784560557373,
       "type": "file"
     },
     {
@@ -112,15 +130,9 @@
       "type": "file"
     },
     {
-      "path": "docs/design/DEMO-INDEX.md",
+      "path": "docs/design/demo-2026-07-21/TREE.md",
       "accessCount": 6,
-      "lastAccessed": 1784626345540,
-      "type": "file"
-    },
-    {
-      "path": "docs/HANDOFF.md",
-      "accessCount": 6,
-      "lastAccessed": 1784627572274,
+      "lastAccessed": 1784646442768,
       "type": "file"
     },
     {
@@ -142,27 +154,33 @@
       "type": "file"
     },
     {
+      "path": "docs/design/demo-2026-07-21",
+      "accessCount": 5,
+      "lastAccessed": 1784646367270,
+      "type": "directory"
+    },
+    {
+      "path": "docs/dev-log/README.md",
+      "accessCount": 5,
+      "lastAccessed": 1784648599749,
+      "type": "file"
+    },
+    {
       "path": "docs/design/demo-2026-07-20/03-admin.html",
       "accessCount": 4,
       "lastAccessed": 1784560754935,
       "type": "file"
     },
     {
-      "path": "docs/design/demo-2026-07-21/03-admin.html",
-      "accessCount": 4,
-      "lastAccessed": 1784625351080,
+      "path": "README.md",
+      "accessCount": 3,
+      "lastAccessed": 1784649021701,
       "type": "file"
     },
     {
       "path": "docs/interview-sessions/2026-07-14.md",
       "accessCount": 2,
       "lastAccessed": 1784560345852,
-      "type": "file"
-    },
-    {
-      "path": "docs/dev-log/README.md",
-      "accessCount": 2,
-      "lastAccessed": 1784560353279,
       "type": "file"
     },
     {
@@ -202,9 +220,27 @@
       "type": "file"
     },
     {
-      "path": "README.md",
-      "accessCount": 1,
-      "lastAccessed": 1783854988215,
+      "path": "docs/DEV-PROCESS.md",
+      "accessCount": 2,
+      "lastAccessed": 1784648537404,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/prisma/schema.prisma",
+      "accessCount": 2,
+      "lastAccessed": 1784649241742,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/src/prisma/prisma.service.ts",
+      "accessCount": 2,
+      "lastAccessed": 1784649350957,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/package.json",
+      "accessCount": 2,
+      "lastAccessed": 1784649473571,
       "type": "file"
     },
     {
@@ -220,9 +256,99 @@
       "type": "directory"
     },
     {
-      "path": "docs/design/demo-2026-07-21/TREE.md",
+      "path": "docs/design/confirmed/01-supervisor.html",
       "accessCount": 1,
-      "lastAccessed": 1784626152378,
+      "lastAccessed": 1784647717754,
+      "type": "file"
+    },
+    {
+      "path": "docs/design/confirmed/02-lifeguard.html",
+      "accessCount": 1,
+      "lastAccessed": 1784647719076,
+      "type": "file"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "accessCount": 1,
+      "lastAccessed": 1784648730186,
+      "type": "file"
+    },
+    {
+      "path": "package.json",
+      "accessCount": 1,
+      "lastAccessed": 1784648733222,
+      "type": "file"
+    },
+    {
+      "path": "docker-compose.yml",
+      "accessCount": 1,
+      "lastAccessed": 1784648745104,
+      "type": "file"
+    },
+    {
+      "path": "docker/initdb/01-create-databases.sql",
+      "accessCount": 1,
+      "lastAccessed": 1784648748664,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/tsconfig.json",
+      "accessCount": 1,
+      "lastAccessed": 1784648764635,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/nest-cli.json",
+      "accessCount": 1,
+      "lastAccessed": 1784648767782,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/.env.example",
+      "accessCount": 1,
+      "lastAccessed": 1784648778439,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/.env",
+      "accessCount": 1,
+      "lastAccessed": 1784648780488,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/.env.test",
+      "accessCount": 1,
+      "lastAccessed": 1784648782450,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/prisma/seed.ts",
+      "accessCount": 1,
+      "lastAccessed": 1784648791498,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/src/config/env.validation.ts",
+      "accessCount": 1,
+      "lastAccessed": 1784648804678,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/src/prisma/prisma.module.ts",
+      "accessCount": 1,
+      "lastAccessed": 1784648810641,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/src/health/health.service.ts",
+      "accessCount": 1,
+      "lastAccessed": 1784648821442,
+      "type": "file"
+    },
+    {
+      "path": "apps/api/src/health/health.controller.ts",
+      "accessCount": 1,
+      "lastAccessed": 1784648824851,
       "type": "file"
     }
   ],

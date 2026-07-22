@@ -1,742 +1,2406 @@
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <title>PoolMind R3・主管端交互 demo</title>
 <style>
 :root{
-  /* 白天：大部分地方白，字/圖示黑 */
-  --bg:#ffffff; --card:#ffffff; --elev:#ffffff; --inset:#f2f2f4;
-  --ink:#000000; --sub:#8e8e93; --line:#e2e2e7;
+  --bg:#f2f2f7; --card:#ffffff; --elev:#ffffff; --inset:#e9e9ee;
+  --ink:#1c1c1e; --sub:#8e8e93; --line:#e5e5ea;
   --p:#007aff; --psoft:#e8f0fe;
   --warn:#ff3b30; --ok:#34c759;
-  --navbar:#ffffff; --navtext:#000000;
+  --navbar:#f9f9f9; --navtext:#1c1c1e;
   --fw:402px; --fh:871px; --cellfs:13px;
 }
 body.dark{
-  /* 夜晚：大部分地方黑，字/圖示白（白天反轉） */
-  --bg:#000000; --card:#000000; --elev:#1c1c1e; --inset:#1c1c1e;
-  --ink:#ffffff; --sub:#8e8e93; --line:#2c2c2e;
-  --p:#0a84ff; --psoft:rgba(10,132,255,.22);
+  --bg:#000000; --card:#1c1c1e; --elev:#2c2c2e; --inset:#2c2c2e;
+  --ink:#ffffff; --sub:#8e8e93; --line:#38383a;
+  --p:#0a84ff; --psoft:rgba(10,132,255,.20);
   --warn:#ff453a; --ok:#30d158;
-  --navbar:#000000; --navtext:#ffffff;
+  --navbar:#1c1c1e; --navtext:#ffffff;
 }
-*{-webkit-tap-highlight-color:transparent;scrollbar-width:none;-ms-overflow-style:none}
-*::-webkit-scrollbar{width:0;height:0;display:none}
-body{font-family:-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:#c8ccd2;margin:0;padding:76px 14px 30px;color:var(--ink);display:flex;justify-content:center}
-body.dark{background:#3a3a3c}
-.bar{position:fixed;top:0;left:0;right:0;background:#1c2733;color:#fff;padding:8px 14px;display:flex;gap:9px;align-items:center;z-index:99;flex-wrap:wrap;font-size:13px}
-.bar b{opacity:.85}
-.bar button{border:1px solid #4a5a6a;background:#2a3947;color:#dfe8f0;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer}
-.bar button.on{background:var(--p);border-color:var(--p);color:#fff;font-weight:700}
-.frame{width:var(--fw);height:var(--fh);background:var(--bg);border-radius:26px;overflow:hidden;box-shadow:0 8px 26px rgba(0,0,0,.18);position:relative;flex-shrink:0}
-.pid{position:absolute;top:9px;right:12px;background:rgba(0,0,0,.35);color:#fff;font-size:11px;border-radius:6px;padding:1px 7px;z-index:5;font-weight:700}
-.scr{display:none;flex-direction:column;height:100%}
-.scr.on{display:flex}
-/* iOS 系統栏风格顶栏 */
-.top{background:var(--navbar);color:var(--navtext);padding:13px 15px;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;padding-right:52px;flex-shrink:0;border-bottom:1px solid var(--line)}
-.top .mini{font-size:11px;color:var(--sub);font-weight:400}
-.top .back{cursor:pointer;margin-right:8px;color:var(--p);font-weight:600}
-.top .act{color:var(--p);font-weight:600;font-size:14px;cursor:pointer}
-.pbody{flex:1;overflow-y:auto;background:var(--bg);padding-bottom:8px}
-.nav{display:flex;background:var(--card);border-top:1px solid var(--line);padding:8px 0 16px;flex-shrink:0}
-.nav div{flex:1;text-align:center;font-size:11px;color:var(--sub);cursor:pointer;position:relative}
-.nav .on{color:var(--p);font-weight:700}
-.nb{position:absolute;top:-4px;left:calc(50% + 5px);background:var(--warn);color:#fff;border-radius:9px;min-width:15px;height:15px;line-height:15px;font-size:9px;font-weight:700;padding:0 3px;box-sizing:border-box;text-align:center;box-shadow:0 0 0 1.5px var(--card)}
-.red{color:var(--warn);font-weight:700}
-.green{color:var(--ok);font-weight:700}
-.badge{background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:12px}
-.btn{background:var(--p);color:#fff;border-radius:10px;text-align:center;padding:11px;margin:8px 12px;font-size:14px;font-weight:700;cursor:pointer}
-.btn.ghost{background:var(--card);color:var(--p);border:1.5px solid var(--p)}
-.card{margin:10px 12px;padding:12px;background:var(--card);border-radius:14px;border:1px solid var(--line);box-shadow:none}
-.t{font-size:13px;color:var(--sub);margin-bottom:6px;font-weight:600}
-.item{display:flex;justify-content:space-between;padding:8px 0;font-size:14px;border-bottom:1px solid var(--line);align-items:center}
-.item:last-child{border-bottom:none}
-.item.link{cursor:pointer}
-.sub{font-size:12px;color:var(--sub)}
-.gaprow{display:flex;gap:10px}
-.gapbox{flex:1;background:var(--psoft);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer}
-.gnum{font-size:34px;font-weight:800;color:var(--warn);line-height:1}
-.gcap{font-size:12px;color:var(--sub);margin-top:5px}
-.fbar{display:none;align-items:center;gap:8px;padding:8px 13px;background:#fff4d9;border-bottom:1px solid #f0e2c0;font-size:12px;color:#a06a10;flex-shrink:0}
-body.dark .fbar{background:#3a3320;border-color:#5a4d20;color:#e8c268}
-.fbar.on{display:flex}
-.fbar .x{margin-left:auto;color:var(--p);font-weight:700;cursor:pointer;white-space:nowrap}
-.fab{position:absolute;right:15px;bottom:74px;z-index:7;background:var(--p);color:#fff;border-radius:26px;padding:12px 18px;font-size:14px;font-weight:800;box-shadow:0 5px 16px rgba(20,60,90,.38);cursor:pointer}
+  * {
+    -webkit-tap-highlight-color: transparent;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  *::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+  body {
+    font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    background: #dfe3e8;
+    margin: 0;
+    padding: 76px 14px 30px;
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+  }
+  body.dark {
+    background: #3a3a3c;
+  }
+  .bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #1c2733;
+    color: #fff;
+    padding: 8px 14px;
+    display: flex;
+    gap: 9px;
+    align-items: center;
+    z-index: 99;
+    flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .bar b {
+    opacity: 0.85;
+  }
+  .bar button {
+    border: 1px solid #4a5a6a;
+    background: #2a3947;
+    color: #dfe8f0;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .bar button.on {
+    background: var(--p);
+    border-color: var(--p);
+    color: #fff;
+    font-weight: 700;
+  }
+  .frame {
+    width: var(--fw);
+    height: var(--fh);
+    background: var(--bg);
+    border-radius: 26px;
+    overflow: hidden;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .pid {
+    position: absolute;
+    top: 9px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 11px;
+    border-radius: 6px;
+    padding: 1px 7px;
+    z-index: 5;
+    font-weight: 700;
+  }
+  .scr {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+  }
+  .scr.on {
+    display: flex;
+  }
+  /* iOS 系統栏风格顶栏 */
+  .top {
+    background: var(--navbar);
+    color: var(--navtext);
+    padding: 13px 15px;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 52px;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .top .mini {
+    font-size: 11px;
+    color: var(--sub);
+    font-weight: 400;
+  }
+  .top .back {
+    cursor: pointer;
+    margin-right: 8px;
+    color: var(--p);
+    font-weight: 600;
+  }
+  .top .act {
+    color: var(--p);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  /* 天文台天氣欄（三端共用；點警告循環，掣跳天文台） */
+  .wx{display:flex;align-items:center;gap:9px;padding:9px 14px;background:var(--card);border-bottom:1px solid var(--line);font-size:12px;color:var(--ink);flex-shrink:0}
+  .wx .sig{font-weight:800;border-radius:7px;padding:2px 9px;color:#fff;cursor:pointer}
+  .sig.ts{background:#5e5ce6}.sig.amber{background:#ff9f0a}.sig.red{background:#ff3b30}.sig.black{background:#3a3a3c}.sig.clear{background:#34c759}
+  .wx .wxtime{font-weight:700}
+  .wx .hko{margin-left:auto;color:var(--p);font-weight:600;cursor:pointer;white-space:nowrap}
+  .pbody {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg);
+    padding-bottom: 8px;
+  }
+  .nav {
+    display: flex;
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    padding: 8px 0 16px;
+    flex-shrink: 0;
+  }
+  .nav div {
+    flex: 1;
+    text-align: center;
+    font-size: 11px;
+    color: var(--sub);
+    cursor: pointer;
+    position: relative;
+  }
+  .nav .on {
+    color: var(--p);
+    font-weight: 700;
+  }
+  .nb {
+    position: absolute;
+    top: -4px;
+    left: calc(50% + 5px);
+    background: var(--warn);
+    color: #fff;
+    border-radius: 9px;
+    min-width: 15px;
+    height: 15px;
+    line-height: 15px;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 0 3px;
+    box-sizing: border-box;
+    text-align: center;
+    box-shadow: 0 0 0 1.5px var(--card);
+  }
+  .red {
+    color: var(--warn);
+    font-weight: 700;
+  }
+  .green {
+    color: var(--ok);
+    font-weight: 700;
+  }
+  .badge {
+    background: var(--psoft);
+    color: var(--p);
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 12px;
+  }
+  .btn {
+    background: var(--p);
+    color: #fff;
+    border-radius: 10px;
+    text-align: center;
+    padding: 11px;
+    margin: 8px 12px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn.ghost {
+    background: var(--card);
+    color: var(--p);
+    border: 1.5px solid var(--p);
+  }
+  .card {
+    margin: 10px 12px;
+    padding: 12px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+  }
+  body.dark .card {
+    box-shadow: none;
+  }
+  .t {
+    font-size: 13px;
+    color: var(--sub);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+  }
+  .item:last-child {
+    border-bottom: none;
+  }
+  .item.link {
+    cursor: pointer;
+  }
+  .sub {
+    font-size: 12px;
+    color: var(--sub);
+  }
+  .gaprow {
+    display: flex;
+    gap: 10px;
+  }
+  .gapbox {
+    flex: 1;
+    background: var(--psoft);
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .gnum {
+    font-size: 34px;
+    font-weight: 800;
+    color: var(--warn);
+    line-height: 1;
+  }
+  .gcap {
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 5px;
+  }
+  .fbar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px;
+    background: #fff4d9;
+    border-bottom: 1px solid #f0e2c0;
+    font-size: 12px;
+    color: #a06a10;
+    flex-shrink: 0;
+  }
+  body.dark .fbar {
+    background: #3a3320;
+    border-color: #5a4d20;
+    color: #e8c268;
+  }
+  .fbar.on {
+    display: flex;
+  }
+  .fbar .x {
+    margin-left: auto;
+    color: var(--p);
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .fab {
+    position: absolute;
+    right: 15px;
+    bottom: 74px;
+    z-index: 7;
+    background: var(--p);
+    color: #fff;
+    border-radius: 26px;
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 800;
+    box-shadow: 0 5px 16px rgba(20, 60, 90, 0.38);
+    cursor: pointer;
+  }
+  /* 頂欄招募入口：與 FAB 共用同一套按鈕 token（實心主色圓角膠囊） */
+  .topfab {
+    background: var(--p);
+    color: #fff;
+    border-radius: 16px;
+    padding: 6px 13px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(20, 60, 90, 0.28);
+  }
 
-/* ===== §1 篩選器 ===== */
-.filt{margin:10px 12px;background:var(--card);border-radius:14px;border:1px solid var(--line);overflow:hidden}
-.filthead{padding:12px 14px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;cursor:pointer;color:var(--ink)}
-.filtbody{display:none;padding:4px 12px 12px;border-top:1px solid var(--line)}
-.filt.open .filtbody{display:block}.filt.open .fchev{transform:rotate(180deg)}
-.frow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:7px 0;border-bottom:1px solid var(--line)}
-.frow:last-child{border-bottom:none}.flab{font-size:12px;color:var(--sub);width:56px;flex-shrink:0}
-.chip{font-size:12px;padding:4px 11px;border-radius:15px;background:var(--inset);color:var(--ink);cursor:pointer;border:1px solid var(--line)}
-.chip.on{background:var(--p);color:#fff;border-color:var(--p)}
-.tgl{position:relative;display:inline-block;width:40px;height:24px}.tgl input{display:none}
-.tgl i{position:absolute;inset:0;background:var(--line);border-radius:12px;transition:.2s}
-.tgl i:before{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s}
-.tgl input:checked+i{background:var(--ok)}.tgl input:checked+i:before{transform:translateX(16px)}
+  /* ===== §1 篩選器 ===== */
+  .filt {
+    margin: 10px 12px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  .filthead {
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .filtbody {
+    display: none;
+    padding: 4px 12px 12px;
+    border-top: 1px solid var(--line);
+  }
+  .filt.open .filtbody {
+    display: block;
+  }
+  .filt.open .fchev {
+    transform: rotate(180deg);
+  }
+  .frow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .frow:last-child {
+    border-bottom: none;
+  }
+  .flab {
+    font-size: 12px;
+    color: var(--sub);
+    width: 56px;
+    flex-shrink: 0;
+  }
+  .chip {
+    font-size: 12px;
+    padding: 4px 11px;
+    border-radius: 15px;
+    background: var(--inset);
+    color: var(--ink);
+    cursor: pointer;
+    border: 1px solid var(--line);
+  }
+  .chip.on {
+    background: var(--p);
+    color: #fff;
+    border-color: var(--p);
+  }
+  .tgl {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 24px;
+  }
+  .tgl input {
+    display: none;
+  }
+  .tgl i {
+    position: absolute;
+    inset: 0;
+    background: var(--line);
+    border-radius: 12px;
+    transition: 0.2s;
+  }
+  .tgl i:before {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    top: 2px;
+    left: 2px;
+    transition: 0.2s;
+  }
+  .tgl input:checked + i {
+    background: var(--ok);
+  }
+  .tgl input:checked + i:before {
+    transform: translateX(16px);
+  }
 
-/* ===== §2 招募卡片 ===== */
-.reccard{margin:10px 12px;padding:14px;background:var(--card);border-radius:14px;border:1px solid var(--line)}
-.recloc{font-size:20px;font-weight:800;color:var(--ink);line-height:1.15}
-.recmeta{font-size:13px;color:var(--sub);margin-top:5px}
-.recwage{font-size:13px;color:var(--p);font-weight:700;margin-top:4px}
-.recbtns{display:flex;gap:8px;margin-top:10px}.recbtns .btn{flex:1;margin:0;padding:9px}
-.rectag{float:right;background:var(--psoft);color:var(--p);border-radius:8px;padding:2px 8px;font-size:11px;font-weight:700}
+  /* ===== §2 招募卡片 ===== */
+  .reccard {
+    margin: 10px 12px;
+    padding: 14px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+  }
+  .recloc {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .recmeta {
+    font-size: 13px;
+    color: var(--sub);
+    margin-top: 5px;
+  }
+  .recwage {
+    font-size: 13px;
+    color: var(--p);
+    font-weight: 700;
+    margin-top: 4px;
+  }
+  .recbtns {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .recbtns .btn {
+    flex: 1;
+    margin: 0;
+    padding: 9px;
+  }
+  .rectag {
+    float: right;
+    background: var(--psoft);
+    color: var(--p);
+    border-radius: 8px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+  }
 
-/* ===== §3 工资大卡片 ===== */
-.wcard{margin:10px 12px;padding:14px;background:var(--card);border-radius:14px;border:1px solid var(--line);cursor:pointer}
-.wtop{display:flex;justify-content:space-between;align-items:flex-start}
-.wname{font-size:18px;font-weight:800;color:var(--ink)}
-.wamt{font-size:18px;font-weight:800}.wamt.red{color:var(--warn)}.wamt.ok{color:var(--ok)}
-.wsub{font-size:12px;color:var(--sub);margin-top:4px}
-.wcard .btn{margin:10px 0 0}
+  /* ===== §3 工资大卡片 ===== */
+  .wcard {
+    margin: 10px 12px;
+    padding: 14px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+  }
+  .wtop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .wname {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .wamt {
+    font-size: 18px;
+    font-weight: 800;
+  }
+  .wamt.red {
+    color: var(--warn);
+  }
+  .wamt.ok {
+    color: var(--ok);
+  }
+  .wsub {
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 4px;
+  }
+  .wcard .btn {
+    margin: 10px 0 0;
+  }
 
-/* ===== §4 更表格子系统 ===== */
-.xtool{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 10px 0;font-size:12px}
-.xtool .mbtn{background:var(--card);border:1px solid var(--line);color:var(--p);border-radius:8px;padding:6px 10px;font-weight:700;cursor:pointer}
-.xtool .mbtn.solid{background:var(--p);color:#fff;border-color:var(--p)}
-.monthrow{display:flex;align-items:center;justify-content:center;gap:14px;margin:8px 10px 0;font-size:14px;font-weight:700;color:var(--ink)}
-.monthrow span{cursor:pointer;color:var(--p);font-size:18px;padding:2px 8px}
-.xls{margin:8px 10px;border:1px solid var(--line);border-radius:8px;overflow:auto;font-size:var(--cellfs);max-height:52vh}
-.xgrid{display:grid;grid-template-columns:46px 26px repeat(4,minmax(58px,1fr));min-width:max-content}
-.xg{padding:7px 5px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:center;text-align:center}
-.xhead .xg{background:var(--psoft);color:var(--p);font-weight:700;font-size:12px;position:sticky;top:0;z-index:2}
-.xdate,.xwk{color:var(--sub);font-weight:600}
-.wkndc{background:#ffe9e7}body.dark .wkndc{background:rgba(255,69,58,.18)}
-.cell{min-height:30px;cursor:grab}
-.cell.gap{color:var(--warn);font-weight:700;background:rgba(255,59,48,.08);cursor:pointer}
-.pill{border-radius:6px;padding:2px 7px;font-size:var(--cellfs);color:#fff;font-weight:600;white-space:nowrap}
+  /* ===== §4 更表格子系统 ===== */
+  .xtool {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 8px 10px 0;
+    font-size: 12px;
+  }
+  .xtool .mbtn {
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--p);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .xtool .mbtn.solid {
+    background: var(--p);
+    color: #fff;
+    border-color: var(--p);
+  }
+  .monthrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin: 8px 10px 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .monthrow span {
+    cursor: pointer;
+    color: var(--p);
+    font-size: 18px;
+    padding: 2px 8px;
+  }
+  .xls {
+    margin: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: auto;
+    font-size: var(--cellfs);
+    max-height: 52vh;
+  }
+  .xgrid {
+    display: grid;
+    grid-template-columns: 46px 26px repeat(4, minmax(58px, 1fr));
+    min-width: max-content;
+  }
+  .xg {
+    padding: 7px 5px;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .xhead .xg {
+    background: var(--psoft);
+    color: var(--p);
+    font-weight: 700;
+    font-size: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .xdate,
+  .xwk {
+    color: var(--sub);
+    font-weight: 600;
+  }
+  .wkndc {
+    background: #ffe9e7;
+  }
+  body.dark .wkndc {
+    background: rgba(255, 69, 58, 0.18);
+  }
+  .cell {
+    min-height: 30px;
+    cursor: grab;
+  }
+  .cell.gap {
+    color: var(--warn);
+    font-weight: 700;
+    background: rgba(255, 59, 48, 0.08);
+    cursor: pointer;
+  }
+  .pill {
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: var(--cellfs);
+    color: #fff;
+    font-weight: 600;
+    white-space: nowrap;
+  }
 
-/* ===== S4 WhatsApp 式 ===== */
-.s4pane{display:none;flex-direction:column;height:100%}
-.s4pane.on{display:flex}
-.conv{display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--card);border-bottom:1px solid var(--line);cursor:pointer}
-.conv .av{width:44px;height:44px;border-radius:50%;background:var(--psoft);color:var(--p);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:17px;flex-shrink:0}
-.conv .cbody{flex:1;min-width:0}
-.conv .nm{font-weight:700;font-size:15px;color:var(--ink)}
-.conv .lm{font-size:12px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
-.conv .meta{margin-left:auto;text-align:right;font-size:11px;color:var(--sub);flex-shrink:0}
-.unread{background:#25d366;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;display:inline-block;margin-top:4px;font-weight:700}
-.chat{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
-.msg{max-width:78%;border-radius:12px;padding:8px 11px;font-size:13px;background:var(--inset);align-self:flex-start;color:var(--ink)}
-.msg.me{align-self:flex-end;background:var(--psoft)}
-.pcard{border:1.5px solid var(--p);border-radius:12px;background:var(--card);padding:10px;max-width:85%;align-self:flex-start}
-.pcard .pt{font-weight:800;font-size:14px;color:var(--p)}
-.inputrow{display:flex;gap:8px;padding:8px 12px;background:var(--card);border-top:1px solid var(--line);flex-shrink:0}
-.inputrow input{flex:1;border:1px solid var(--line);border-radius:18px;padding:8px 12px;font-size:13px;background:var(--inset);color:var(--ink)}
-.inputrow span{color:var(--p);font-weight:700;font-size:13px;align-self:center;cursor:pointer}
-input.f{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:16px;margin-top:5px;background:var(--inset);color:var(--ink)}
-#toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:#1c2733;color:#fff;padding:9px 18px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;max-width:80%;text-align:center}
-.overlay{position:absolute;inset:0;background:rgba(10,20,30,.45);z-index:8;display:none;align-items:center;justify-content:center}
-.overlay.on{display:flex}
-.dlg{background:var(--card);border-radius:14px;padding:16px;width:80%;color:var(--ink)}
-.dlg .t2{font-weight:800;font-size:15px;margin-bottom:6px}
-/* 深色模式开关 */
-.swrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px}
-.sw{position:relative;width:46px;height:27px;background:var(--line);border-radius:14px;cursor:pointer;transition:.2s;flex-shrink:0}
-.sw:before{content:"";position:absolute;width:23px;height:23px;border-radius:50%;background:#fff;top:2px;left:2px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
-.sw.on{background:var(--ok)}.sw.on:before{transform:translateX(19px)}
-/* 日历（S2 缺人筛选） */
-.cal{display:none;margin:10px 12px;background:var(--card);border-radius:14px;border:1px solid var(--line);padding:12px}
-.cal.on{display:block}
-.calgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
-.calh{text-align:center;font-size:11px;color:var(--sub);font-weight:700}
-.calc{text-align:center;font-size:12px;padding:7px 0;border-radius:7px;background:var(--inset);color:var(--ink);position:relative;cursor:pointer}
-.calc.gap{background:rgba(255,59,48,.16);color:var(--warn);font-weight:700}
-.calc.full{background:rgba(52,199,89,.16);color:var(--ok)}
-.calc.sel{outline:2px solid var(--p);outline-offset:-2px;font-weight:800}
-.calc .gn{font-size:9px;display:block}
+  /* ===== S4 WhatsApp 式 ===== */
+  .s4pane {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+  }
+  .s4pane.on {
+    display: flex;
+  }
+  .conv {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 11px 14px;
+    background: var(--card);
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .conv .av {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--psoft);
+    color: var(--p);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 17px;
+    flex-shrink: 0;
+  }
+  .conv .cbody {
+    flex: 1;
+    min-width: 0;
+  }
+  .conv .nm {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .conv .lm {
+    font-size: 12px;
+    color: var(--sub);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+  .conv .meta {
+    margin-left: auto;
+    text-align: right;
+    font-size: 11px;
+    color: var(--sub);
+    flex-shrink: 0;
+  }
+  .unread {
+    background: #25d366;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 10px;
+    padding: 1px 6px;
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 700;
+  }
+  .chat {
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .msg {
+    max-width: 78%;
+    border-radius: 12px;
+    padding: 8px 11px;
+    font-size: 13px;
+    background: var(--inset);
+    align-self: flex-start;
+    color: var(--ink);
+  }
+  .msg.me {
+    align-self: flex-end;
+    background: var(--psoft);
+  }
+  .pcard {
+    border: 1.5px solid var(--p);
+    border-radius: 12px;
+    background: var(--card);
+    padding: 10px;
+    max-width: 85%;
+    align-self: flex-start;
+  }
+  .pcard .pt {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--p);
+  }
+  .inputrow {
+    display: flex;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .inputrow input {
+    flex: 1;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 8px 12px;
+    font-size: 13px;
+    background: var(--inset);
+    color: var(--ink);
+  }
+  .inputrow span {
+    color: var(--p);
+    font-weight: 700;
+    font-size: 13px;
+    align-self: center;
+    cursor: pointer;
+  }
+  input.f {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 9px 10px;
+    font-size: 16px;
+    margin-top: 5px;
+    background: var(--inset);
+    color: var(--ink);
+  }
+  #toast {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1c2733;
+    color: #fff;
+    padding: 9px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 999;
+    pointer-events: none;
+    max-width: 80%;
+    text-align: center;
+  }
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 20, 30, 0.45);
+    z-index: 8;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  .overlay.on {
+    display: flex;
+  }
+  .dlg {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 16px;
+    width: 80%;
+    color: var(--ink);
+  }
+  .dlg .t2 {
+    font-weight: 800;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  /* 深色模式开关 */
+  .swrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  .sw {
+    position: relative;
+    width: 46px;
+    height: 27px;
+    background: var(--line);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+    flex-shrink: 0;
+  }
+  .sw:before {
+    content: "";
+    position: absolute;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #fff;
+    top: 2px;
+    left: 2px;
+    transition: 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  .sw.on {
+    background: var(--ok);
+  }
+  .sw.on:before {
+    transform: translateX(19px);
+  }
+  /* 日历（S2 缺人筛选） */
+  .cal {
+    display: none;
+    margin: 10px 12px;
+    background: var(--card);
+    border-radius: 14px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.06);
+    padding: 12px;
+  }
+  .cal.on {
+    display: block;
+  }
+  .calgrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 8px;
+  }
+  .calh {
+    text-align: center;
+    font-size: 11px;
+    color: var(--sub);
+    font-weight: 700;
+  }
+  .calc {
+    text-align: center;
+    font-size: 12px;
+    padding: 7px 0;
+    border-radius: 7px;
+    background: var(--inset);
+    color: var(--ink);
+    position: relative;
+    cursor: pointer;
+  }
+  .calc.gap {
+    background: rgba(255, 59, 48, 0.16);
+    color: var(--warn);
+    font-weight: 700;
+  }
+  .calc.full {
+    background: rgba(52, 199, 89, 0.16);
+    color: var(--ok);
+  }
+  .calc.sel {
+    outline: 2px solid var(--p);
+    outline-offset: -2px;
+    font-weight: 800;
+  }
+  .calc .gn {
+    font-size: 9px;
+    display: block;
+  }
 </style>
 <body>
-<div class="bar">
-  <b>機型：</b>
-  <button id="d-se" onclick="setD('se')">SE 375</button>
-  <button id="d-i17" class="on" onclick="setD('i17')">iPhone 17</button>
-  <button id="d-max" onclick="setD('max')">17 Pro Max</button>
-  <button id="d-an" onclick="setD('an')">Android 360</button>
-  <button data-darktoggle onclick="toggleDark()" style="margin-left:auto">☾ 夜間</button>
-</div>
-<div id="toast"></div>
-
-<div class="frame">
-  <span class="pid" id="pidbox">S1</span>
-
-  <!-- ================= S1 首頁 ================= -->
-  <div class="scr on" id="S1">
-    <div class="top">今日總覽 <span style="display:flex;gap:10px;align-items:center"><span class="mini">7月19日（六）・波哥</span><span class="act" data-darktoggle onclick="toggleDark()">☾ 夜間</span></span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">待處理</div>
-        <div class="item link" onclick="go('S5')"><span>待處理報名</span><span class="badge">3 宗 ›</span></div>
-        <div class="item link" onclick="toS4newest()"><span>最新收到訊息</span><span class="badge">未讀 2 ›</span></div>
-        <div class="item link" onclick="go('S9')"><span>今日各池在崗總覽</span><span class="badge">3 池 ›</span></div>
-      </div>
-      <!-- §1 招募情报筛选器：筛选「邊啲招募消息同條件匹配」（非顯示開關） -->
-      <div class="filt" id="filtS1">
-        <div class="filthead" onclick="toggleFilt(this)"><span>🔍 篩選招募（工種 / 地區 / 來源）</span><span class="fchev">▾</span></div>
-        <div class="filtbody">
-          <div class="frow"><span class="flab">工種</span><span class="chip on" onclick="pickChip(this);filterRec()">全部</span><span class="chip" onclick="pickChip(this);filterRec()">短工</span><span class="chip" onclick="pickChip(this);filterRec()">長工</span></div>
-          <div class="frow"><span class="flab">地區</span><span class="chip on" onclick="pickChip(this);filterRec()">全港</span><span class="chip" onclick="pickChip(this,'港島');filterRec()">港島</span><span class="chip" onclick="pickChip(this,'九龍');filterRec()">九龍</span><span class="chip" onclick="pickChip(this,'新界');filterRec()">新界</span></div>
-          <div class="frow sub2" style="display:none"><span class="flab">九龍→</span><span class="chip" onclick="pickChip(this);filterRec()">旺角</span><span class="chip" onclick="pickChip(this);filterRec()">油麻地</span><span class="chip" onclick="pickChip(this);filterRec()">深水埗</span></div>
-          <div class="frow suponly"><span class="flab">來源</span><span class="chip on" onclick="pickChip(this);filterRec()">全部</span><span class="chip" onclick="pickChip(this);filterRec()">只我發布</span><span class="chip" onclick="pickChip(this);filterRec()">排除我</span></div>
-        </div>
-      </div>
-      <!-- §2 招募卡片列表（按上面條件篩選；主管端一律顯示時薪） -->
-      <div id="recListS1">
-        <div class="reccard" data-type="short" data-region="港島" data-src="mine"><span class="rectag">我發布・可管理</span>
-          <div class="recloc">南區・海怡半島</div>
-          <div class="recmeta">週六早更 7:00–15:00 ・ 近港鐵 ・ 大池兩崗位</div>
-          <div class="recwage">時薪 $85</div>
-          <div class="recbtns"><span class="btn" onclick="go('S7')">管理此招募</span><span class="btn ghost" onclick="go('S5')">睇報名</span></div>
-        </div>
-        <div class="reccard" data-type="short" data-region="九龍" data-src="other">
-          <div class="recloc">九龍・旺角</div>
-          <div class="recmeta">週日晚更 14:00–22:00 ・ 詳情請聯繫（情形B・保密）</div>
-          <div class="recwage">時薪：聊天再傾</div>
-          <div class="recbtns"><span class="btn ghost" onclick="toast('入聊天同明哥傾（demo 簡化）')">聯繫以報更</span></div>
-        </div>
-        <div class="reccard" data-type="long" data-region="新界" data-src="other">
-          <div class="recloc">新界・沙田</div>
-          <div class="recmeta">8 月整月長更 ・ 逐日勾選得閒更次（情形A・公開）</div>
-          <div class="recwage">時薪 $80–88</div>
-          <div class="recbtns"><span class="btn" onclick="toast('主管可兼救生員，一樣報得名（資歷過管理員審核）')">報名</span></div>
-        </div>
-        <div class="reccard" data-type="short" data-region="港島" data-src="other">
-          <div class="recloc">港島・北角</div>
-          <div class="recmeta">週五早更 7:00–15:00 ・ 室內池・一崗位（情形A・公開）</div>
-          <div class="recwage">時薪 $88</div>
-          <div class="recbtns"><span class="btn" onclick="toast('報名（demo）')">報名</span><span class="btn ghost" onclick="toast('入聊天傾（demo）')">聯繫</span></div>
-        </div>
-        <div class="recempty card" style="display:none"><div class="sub" style="text-align:center">冇符合條件嘅招募</div></div>
-      </div>
-    </div>
-    <div class="fab" onclick="go('S7')">＋ 發布招募</div>
-    <div class="nav"><div class="on">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+  <div class="bar">
+    <span style="font-size: 11px; opacity: 0.65"
+      >PoolMind・主管端 demo（19.5:9 固定比例）</span
+    >
+    <button data-darktoggle onclick="toggleDark()" style="margin-left: auto">
+      ☾ 夜間
+    </button>
   </div>
+  <div id="toast"></div>
 
-  <!-- ================= S2 更表页 ================= -->
-  <div class="scr" id="S2">
-    <div class="top"><span>更表 <span class="mini">泳池一覽</span></span><span class="act" onclick="go('S7')">＋招募</span></div>
-    <div class="fbar" id="s2fbar"><span id="s2ftxt">只顯示缺人泳池</span><span class="x" onclick="cancelS2Filter()">✕ 取消篩選・顯示全部</span></div>
-    <div class="pbody" id="s2body">
-      <!-- §1 筛选器・更表变体（位于顶部：地区 + 缺人 → 展开日历） -->
-      <div class="filt" id="filtS2">
-        <div class="filthead" onclick="toggleFilt(this)"><span>🔍 篩選更表（地區 / 缺人 → 展開日曆）</span><span class="fchev">▾</span></div>
-        <div class="filtbody">
-          <div class="frow"><span class="flab">地區</span><span class="chip on" onclick="pickChip(this);filterPoolRegion('全港')">全港</span><span class="chip" onclick="pickChip(this);filterPoolRegion('港島')">港島</span><span class="chip" onclick="pickChip(this);filterPoolRegion('九龍')">九龍</span><span class="chip" onclick="pickChip(this);filterPoolRegion('新界')">新界</span></div>
-          <div class="frow"><span class="flab">缺人</span><span class="chip" onclick="pickChip(this);showCal()">只看缺人日</span><span class="chip on" onclick="pickChip(this);hideCal()">全部</span></div>
-        </div>
-      </div>
-      <!-- 今明缺人总数（选特定日子后，「明日缺人」会被该日缺人总数替换） -->
-      <div class="card"><div class="t">今明缺人總數（點數字篩選缺人泳池）</div>
-        <div class="gaprow">
-          <div class="gapbox" onclick="toS2('today')"><div class="gnum" id="gTod">1</div><div class="gcap" id="gTodCap">今日缺人 ›</div></div>
-          <div class="gapbox" onclick="toS2('tmr')"><div class="gnum" id="gTmr">1</div><div class="gcap" id="gTmrCap">明日缺人 ›</div></div>
-        </div>
-      </div>
-      <!-- 缺人日历（含月份选择；点一日 → 显示当天缺人泳池 + 替换「明日缺人」） -->
-      <div class="cal" id="s2cal">
-        <div class="monthrow" style="margin:0 0 6px"><span onclick="calMonth(-1)">◀</span><span id="calMonthLbl" style="color:var(--ink);cursor:default;font-size:14px">2025年7月</span><span onclick="calMonth(1)">▶</span></div>
-        <div class="t" style="margin:0">缺人日曆（紅＝缺人／綠＝齊人，格上數字＝當天缺人總數）・揀一日睇當天缺人泳池</div>
-        <div class="calgrid" id="calGrid"></div>
-      </div>
-      <div id="s2pools">
-        <div class="card pool" data-gap="today" data-region="港島"><div class="item link" onclick="go('S3')"><div><b>海怡半島</b><div class="sub">南區・早更 7–15・晚更 14–22｜夏季模板</div></div><span class="red" id="gapHoi">今日缺 1 ›</span></div></div>
-        <div class="card pool" data-gap="" data-region="九龍"><div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>黃埔花園</b><div class="sub">九龍・全日 9–18｜平日模板</div></div><span class="green">齊人 ›</span></div></div>
-        <div class="card pool" data-gap="tmr" data-region="新界"><div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')"><div><b>嘉湖山莊</b><div class="sub">新界・晚更 14–22｜夏季模板</div></div><span class="red">明日缺 1 ›</span></div></div>
-      </div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div class="on">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
+  <div class="frame">
+    <span class="pid" id="pidbox">S1</span>
 
-  <!-- ================= S3 月更表（§4 全套） ================= -->
-  <div class="scr" id="S3">
-    <div class="top"><span><span class="back" onclick="go('S2')">‹</span> 海怡半島</span><span class="mini">大池・4 位置</span></div>
-    <div class="pbody">
-      <div class="monthrow"><span onclick="chgMonth(-1)">◀</span><span id="curMonth" style="color:var(--ink);cursor:default;font-size:14px">2025年7月</span><span onclick="chgMonth(1)">▶</span></div>
-      <div class="xtool">
-        <span class="mbtn solid" onclick="autoFill()">一鍵排更</span>
-        <span class="mbtn solid" onclick="tidySchedule()">一鍵整理</span>
-        <span style="margin-left:auto;color:var(--sub)">字號</span>
-        <span class="mbtn" onclick="cellFont(-1)">A−</span>
-        <span class="mbtn" onclick="cellFont(1)">A+</span>
+    <!-- ================= S1 首頁 ================= -->
+    <div class="scr on" id="S1">
+      <div class="top">
+        今日總覽
+        <span style="display: flex; gap: 10px; align-items: center"
+          ><span class="mini">7月19日（六）・波哥</span
+          ><span class="act" data-darktoggle onclick="toggleDark()"
+            >☾ 夜間</span
+          ></span
+        >
       </div>
-      <div class="xls">
-        <div class="xgrid" id="xgrid"></div>
+      <div class="wx">
+        <span class="sig ts" id="wxsig" onclick="cycSig()">⛈ 雷暴</span>
+        <span class="wxdate" id="wxdate">7月21日（一）</span>
+        <span class="wxtime" id="wxtime">14:32</span>
+        <span class="hko" onclick="openHKO()">🌐 香港天文台 ›</span>
       </div>
-      <div class="card"><div class="sub"><b>4 位置列</b>（表頭 1–4），一行一日；<b>週六日</b>：紅底只落喺日期／星期 cell。<b>每人一色</b>；<b>拖拽</b>名牌可交換兩格；<b>缺</b>格點一下＝為呢個位開招募；<b>一鍵排更</b>填缺；<b>一鍵整理</b>把每人竪直對齊主列；<b>A−/A+</b> 放大縮小（裝唔落自動出橫向滾動條）。</div></div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div class="on">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
-
-  <!-- ================= S4 訊息 ================= -->
-  <div class="scr" id="S4">
-    <div class="s4pane on" id="s4list">
-      <div class="top">訊息 <span class="mini">救生員會話</span></div>
-      <div class="fbar" id="s4fbar"><span>只顯示最新收到嘅訊息</span><span class="x" onclick="cancelS4Filter()">✕ 取消篩選・顯示全部</span></div>
       <div class="pbody">
-        <div class="conv" data-recv="1" onclick="openChat()">
-          <div class="av">陳</div>
-          <div class="cbody"><div class="nm">陳大文 <span class="badge" style="font-size:10px;padding:1px 6px">未認證</span></div><div class="lm">$90 啦，我有五年經驗</div></div>
-          <div class="meta">14:20<div class="unread">2</div></div>
+        <div class="card">
+          <div class="t">待處理</div>
+          <div class="item link" onclick="go('S5')">
+            <span>待處理報名</span><span class="badge">3 宗 ›</span>
+          </div>
+          <div class="item link" onclick="toS4newest()">
+            <span>最新收到訊息</span><span class="badge">未讀 2 ›</span>
+          </div>
+          <div class="item link" onclick="go('S9')">
+            <span>今日各池在崗總覽</span><span class="badge">3 池 ›</span>
+          </div>
         </div>
-        <div class="conv" data-recv="1" onclick="toast('demo 只做咗陳大文呢個會話')">
-          <div class="av">明</div>
-          <div class="cbody"><div class="nm">阿明</div><div class="lm">星期日得唔得？我想調更</div></div>
-          <div class="meta">13:05<div class="unread">1</div></div>
+        <!-- §1 招募情报筛选器：筛选「邊啲招募消息同條件匹配」（非顯示開關） -->
+        <div class="filt" id="filtS1">
+          <div class="filthead" onclick="toggleFilt(this)">
+            <span>🔍 篩選招募（工種 / 地區 / 來源）</span
+            ><span class="fchev">▾</span>
+          </div>
+          <div class="filtbody">
+            <div class="frow">
+              <span class="flab">工種</span
+              ><span
+                class="chip on"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >全部</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >短工</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >長工</span
+              >
+            </div>
+            <div class="frow">
+              <span class="flab">地區</span
+              ><span
+                class="chip on"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >全港</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this, '港島');
+                  filterRec();
+                "
+                >港島</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this, '九龍');
+                  filterRec();
+                "
+                >九龍</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this, '新界');
+                  filterRec();
+                "
+                >新界</span
+              >
+            </div>
+            <div class="frow sub2" style="display: none">
+              <span class="flab">九龍→</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >旺角</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >油麻地</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >深水埗</span
+              >
+            </div>
+            <div class="frow suponly">
+              <span class="flab">來源</span
+              ><span
+                class="chip on"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >全部</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >只我發布</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterRec();
+                "
+                >排除我</span
+              >
+            </div>
+          </div>
         </div>
-        <div class="conv" data-recv="0" onclick="toast('demo 只做咗陳大文呢個會話')">
-          <div class="av">強</div>
-          <div class="cbody"><div class="nm">阿強</div><div class="lm">收到，聽日 7 點見</div></div>
-          <div class="meta">昨天</div>
-        </div>
-        <div class="conv" data-recv="0" onclick="toast('demo 只做咗陳大文呢個會話')">
-          <div class="av">龍</div>
-          <div class="cbody"><div class="nm">細龍</div><div class="lm">好，我 14:00 接更</div></div>
-          <div class="meta">昨天</div>
-        </div>
-        <div class="conv" data-recv="0" onclick="toast('demo 只做咗陳大文呢個會話')">
-          <div class="av">水</div>
-          <div class="cbody"><div class="nm">阿水 <span class="green" style="font-size:10px">已認證</span></div><div class="lm">我週六都得閒，有更嗎？</div></div>
-          <div class="meta">週三</div>
+        <!-- §2 招募卡片列表（按上面條件篩選；主管端一律顯示時薪） -->
+        <div id="recListS1">
+          <div
+            class="reccard"
+            data-type="short"
+            data-region="港島"
+            data-src="mine"
+          >
+            <span class="rectag">我發布・可管理</span>
+            <div class="recloc">南區・海怡半島</div>
+            <div class="recmeta">
+              週六早更 7:00–15:00 ・ 近港鐵 ・ 大池兩崗位
+            </div>
+            <div class="recwage">時薪 $85</div>
+            <div class="recbtns">
+              <span class="btn" onclick="go('S7')">管理此招募</span
+              ><span class="btn ghost" onclick="go('S5')">睇報名</span>
+            </div>
+          </div>
+          <div
+            class="reccard"
+            data-type="short"
+            data-region="九龍"
+            data-src="other"
+          >
+            <div class="recloc">九龍・旺角</div>
+            <div class="recmeta">
+              週日晚更 14:00–22:00 ・ 詳情請聯繫（情形B・保密）
+            </div>
+            <div class="recwage">時薪：聊天再傾</div>
+            <div class="recbtns">
+              <span
+                class="btn ghost"
+                onclick="toast('入聊天同明哥傾（demo 簡化）')"
+                >聯繫以報更</span
+              >
+            </div>
+          </div>
+          <div
+            class="reccard"
+            data-type="long"
+            data-region="新界"
+            data-src="other"
+          >
+            <div class="recloc">新界・沙田</div>
+            <div class="recmeta">
+              8 月整月長更 ・ 逐日勾選得閒更次（情形A・公開）
+            </div>
+            <div class="recwage">時薪 $80–88</div>
+            <div class="recbtns">
+              <span
+                class="btn"
+                onclick="
+                  toast('主管可兼救生員，一樣報得名（資歷過管理員審核）')
+                "
+                >報名</span
+              >
+            </div>
+          </div>
+          <div
+            class="reccard"
+            data-type="short"
+            data-region="港島"
+            data-src="other"
+          >
+            <div class="recloc">港島・北角</div>
+            <div class="recmeta">
+              週五早更 7:00–15:00 ・ 室內池・一崗位（情形A・公開）
+            </div>
+            <div class="recwage">時薪 $88</div>
+            <div class="recbtns">
+              <span class="btn" onclick="toast('報名（demo）')">報名</span
+              ><span class="btn ghost" onclick="toast('入聊天傾（demo）')"
+                >聯繫</span
+              >
+            </div>
+          </div>
+          <div class="recempty card" style="display: none">
+            <div class="sub" style="text-align: center">冇符合條件嘅招募</div>
+          </div>
         </div>
       </div>
-      <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div class="on">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+      <div class="fab" onclick="go('S7')">＋ 發布招募</div>
+      <div class="nav">
+        <div class="on">總覽</div>
+        <div onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
     </div>
-    <div class="s4pane" id="s4chat">
-      <div class="top"><span><span class="back" onclick="backList()">‹</span> 陳大文</span><span class="mini">未認證 ⚠︎｜救生員證 ›</span></div>
-      <div class="pbody"><div class="chat" id="chatbox">
-        <div class="msg">你好，見到週六短更招人，我得閒</div>
-        <div class="msg me">好，時薪 $85 得唔得？</div>
-        <div class="msg">$90 啦，我有五年經驗</div>
-      </div></div>
-      <div class="inputrow"><input id="chatin" placeholder="輸入訊息…"><span onclick="sendMsg()">發送</span><span onclick="sendCard()">📍卡片</span></div>
-      <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div class="on">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
+
+    <!-- ================= S2 更表页 ================= -->
+    <div class="scr" id="S2">
+      <div class="top">
+        <span>更表 <span class="mini">泳池一覽</span></span
+        ><span class="topfab" onclick="go('S7')">＋ 招募</span>
+      </div>
+      <div class="fbar" id="s2fbar">
+        <span id="s2ftxt">只顯示缺人泳池</span
+        ><span class="x" onclick="cancelS2Filter()">✕ 取消篩選・顯示全部</span>
+      </div>
+      <div class="pbody" id="s2body">
+        <!-- §1 筛选器・更表变体（位于顶部：地区 + 缺人 → 展开日历） -->
+        <div class="filt" id="filtS2">
+          <div class="filthead" onclick="toggleFilt(this)">
+            <span>🔍 篩選更表（地區 / 缺人 → 展開日曆）</span
+            ><span class="fchev">▾</span>
+          </div>
+          <div class="filtbody">
+            <div class="frow">
+              <span class="flab">地區</span
+              ><span
+                class="chip on"
+                onclick="
+                  pickChip(this);
+                  filterPoolRegion('全港');
+                "
+                >全港</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterPoolRegion('港島');
+                "
+                >港島</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterPoolRegion('九龍');
+                "
+                >九龍</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  filterPoolRegion('新界');
+                "
+                >新界</span
+              >
+            </div>
+            <div class="frow">
+              <span class="flab">缺人</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  showCal();
+                "
+                >只看缺人日</span
+              ><span
+                class="chip on"
+                onclick="
+                  pickChip(this);
+                  hideCal();
+                "
+                >全部</span
+              >
+            </div>
+          </div>
+        </div>
+        <!-- 今明缺人总数（选特定日子后，「明日缺人」会被该日缺人总数替换） -->
+        <div class="card">
+          <div class="t">今明缺人總數（點數字篩選缺人泳池）</div>
+          <div class="gaprow">
+            <div class="gapbox" onclick="toS2('today')">
+              <div class="gnum" id="gTod">1</div>
+              <div class="gcap" id="gTodCap">今日缺人 ›</div>
+            </div>
+            <div class="gapbox" onclick="toS2('tmr')">
+              <div class="gnum" id="gTmr">1</div>
+              <div class="gcap" id="gTmrCap">明日缺人 ›</div>
+            </div>
+          </div>
+        </div>
+        <!-- 缺人日历（含月份选择；点一日 → 显示当天缺人泳池 + 替换「明日缺人」） -->
+        <div class="cal" id="s2cal">
+          <div class="monthrow" style="margin: 0 0 6px">
+            <span onclick="calMonth(-1)">◀</span
+            ><span
+              id="calMonthLbl"
+              style="color: var(--ink); cursor: default; font-size: 14px"
+              >2025年7月</span
+            ><span onclick="calMonth(1)">▶</span>
+          </div>
+          <div class="t" style="margin: 0">
+            缺人日曆（紅＝缺人／綠＝齊人，格上數字＝當天缺人總數）・揀一日睇當天缺人泳池
+          </div>
+          <div class="calgrid" id="calGrid"></div>
+        </div>
+        <div id="s2pools">
+          <div class="card pool" data-gap="today" data-region="港島">
+            <div class="item link" onclick="go('S3')">
+              <div>
+                <b>海怡半島</b>
+                <div class="sub">南區・早更 7–15・晚更 14–22｜夏季模板</div>
+              </div>
+              <span class="red" id="gapHoi">今日缺 1 ›</span>
+            </div>
+          </div>
+          <div class="card pool" data-gap="" data-region="九龍">
+            <div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')">
+              <div>
+                <b>黃埔花園</b>
+                <div class="sub">九龍・全日 9–18｜平日模板</div>
+              </div>
+              <span class="green">齊人 ›</span>
+            </div>
+          </div>
+          <div class="card pool" data-gap="tmr" data-region="新界">
+            <div class="item link" onclick="toast('demo 只做咗海怡半島呢條線')">
+              <div>
+                <b>嘉湖山莊</b>
+                <div class="sub">新界・晚更 14–22｜夏季模板</div>
+              </div>
+              <span class="red">明日缺 1 ›</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div class="on">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S3 月更表（§4 全套） ================= -->
+    <div class="scr" id="S3">
+      <div class="top">
+        <span><span class="back" onclick="go('S2')">‹</span> 海怡半島</span
+        ><span class="mini">大池・4 位置</span>
+      </div>
+      <div class="pbody">
+        <div class="monthrow">
+          <span onclick="chgMonth(-1)">◀</span
+          ><span
+            id="curMonth"
+            style="color: var(--ink); cursor: default; font-size: 14px"
+            >2025年7月</span
+          ><span onclick="chgMonth(1)">▶</span>
+        </div>
+        <div class="xtool">
+          <span class="mbtn solid" onclick="autoFill()">一鍵排更</span>
+          <span class="mbtn solid" onclick="tidySchedule()">一鍵整理</span>
+          <span style="margin-left: auto; color: var(--sub)">字號</span>
+          <span class="mbtn" onclick="cellFont(-1)">A−</span>
+          <span class="mbtn" onclick="cellFont(1)">A+</span>
+        </div>
+        <div class="xls">
+          <div class="xgrid" id="xgrid"></div>
+        </div>
+        <div class="card">
+          <div class="sub">
+            <b>4 位置列</b>（表頭
+            1–4），一行一日；<b>週六日</b>：紅底只落喺日期／星期
+            cell。<b>每人一色</b>；<b>拖拽</b>名牌可交換兩格；<b>缺</b>格點一下＝為呢個位開招募；<b>一鍵排更</b>填缺；<b>一鍵整理</b>把每人竪直對齊主列；<b
+              >A−/A+</b
+            >
+            放大縮小（裝唔落自動出橫向滾動條）。
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div class="on">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S4 訊息 ================= -->
+    <div class="scr" id="S4">
+      <div class="s4pane on" id="s4list">
+        <div class="top">訊息 <span class="mini">救生員會話</span></div>
+        <div class="fbar" id="s4fbar">
+          <span>只顯示最新收到嘅訊息</span
+          ><span class="x" onclick="cancelS4Filter()"
+            >✕ 取消篩選・顯示全部</span
+          >
+        </div>
+        <div class="pbody">
+          <div class="conv" data-recv="1" onclick="openChat()">
+            <div class="av">陳</div>
+            <div class="cbody">
+              <div class="nm">
+                陳大文
+                <span class="badge" style="font-size: 10px; padding: 1px 6px"
+                  >未認證</span
+                >
+              </div>
+              <div class="lm">$90 啦，我有五年經驗</div>
+            </div>
+            <div class="meta">
+              14:20
+              <div class="unread">2</div>
+            </div>
+          </div>
+          <div
+            class="conv"
+            data-recv="1"
+            onclick="toast('demo 只做咗陳大文呢個會話')"
+          >
+            <div class="av">明</div>
+            <div class="cbody">
+              <div class="nm">阿明</div>
+              <div class="lm">星期日得唔得？我想調更</div>
+            </div>
+            <div class="meta">
+              13:05
+              <div class="unread">1</div>
+            </div>
+          </div>
+          <div
+            class="conv"
+            data-recv="0"
+            onclick="toast('demo 只做咗陳大文呢個會話')"
+          >
+            <div class="av">強</div>
+            <div class="cbody">
+              <div class="nm">阿強</div>
+              <div class="lm">收到，聽日 7 點見</div>
+            </div>
+            <div class="meta">昨天</div>
+          </div>
+          <div
+            class="conv"
+            data-recv="0"
+            onclick="toast('demo 只做咗陳大文呢個會話')"
+          >
+            <div class="av">龍</div>
+            <div class="cbody">
+              <div class="nm">細龍</div>
+              <div class="lm">好，我 14:00 接更</div>
+            </div>
+            <div class="meta">昨天</div>
+          </div>
+          <div
+            class="conv"
+            data-recv="0"
+            onclick="toast('demo 只做咗陳大文呢個會話')"
+          >
+            <div class="av">水</div>
+            <div class="cbody">
+              <div class="nm">
+                阿水 <span class="green" style="font-size: 10px">已認證</span>
+              </div>
+              <div class="lm">我週六都得閒，有更嗎？</div>
+            </div>
+            <div class="meta">週三</div>
+          </div>
+        </div>
+        <div class="nav">
+          <div onclick="go('S1')">總覽</div>
+          <div onclick="go('S2')">更表</div>
+          <div class="on">訊息</div>
+          <div onclick="go('S6')">工資</div>
+          <div onclick="go('S8')">我的</div>
+        </div>
+      </div>
+      <div class="s4pane" id="s4chat">
+        <div class="top">
+          <span><span class="back" onclick="backList()">‹</span> 陳大文</span
+          ><span class="mini">未認證 ⚠︎｜救生員證 ›</span>
+        </div>
+        <div class="pbody">
+          <div class="chat" id="chatbox">
+            <div class="msg">你好，見到週六短更招人，我得閒</div>
+            <div class="msg me">好，時薪 $85 得唔得？</div>
+            <div class="msg">$90 啦，我有五年經驗</div>
+          </div>
+        </div>
+        <div class="inputrow">
+          <input id="chatin" placeholder="輸入訊息…" /><span onclick="sendMsg()"
+            >發送</span
+          ><span onclick="sendCard()">📍卡片</span>
+        </div>
+        <div class="nav">
+          <div onclick="go('S1')">總覽</div>
+          <div onclick="go('S2')">更表</div>
+          <div class="on">訊息</div>
+          <div onclick="go('S6')">工資</div>
+          <div onclick="go('S8')">我的</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= S5 全部待確認報名（聚合） ================= -->
+    <div class="scr" id="S5">
+      <div class="top">
+        <span
+          ><span class="back" onclick="go('S1')">‹</span> 全部待確認報名</span
+        ><span class="mini">跨所有池</span>
+      </div>
+      <div class="pbody">
+        <div class="card">
+          <div class="t">海怡半島・週六短更 7/19（缺 1）</div>
+          <div class="item">
+            <div>
+              <b>陳大文</b> <span class="badge">未認證</span>
+              <div class="sub">3 分鐘前・傾好 $88/時</div>
+            </div>
+            <span
+              class="btn"
+              id="btnChan"
+              style="margin: 0; padding: 6px 12px"
+              onclick="openWage()"
+              >確認入表</span
+            >
+          </div>
+          <div class="item">
+            <div>
+              <b>阿水</b> <span class="green">已認證</span>
+              <div class="sub">18 分鐘前・未傾價</div>
+            </div>
+            <span
+              class="btn ghost"
+              style="margin: 0; padding: 6px 12px"
+              onclick="go('S4')"
+              >入聊天傾價</span
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="t">嘉湖山莊・週日晚更 7/20（缺 1）</div>
+          <div class="item">
+            <div>
+              <b>大隻佬 Ken</b> <span class="green">已認證</span>
+              <div class="sub">1 小時前・傾好 $90/時</div>
+            </div>
+            <span
+              class="btn"
+              style="margin: 0; padding: 6px 12px"
+              onclick="toast('demo：確認入表流程同陳大文一致')"
+              >確認入表</span
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="t">沙田・8 月長更（收 3 宗）</div>
+          <div class="item">
+            <div>
+              <b>阿 Jo</b> <span class="green">已認證</span>
+              <div class="sub">今早・逐日勾更中</div>
+            </div>
+            <span
+              class="btn ghost"
+              style="margin: 0; padding: 6px 12px"
+              onclick="toast('demo：睇佢勾咗邊幾日')"
+              >睇可上更日</span
+            >
+          </div>
+        </div>
+        <div class="card">
+          <div class="sub">
+            別池主管確認咗嘅人會自動隱藏；對方取消會恢復顯示（搶人機制）。
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div class="on" onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S6 工資（§3 大卡片 + §1 筛选） ================= -->
+    <div class="scr" id="S6">
+      <div class="top">
+        <span>工資 <span class="mini">7 月</span></span
+        ><span class="act" onclick="toast('已匯出 Excel（demo）')">匯出 ⬇</span>
+      </div>
+      <div class="pbody">
+        <div class="card">
+          <div class="t">未結清總額</div>
+          <div
+            style="font-size: 30px; font-weight: 800; color: var(--warn)"
+            id="oweTotal"
+          >
+            $12,460
+          </div>
+          <div class="sub">每晚 00:00 自動更新</div>
+        </div>
+        <div class="filt" id="filtS6">
+          <div class="filthead" onclick="toggleFilt(this)">
+            <span>🔍 篩選（月份 / 結清狀態）</span><span class="fchev">▾</span>
+          </div>
+          <div class="filtbody">
+            <div class="frow">
+              <span class="flab">月份</span
+              ><span class="chip on" onclick="pickChip(this)">7 月</span
+              ><span class="chip" onclick="pickChip(this)">6 月</span
+              ><span class="chip" onclick="pickChip(this)">5 月</span>
+            </div>
+            <div class="frow">
+              <span class="flab">狀態</span
+              ><span
+                class="chip on"
+                onclick="
+                  pickChip(this);
+                  wageFilter('all');
+                "
+                >全部</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  wageFilter('owe');
+                "
+                >未結</span
+              ><span
+                class="chip"
+                onclick="
+                  pickChip(this);
+                  wageFilter('ok');
+                "
+                >已結</span
+              >
+            </div>
+          </div>
+        </div>
+        <div id="wageList">
+          <div class="wcard" data-st="owe" onclick="openWageDetail('阿明')">
+            <div class="wtop">
+              <span class="wname">阿明</span
+              ><span class="wamt red">$4,320 未清</span>
+            </div>
+            <div class="wsub">96 小時・$82/時・7 月 12 個更</div>
+            <div
+              class="btn"
+              onclick="
+                event.stopPropagation();
+                confirmPay(this, '阿明');
+              "
+            >
+              確認支付
+            </div>
+          </div>
+          <div class="wcard" data-st="owe" onclick="openWageDetail('阿強')">
+            <div class="wtop">
+              <span class="wname">阿強</span
+              ><span class="wamt red">$5,440 未清</span>
+            </div>
+            <div class="wsub">64 小時・$85/時・7 月 8 個更</div>
+            <div
+              class="btn"
+              onclick="
+                event.stopPropagation();
+                confirmPay(this, '阿強');
+              "
+            >
+              確認支付
+            </div>
+          </div>
+          <div class="wcard" data-st="ok" onclick="openWageDetail('細龍')">
+            <div class="wtop">
+              <span class="wname">細龍</span
+              ><span class="wamt ok">$6,940 已結清 ✓</span>
+            </div>
+            <div class="wsub">88 小時・$80/時＋遲到扣 $100・雙向已確認</div>
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div class="on">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S6b 工資详情（单日明细 + 单日确认） ================= -->
+    <div class="scr" id="S6D">
+      <div class="top">
+        <span
+          ><span class="back" onclick="go('S6')">‹</span>
+          <span id="wdName">阿明</span>・工資明細</span
+        ><span class="mini">7 月</span>
+      </div>
+      <div class="pbody">
+        <div class="card">
+          <div class="t">合計</div>
+          <div
+            style="font-size: 26px; font-weight: 800; color: var(--warn)"
+            id="wdTotal"
+          >
+            $4,320
+          </div>
+          <div class="sub">逐日確認支付，確認後等對方點「已收」即雙向確認</div>
+        </div>
+        <div class="card" id="wdRows">
+          <div class="item">
+            <div>
+              <b>7/03（四）早更</b>
+              <div class="sub">8 小時・$82/時 = $656</div>
+            </div>
+            <span
+              class="btn"
+              style="margin: 0; padding: 5px 11px"
+              onclick="dayPay(this)"
+              >確認支付</span
+            >
+          </div>
+          <div class="item">
+            <div>
+              <b>7/06（日）晚更</b>
+              <div class="sub">8 小時・$82/時 = $656</div>
+            </div>
+            <span
+              class="btn"
+              style="margin: 0; padding: 5px 11px"
+              onclick="dayPay(this)"
+              >確認支付</span
+            >
+          </div>
+          <div class="item">
+            <div>
+              <b>7/10（四）早更</b>
+              <div class="sub">8 小時・$82/時 = $656</div>
+            </div>
+            <span
+              class="btn"
+              style="margin: 0; padding: 5px 11px"
+              onclick="dayPay(this)"
+              >確認支付</span
+            >
+          </div>
+          <div class="item">
+            <div>
+              <b>7/13（日）早更</b>
+              <div class="sub">
+                8 小時・$82/時 = $656 <span class="red">・遲到扣 $50</span>
+              </div>
+            </div>
+            <span
+              class="btn"
+              style="margin: 0; padding: 5px 11px"
+              onclick="dayPay(this)"
+              >確認支付</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div class="on" onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S7 發布招募 ================= -->
+    <div class="scr" id="S7">
+      <div class="top">
+        <span><span class="back" onclick="go('S1')">‹</span> 發布招募</span>
+      </div>
+      <div class="pbody">
+        <div class="card">
+          <div class="t">招募類型</div>
+          <div class="item"><span>◉ 單日短更　○ 整月長更</span></div>
+          <div class="item"><span>泳池</span><span>海怡半島 ▾</span></div>
+          <div class="item">
+            <span>日期・更次</span><span>7/26（六）早更 ▾</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="t">公開哪啲字段？（其餘只喺聊天先講）</div>
+          <div class="item"><span>☑ 日期時間　☑ 區域（南區）</span></div>
+          <div class="item"><span>☑ 地鐵站（海怡半島站）　☐ 泳池名</span></div>
+          <div class="item"><span>☐ 工資　☑ 備註（大池，兩崗位）</span></div>
+        </div>
+        <div class="btn" onclick="genText()">生成 WhatsApp 文案並轉發 ↗</div>
+        <div class="card" id="waText" style="display: none">
+          <div class="sub">
+            『【招人】7/26 週六早更 7-15 南區近港鐵，大池兩崗位，有意 click：
+            poolmind.hk/r/bogor』
+          </div>
+          <div
+            class="btn ghost"
+            style="margin: 8px 0 0"
+            onclick="toast('已複製，跳轉 WhatsApp（demo）')"
+          >
+            複製並跳轉 WhatsApp
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div class="on" onclick="go('S1')">總覽</div>
+        <div onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S8 我的 ================= -->
+    <div class="scr" id="S8">
+      <div class="top">我的 <span class="mini">波哥</span></div>
+      <div class="pbody">
+        <div class="card">
+          <div class="t">顯示</div>
+          <div class="swrow">
+            <span>深色模式</span>
+            <div class="sw" id="darkSwitch" onclick="toggleDark()"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="t">帳號</div>
+          <div class="item"><span>對外顯示名</span><span>波哥 ›</span></div>
+          <div class="item"><span>更改密碼</span><span>›</span></div>
+          <div class="item"><span>換綁 WhatsApp 號碼</span><span>›</span></div>
+        </div>
+        <div class="card">
+          <div class="sub">
+            深色模式跟隨你嘅帳號偏好，兩處（頂欄 ☀︎/☾ 與呢度）聯動。
+          </div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div class="on">我的</div>
+      </div>
+    </div>
+
+    <!-- ================= S9 今日各池在崗總覽 ================= -->
+    <div class="scr" id="S9">
+      <div class="top">
+        <span><span class="back" onclick="go('S1')">‹</span> 今日各池在崗</span
+        ><span class="mini">7月19日（六）</span>
+      </div>
+      <div class="pbody">
+        <div class="card">
+          <div class="t">海怡半島（南區）・大池 4 位置</div>
+          <div class="item">
+            <span>位置 1 早更</span
+            ><span class="pill" style="background: #0a84ff">阿明</span>
+          </div>
+          <div class="item">
+            <span>位置 2 早更</span
+            ><span class="pill" style="background: #34c759">阿強</span>
+          </div>
+          <div class="item">
+            <span>位置 3 晚更</span
+            ><span class="pill" style="background: #ff9500">細龍</span>
+          </div>
+          <div class="item">
+            <span>位置 4 晚更</span><span class="red">缺人</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="t">黃埔花園（九龍）・全日</div>
+          <div class="item">
+            <span>位置 1</span
+            ><span class="pill" style="background: #af52de">肥波</span>
+          </div>
+          <div class="item">
+            <span>位置 2</span
+            ><span class="pill" style="background: #ff2d55">阿華</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="t">嘉湖山莊（新界）・晚更</div>
+          <div class="item">
+            <span>位置 1</span
+            ><span class="pill" style="background: #5ac8fa">阿水</span>
+          </div>
+          <div class="item">
+            <span>位置 2</span
+            ><span class="pill" style="background: #0a84ff">阿明</span
+            ><span class="sub">（跨池兼更）</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="sub">一次過睇晒所有池今日所有在崗人，無需逐池點入。</div>
+        </div>
+      </div>
+      <div class="nav">
+        <div onclick="go('S1')">總覽</div>
+        <div onclick="go('S2')">更表</div>
+        <div onclick="go('S4')">訊息</div>
+        <div onclick="go('S6')">工資</div>
+        <div onclick="go('S8')">我的</div>
+      </div>
+    </div>
+
+    <!-- 時薪確認彈窗 -->
+    <div class="overlay" id="wageDlg">
+      <div class="dlg">
+        <div class="t2">確認陳大文入表</div>
+        <div class="sub">7/19（六）早更 7:00–15:00・海怡半島</div>
+        <div class="t" style="margin-top: 10px">
+          時薪（參考：泳池默認 $85・傾好 $88）
+        </div>
+        <input class="f" id="wageIn" type="number" value="88" />
+        <div style="display: flex; gap: 8px; margin-top: 12px">
+          <div
+            class="btn ghost"
+            style="flex: 1; margin: 0"
+            onclick="closeWage()"
+          >
+            取消
+          </div>
+          <div class="btn" style="flex: 1; margin: 0" onclick="confirmWage()">
+            確認入表
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ================= S5 全部待確認報名（聚合） ================= -->
-  <div class="scr" id="S5">
-    <div class="top"><span><span class="back" onclick="go('S1')">‹</span> 全部待確認報名</span><span class="mini">跨所有池</span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">海怡半島・週六短更 7/19（缺 1）</div>
-        <div class="item"><div><b>陳大文</b> <span class="badge">未認證</span><div class="sub">3 分鐘前・傾好 $88/時</div></div><span class="btn" id="btnChan" style="margin:0;padding:6px 12px" onclick="openWage()">確認入表</span></div>
-        <div class="item"><div><b>阿水</b> <span class="green">已認證</span><div class="sub">18 分鐘前・未傾價</div></div><span class="btn ghost" style="margin:0;padding:6px 12px" onclick="go('S4')">入聊天傾價</span></div>
-      </div>
-      <div class="card"><div class="t">嘉湖山莊・週日晚更 7/20（缺 1）</div>
-        <div class="item"><div><b>大隻佬 Ken</b> <span class="green">已認證</span><div class="sub">1 小時前・傾好 $90/時</div></div><span class="btn" style="margin:0;padding:6px 12px" onclick="toast('demo：確認入表流程同陳大文一致')">確認入表</span></div>
-      </div>
-      <div class="card"><div class="t">沙田・8 月長更（收 3 宗）</div>
-        <div class="item"><div><b>阿 Jo</b> <span class="green">已認證</span><div class="sub">今早・逐日勾更中</div></div><span class="btn ghost" style="margin:0;padding:6px 12px" onclick="toast('demo：睇佢勾咗邊幾日')">睇可上更日</span></div>
-      </div>
-      <div class="card"><div class="sub">別池主管確認咗嘅人會自動隱藏；對方取消會恢復顯示（搶人機制）。</div></div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div class="on" onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
-
-  <!-- ================= S6 工資（§3 大卡片 + §1 筛选） ================= -->
-  <div class="scr" id="S6">
-    <div class="top"><span>工資 <span class="mini">7 月</span></span><span class="act" onclick="toast('已匯出 Excel（demo）')">匯出 ⬇</span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">未結清總額</div><div style="font-size:30px;font-weight:800;color:var(--warn)" id="oweTotal">$12,460</div><div class="sub">每晚 00:00 自動更新</div></div>
-      <div class="filt" id="filtS6">
-        <div class="filthead" onclick="toggleFilt(this)"><span>🔍 篩選（月份 / 結清狀態）</span><span class="fchev">▾</span></div>
-        <div class="filtbody">
-          <div class="frow"><span class="flab">月份</span><span class="chip on" onclick="pickChip(this)">7 月</span><span class="chip" onclick="pickChip(this)">6 月</span><span class="chip" onclick="pickChip(this)">5 月</span></div>
-          <div class="frow"><span class="flab">狀態</span><span class="chip on" onclick="pickChip(this);wageFilter('all')">全部</span><span class="chip" onclick="pickChip(this);wageFilter('owe')">未結</span><span class="chip" onclick="pickChip(this);wageFilter('ok')">已結</span></div>
-        </div>
-      </div>
-      <div id="wageList">
-        <div class="wcard" data-st="owe" onclick="openWageDetail('阿明')">
-          <div class="wtop"><span class="wname">阿明</span><span class="wamt red">$4,320 未清</span></div>
-          <div class="wsub">96 小時・$82/時・7 月 12 個更</div>
-          <div class="btn" onclick="event.stopPropagation();confirmPay(this,'阿明')">確認支付</div>
-        </div>
-        <div class="wcard" data-st="owe" onclick="openWageDetail('阿強')">
-          <div class="wtop"><span class="wname">阿強</span><span class="wamt red">$5,440 未清</span></div>
-          <div class="wsub">64 小時・$85/時・7 月 8 個更</div>
-          <div class="btn" onclick="event.stopPropagation();confirmPay(this,'阿強')">確認支付</div>
-        </div>
-        <div class="wcard" data-st="ok" onclick="openWageDetail('細龍')">
-          <div class="wtop"><span class="wname">細龍</span><span class="wamt ok">$6,940 已結清 ✓</span></div>
-          <div class="wsub">88 小時・$80/時＋遲到扣 $100・雙向已確認</div>
-        </div>
-      </div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div class="on">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
-
-  <!-- ================= S6b 工資详情（单日明细 + 单日确认） ================= -->
-  <div class="scr" id="S6D">
-    <div class="top"><span><span class="back" onclick="go('S6')">‹</span> <span id="wdName">阿明</span>・工資明細</span><span class="mini">7 月</span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">合計</div><div style="font-size:26px;font-weight:800;color:var(--warn)" id="wdTotal">$4,320</div><div class="sub">逐日確認支付，確認後等對方點「已收」即雙向確認</div></div>
-      <div class="card" id="wdRows">
-        <div class="item"><div><b>7/03（四）早更</b><div class="sub">8 小時・$82/時 = $656</div></div><span class="btn" style="margin:0;padding:5px 11px" onclick="dayPay(this)">確認支付</span></div>
-        <div class="item"><div><b>7/06（日）晚更</b><div class="sub">8 小時・$82/時 = $656</div></div><span class="btn" style="margin:0;padding:5px 11px" onclick="dayPay(this)">確認支付</span></div>
-        <div class="item"><div><b>7/10（四）早更</b><div class="sub">8 小時・$82/時 = $656</div></div><span class="btn" style="margin:0;padding:5px 11px" onclick="dayPay(this)">確認支付</span></div>
-        <div class="item"><div><b>7/13（日）早更</b><div class="sub">8 小時・$82/時 = $656 <span class="red">・遲到扣 $50</span></div></div><span class="btn" style="margin:0;padding:5px 11px" onclick="dayPay(this)">確認支付</span></div>
-      </div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div class="on" onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
-
-  <!-- ================= S7 發布招募 ================= -->
-  <div class="scr" id="S7">
-    <div class="top"><span><span class="back" onclick="go('S1')">‹</span> 發布招募</span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">招募類型</div><div class="item"><span>◉ 單日短更　○ 整月長更</span></div>
-        <div class="item"><span>泳池</span><span>海怡半島 ▾</span></div>
-        <div class="item"><span>日期・更次</span><span>7/26（六）早更 ▾</span></div></div>
-      <div class="card"><div class="t">公開哪啲字段？（其餘只喺聊天先講）</div>
-        <div class="item"><span>☑ 日期時間　☑ 區域（南區）</span></div>
-        <div class="item"><span>☑ 地鐵站（海怡半島站）　☐ 泳池名</span></div>
-        <div class="item"><span>☐ 工資　☑ 備註（大池，兩崗位）</span></div></div>
-      <div class="btn" onclick="genText()">生成 WhatsApp 文案並轉發 ↗</div>
-      <div class="card" id="waText" style="display:none"><div class="sub">『【招人】7/26 週六早更 7-15 南區近港鐵，大池兩崗位，有意 click： poolmind.hk/r/bogor』</div><div class="btn ghost" style="margin:8px 0 0" onclick="toast('已複製，跳轉 WhatsApp（demo）')">複製並跳轉 WhatsApp</div></div>
-    </div>
-    <div class="nav"><div class="on" onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
-
-  <!-- ================= S8 我的 ================= -->
-  <div class="scr" id="S8">
-    <div class="top">我的 <span class="mini">波哥</span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">顯示</div>
-        <div class="swrow"><span>深色模式</span><div class="sw" id="darkSwitch" onclick="toggleDark()"></div></div>
-      </div>
-      <div class="card"><div class="t">帳號</div>
-        <div class="item"><span>對外顯示名</span><span>波哥 ›</span></div>
-        <div class="item"><span>更改密碼</span><span>›</span></div>
-        <div class="item"><span>換綁 WhatsApp 號碼</span><span>›</span></div></div>
-      <div class="card"><div class="sub">深色模式跟隨你嘅帳號偏好，兩處（頂欄 ☀︎/☾ 與呢度）聯動。</div></div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div class="on">我的</div></div>
-  </div>
-
-  <!-- ================= S9 今日各池在崗總覽 ================= -->
-  <div class="scr" id="S9">
-    <div class="top"><span><span class="back" onclick="go('S1')">‹</span> 今日各池在崗</span><span class="mini">7月19日（六）</span></div>
-    <div class="pbody">
-      <div class="card"><div class="t">海怡半島（南區）・大池 4 位置</div>
-        <div class="item"><span>位置 1 早更</span><span class="pill" style="background:#0a84ff">阿明</span></div>
-        <div class="item"><span>位置 2 早更</span><span class="pill" style="background:#34c759">阿強</span></div>
-        <div class="item"><span>位置 3 晚更</span><span class="pill" style="background:#ff9500">細龍</span></div>
-        <div class="item"><span>位置 4 晚更</span><span class="red">缺人</span></div>
-      </div>
-      <div class="card"><div class="t">黃埔花園（九龍）・全日</div>
-        <div class="item"><span>位置 1</span><span class="pill" style="background:#af52de">肥波</span></div>
-        <div class="item"><span>位置 2</span><span class="pill" style="background:#ff2d55">阿華</span></div>
-      </div>
-      <div class="card"><div class="t">嘉湖山莊（新界）・晚更</div>
-        <div class="item"><span>位置 1</span><span class="pill" style="background:#5ac8fa">阿水</span></div>
-        <div class="item"><span>位置 2</span><span class="pill" style="background:#0a84ff">阿明</span><span class="sub">（跨池兼更）</span></div>
-      </div>
-      <div class="card"><div class="sub">一次過睇晒所有池今日所有在崗人，無需逐池點入。</div></div>
-    </div>
-    <div class="nav"><div onclick="go('S1')">總覽</div><div onclick="go('S2')">更表</div><div onclick="go('S4')">訊息</div><div onclick="go('S6')">工資</div><div onclick="go('S8')">我的</div></div>
-  </div>
-
-  <!-- 時薪確認彈窗 -->
-  <div class="overlay" id="wageDlg">
-    <div class="dlg">
-      <div class="t2">確認陳大文入表</div>
-      <div class="sub">7/19（六）早更 7:00–15:00・海怡半島</div>
-      <div class="t" style="margin-top:10px">時薪（參考：泳池默認 $85・傾好 $88）</div>
-      <input class="f" id="wageIn" type="number" value="88">
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <div class="btn ghost" style="flex:1;margin:0" onclick="closeWage()">取消</div>
-        <div class="btn" style="flex:1;margin:0" onclick="confirmWage()">確認入表</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-/* ============ 机型切换 ============ */
-const DEV={se:[375,667],i17:[402,871],max:[440,956],an:[360,800]};
-function setD(k){const r=document.documentElement.style;r.setProperty('--fw',DEV[k][0]+'px');r.setProperty('--fh',DEV[k][1]+'px');['se','i17','max','an'].forEach(x=>document.getElementById('d-'+x).classList.toggle('on',x==k))}
-
-/* ============ 日/夜切换（两处联动） ============ */
-function toggleDark(){document.body.classList.toggle('dark');const on=document.body.classList.contains('dark');
-  document.querySelectorAll('[data-darktoggle]').forEach(e=>e.textContent=on?'☀︎ 日間':'☾ 夜間');
-  const sw=document.getElementById('darkSwitch');if(sw)sw.classList.toggle('on',on);}
-
-function toast(t){const e=document.getElementById('toast');e.textContent=t;e.style.opacity=1;clearTimeout(e._t);e._t=setTimeout(()=>e.style.opacity=0,2200)}
-function go(id){document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on');document.getElementById('pidbox').textContent=id;
-  if(id=='S2'){filterPools(null);restoreTmr();hideCal();}
-  if(id=='S3')renderGrid();
-  if(id=='S4'){backList();filterConv(false)}
-}
-
-/* ============ 底部导航角标 ============ */
-const BADGE={'總覽':3,'更表':2,'訊息':2,'工資':2,'我的':0};
-function renderBadges(){
-  document.querySelectorAll('.nav div').forEach(d=>{
-    const old=d.querySelector('.nb');if(old)old.remove();
-    const n=BADGE[d.textContent.trim()]||0;
-    if(n>0&&!d.classList.contains('on')){const b=document.createElement('span');b.className='nb';b.textContent=n>99?'99+':n;d.appendChild(b)}
-  });
-}
-
-/* ============ §1 筛选器交互 ============ */
-function toggleFilt(h){h.closest('.filt').classList.toggle('open');}
-function pickChip(el,area){
-  el.parentNode.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  el.classList.add('on');
-  // 地区级联：点九龙显示二级
-  const filt=el.closest('.filt');
-  if(filt){const sub2=filt.querySelector('.sub2');if(sub2)sub2.style.display=(area==='九龍')?'flex':'none';}
-}
-/* S1 招募筛选：按工种/地区/来源匹配显示（唔係顯示開關，係篩邊啲招募符合條件） */
-function filterRec(){
-  const f=document.getElementById('filtS1');
-  const sel=lab=>{const r=[...f.querySelectorAll('.frow')].find(r=>r.querySelector('.flab')&&r.querySelector('.flab').textContent.trim()===lab);return r?(r.querySelector('.chip.on')||{textContent:null}).textContent:null;};
-  const typ=sel('工種'),reg=sel('地區'),src=sel('來源');
-  let shown=0;
-  document.querySelectorAll('#recListS1 .reccard').forEach(c=>{
-    let ok=true;
-    if(typ==='短工'&&c.dataset.type!=='short')ok=false;
-    if(typ==='長工'&&c.dataset.type!=='long')ok=false;
-    if(reg&&reg!=='全港'&&c.dataset.region!==reg)ok=false;
-    if(src==='只我發布'&&c.dataset.src!=='mine')ok=false;
-    if(src==='排除我'&&c.dataset.src==='mine')ok=false;
-    c.style.display=ok?'':'none';if(ok)shown++;
-  });
-  const e=document.querySelector('#recListS1 .recempty');if(e)e.style.display=shown?'none':'block';
-}
-/* S2 地区筛选泳池 */
-function filterPoolRegion(reg){
-  document.querySelectorAll('#s2pools .pool').forEach(p=>{
-    p.style.display=(reg==='全港'||p.dataset.region===reg)?'':'none';
-  });
-}
-
-/* ============ S1 缺人数字 → S2 筛选 ============ */
-function toS2(day){go('S2');filterPools(day)}
-function filterPools(day){
-  document.querySelectorAll('#s2pools .pool').forEach(p=>{
-    const d=p.dataset.gap;
-    p.style.display=(day && d!==day)?'none':'';
-  });
-  const b=document.getElementById('s2fbar');
-  if(day){b.classList.add('on');document.getElementById('s2ftxt').textContent='只顯示「'+(day=='today'?'今日':'明日')+'缺人」泳池';}
-  else b.classList.remove('on');
-}
-function cancelS2Filter(){
-  restoreTmr();
-  hideCal();
-  document.querySelectorAll('#s2pools .pool').forEach(p=>p.style.display='');
-  document.getElementById('s2fbar').classList.remove('on');
-  const f=document.getElementById('filtS2');
-  if(f){const gapRow=[...f.querySelectorAll('.frow')].find(r=>r.querySelector('.flab')&&r.querySelector('.flab').textContent.trim()==='缺人');
-    if(gapRow)gapRow.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on',c.textContent.trim()==='全部'));}
-  toast('已取消篩選，恢復顯示（明日缺人）');
-}
-
-/* ============ S2 缺人日历（含月份选择） ============ */
-const CALMONTHS=['2025年5月','2025年6月','2025年7月','2025年8月'];
-const CALDAYS=[31,30,31,31],CALLEAD=[4,0,2,5]; // 2025 各月天数 / 首日前置空格
-const CALGAPS=[ // 每月「日期→当天缺人总数」（demo 数据）
-  {6:1,13:2,20:1,27:1},
-  {7:1,14:1,21:2},
-  {5:1,12:2,13:1,19:1,20:1,26:1,27:2},
-  {2:1,3:2,9:1,16:1,23:1,30:1}
-];
-let calMi=2;
-function curGaps(){return CALGAPS[calMi];}
-function calMN(){return (CALMONTHS[calMi].match(/(\d+)月/)||[])[1]||'7';}
-function buildCal(){
-  const g=document.getElementById('calGrid');g.innerHTML='';
-  ['日','一','二','三','四','五','六'].forEach(w=>{const h=document.createElement('div');h.className='calh';h.textContent=w;g.appendChild(h)});
-  for(let i=0;i<CALLEAD[calMi];i++){const e=document.createElement('div');e.className='calc';e.style.visibility='hidden';g.appendChild(e)}
-  const gaps=curGaps();
-  for(let d=1;d<=CALDAYS[calMi];d++){const c=document.createElement('div');const gp=gaps[d];
-    c.className='calc '+(gp?'gap':'full');c.dataset.day=d;
-    c.innerHTML=d+(gp?'<span class="gn">缺'+gp+'</span>':'');
-    c.onclick=()=>selectCalDay(d);
-    g.appendChild(c);}
-}
-function calMonth(delta){calMi=Math.max(0,Math.min(CALMONTHS.length-1,calMi+delta));
-  document.getElementById('calMonthLbl').textContent=CALMONTHS[calMi];
-  buildCal();restoreTmr();toast('切到 '+CALMONTHS[calMi]);}
-function showCal(){buildCal();document.getElementById('s2cal').classList.add('on');
-  document.getElementById('s2pools').style.display='none';
-  document.getElementById('s2fbar').classList.add('on');
-  document.getElementById('s2ftxt').textContent='揀一日睇當天缺人泳池（缺人總數會替換上面「明日缺人」）';}
-function hideCal(){document.getElementById('s2cal').classList.remove('on');
-  document.getElementById('s2pools').style.display='';
-  filterPools(null);}
-
-/* 选特定日子：显示当天缺人泳池 + 用当天缺人总数替换「明日缺人」 */
-let tmrSaved=null;
-function selectCalDay(d){
-  const gp=curGaps()[d]||0;
-  const box=document.getElementById('gTmr'),cap=document.getElementById('gTmrCap');
-  if(tmrSaved===null)tmrSaved={n:box.textContent,c:cap.textContent,col:box.style.color};
-  box.textContent=gp;box.style.color=gp?'var(--warn)':'var(--ok)';
-  cap.textContent=calMN()+'/'+d+' 缺人';
-  const pools=document.getElementById('s2pools');pools.style.display='';
-  document.querySelectorAll('#s2pools .pool').forEach(p=>{p.style.display=(gp?(p.dataset.gap!==''?'':'none'):'')});
-  document.querySelectorAll('#calGrid .calc').forEach(c=>c.classList.remove('sel'));
-  const sc=document.querySelector('#calGrid .calc[data-day="'+d+'"]');if(sc)sc.classList.add('sel');
-  document.getElementById('s2fbar').classList.add('on');
-  document.getElementById('s2ftxt').textContent=calMN()+'/'+d+'：當天缺人總數 '+gp+'，只顯示缺人泳池';
-}
-function restoreTmr(){
-  if(tmrSaved){const box=document.getElementById('gTmr'),cap=document.getElementById('gTmrCap');
-    box.textContent=tmrSaved.n;box.style.color=tmrSaved.col||'var(--warn)';cap.textContent=tmrSaved.c;tmrSaved=null;}
-  document.querySelectorAll('#calGrid .calc').forEach(c=>c.classList.remove('sel'));
-}
-
-/* ============ S1 待处理 → S4 筛选 ============ */
-function toS4newest(){go('S4');filterConv(true)}
-function filterConv(on){
-  document.querySelectorAll('#s4list .conv').forEach(c=>{
-    c.style.display=(on && c.dataset.recv!=='1')?'none':'';
-  });
-  document.getElementById('s4fbar').classList.toggle('on',on);
-}
-function cancelS4Filter(){filterConv(false);toast('已取消篩選，顯示全部會話')}
-
-/* ============ S4 会话 ⇄ 聊天 ============ */
-function openChat(){document.getElementById('s4list').classList.remove('on');document.getElementById('s4chat').classList.add('on')}
-function backList(){document.getElementById('s4chat').classList.remove('on');document.getElementById('s4list').classList.add('on')}
-function sendMsg(){const i=document.getElementById('chatin');if(!i.value.trim())return;
-  const d=document.createElement('div');d.className='msg me';d.textContent=i.value;document.getElementById('chatbox').appendChild(d);i.value='';scrollChat();}
-function sendCard(){const d=document.createElement('div');d.className='pcard';
-  d.innerHTML='<div class="pt">📍 泳池詳情卡片</div><div class="sub" style="margin:4px 0">海怡半島泳池・7月19日（六）早更 7:00–15:00<br>時薪 $88</div><div class="sub" style="color:var(--p);font-weight:700">已發送，等對方接受</div>';
-  document.getElementById('chatbox').appendChild(d);scrollChat();toast('卡片已發送；對方接受後你仲要最終確認先入表');}
-function scrollChat(){const b=document.querySelector('#s4chat .pbody');b.scrollTop=b.scrollHeight}
-
-/* ============ §4 更表格子系统 ============ */
-const LG={'阿明':'#0a84ff','阿強':'#34c759','細龍':'#ff9500','肥波':'#af52de','阿華':'#ff2d55','阿水':'#5ac8fa'};
-const M='阿明',Q='阿強',L='細龍',B='肥波',H='阿華';
-// 每行：{date,wk,wknd,names:[4]}；空位 = null。刻意打乱以展示「一鍵整理」效果。
-let SCHED=[
-  {date:'7/14',wk:'一',wknd:0,names:[M,L,B,Q]},
-  {date:'7/15',wk:'二',wknd:0,names:[L,B,Q,M]},
-  {date:'7/16',wk:'三',wknd:0,names:[Q,M,L,null]},
-  {date:'7/17',wk:'四',wknd:0,names:[M,B,Q,null]},
-  {date:'7/18',wk:'五',wknd:0,names:[M,L,null,Q]},
-  {date:'7/19',wk:'六',wknd:1,names:[M,null,B,null]},
-  {date:'7/20',wk:'日',wknd:1,names:[L,B,null,null]},
-  {date:'7/21',wk:'一',wknd:0,names:[M,H,L,B]},
-  {date:'7/22',wk:'二',wknd:0,names:[M,L,B,Q]},
-  {date:'7/23',wk:'三',wknd:0,names:[Q,M,B,null]},
-  {date:'7/24',wk:'四',wknd:0,names:[M,H,null,L]},
-  {date:'7/25',wk:'五',wknd:0,names:[M,L,B,Q]},
-  {date:'7/26',wk:'六',wknd:1,names:[L,null,null,null]},
-  {date:'7/27',wk:'日',wknd:1,names:[L,B,null,null]},
-];
-function pill(n){return n?`<span class="pill" draggable="true" ondragstart="onDragStart(event)" style="background:${LG[n]||'#8e8e93'}">${n}</span>`:'';}
-function renderGrid(){
-  const g=document.getElementById('xgrid');
-  let html='<div class="xhead" style="display:contents"><div class="xg">日期</div><div class="xg">星期</div><div class="xg">1</div><div class="xg">2</div><div class="xg">3</div><div class="xg">4</div></div>';
-  SCHED.forEach((r,ri)=>{
-    const wc=r.wknd?' wkndc':'';
-    html+=`<div class="xg xdate${wc}">${r.date}</div><div class="xg xwk${wc}">${r.wk}</div>`;
-    for(let c=0;c<4;c++){
-      const n=r.names[c];
-      if(n) html+=`<div class="xg cell" data-r="${ri}" data-c="${c}" ondragover="event.preventDefault()" ondrop="onDrop(event)">${pill(n)}</div>`;
-      else  html+=`<div class="xg cell gap" data-r="${ri}" data-c="${c}" ondragover="event.preventDefault()" ondrop="onDrop(event)" onclick="recCell(this)">缺</div>`;
+  <script>
+    /* ============ 日/夜切换（两处联动） ============ */
+    function toggleDark() {
+      document.body.classList.toggle("dark");
+      const on = document.body.classList.contains("dark");
+      document
+        .querySelectorAll("[data-darktoggle]")
+        .forEach((e) => (e.textContent = on ? "☀︎ 日間" : "☾ 夜間"));
+      const sw = document.getElementById("darkSwitch");
+      if (sw) sw.classList.toggle("on", on);
     }
-  });
-  g.innerHTML=html;
-}
-function cellData(el){return SCHED[+el.dataset.r].names;}
-let drag=null;
-function onDragStart(e){drag=e.target.closest('.cell');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text','x');}
-function onDrop(e){e.preventDefault();const t=e.target.closest('.cell');if(!t||!drag||t===drag)return;
-  const ra=+drag.dataset.r,ca=+drag.dataset.c,rb=+t.dataset.r,cb=+t.dataset.c;
-  const tmp=SCHED[ra].names[ca];SCHED[ra].names[ca]=SCHED[rb].names[cb];SCHED[rb].names[cb]=tmp;
-  renderGrid();toast('已交換');}
-function recCell(el){toast('已為呢個位開招募（demo）');}
 
-/* 一键排更：把 gap 用预设候选填人 */
-const POOL_CANDS=[M,Q,L,B,H,'阿水'];
-function autoFill(){
-  let filled=0;
-  SCHED.forEach(r=>{
-    for(let c=0;c<4;c++){
-      if(!r.names[c]){
-        // 优先填未在本行的候选（偏好名单→连续性→尽力而为）
-        const cand=POOL_CANDS.find(n=>!r.names.includes(n))||POOL_CANDS[0];
-        r.names[c]=cand;filled++;
+    function toast(t) {
+      const e = document.getElementById("toast");
+      e.textContent = t;
+      e.style.opacity = 1;
+      clearTimeout(e._t);
+      e._t = setTimeout(() => (e.style.opacity = 0), 2200);
+    }
+    function go(id) {
+      document
+        .querySelectorAll(".scr")
+        .forEach((s) => s.classList.remove("on"));
+      document.getElementById(id).classList.add("on");
+      document.getElementById("pidbox").textContent = id;
+      if (id == "S2") {
+        filterPools(null);
+        restoreTmr();
+        hideCal();
+      }
+      if (id == "S3") renderGrid();
+      if (id == "S4") {
+        backList();
+        filterConv(false);
       }
     }
-  });
-  renderGrid();
-  toast(filled?('一鍵排班：偏好名單→連續性→盡力而為，補咗 '+filled+' 格'):'已無缺人格');
-}
 
-/* 一键整理：竖直对齐主列（真实算法，与用例一致） */
-function tidySchedule(){
-  // 1. canonicalOrder = 首次出现顺序（去重）
-  const canon=[];
-  SCHED.forEach(r=>r.names.forEach(n=>{if(n&&!canon.includes(n))canon.push(n);}));
-  // 2-3. 每行重排
-  SCHED.forEach(r=>{
-    const present=r.names.filter(n=>n); // 在场者（去 null）
-    const slots=[null,null,null,null];
-    const queue=[];
-    present.forEach(n=>{
-      const mc=canon.indexOf(n);
-      if(mc>=0&&mc<4&&slots[mc]===null) slots[mc]=n; else queue.push(n);
-    });
-    queue.forEach(n=>{const e=slots.indexOf(null);if(e>=0)slots[e]=n;});
-    r.names=slots;
-  });
-  renderGrid();
-  toast('已整理：各人竪直對齊主列（缺位補齊）');
-}
+    /* ============ 底部导航角标 ============ */
+    const BADGE = { 總覽: 3, 更表: 2, 訊息: 2, 工資: 2, 我的: 0 };
+    function renderBadges() {
+      document.querySelectorAll(".nav div").forEach((d) => {
+        const old = d.querySelector(".nb");
+        if (old) old.remove();
+        const n = BADGE[d.textContent.trim()] || 0;
+        if (n > 0 && !d.classList.contains("on")) {
+          const b = document.createElement("span");
+          b.className = "nb";
+          b.textContent = n > 99 ? "99+" : n;
+          d.appendChild(b);
+        }
+      });
+    }
 
-/* 字号缩放 */
-let cfs=13;function cellFont(d){cfs=Math.max(11,Math.min(22,cfs+d));document.documentElement.style.setProperty('--cellfs',cfs+'px');}
+    /* ============ §1 筛选器交互 ============ */
+    function toggleFilt(h) {
+      h.closest(".filt").classList.toggle("open");
+    }
+    function pickChip(el, area) {
+      el.parentNode
+        .querySelectorAll(".chip")
+        .forEach((c) => c.classList.remove("on"));
+      el.classList.add("on");
+      // 地区级联：点九龙显示二级
+      const filt = el.closest(".filt");
+      if (filt) {
+        const sub2 = filt.querySelector(".sub2");
+        if (sub2) sub2.style.display = area === "九龍" ? "flex" : "none";
+      }
+    }
+    /* S1 招募筛选：按工种/地区/来源匹配显示（唔係顯示開關，係篩邊啲招募符合條件） */
+    function filterRec() {
+      const f = document.getElementById("filtS1");
+      const sel = (lab) => {
+        const r = [...f.querySelectorAll(".frow")].find(
+          (r) =>
+            r.querySelector(".flab") &&
+            r.querySelector(".flab").textContent.trim() === lab,
+        );
+        return r
+          ? (r.querySelector(".chip.on") || { textContent: null }).textContent
+          : null;
+      };
+      const typ = sel("工種"),
+        reg = sel("地區"),
+        src = sel("來源");
+      let shown = 0;
+      document.querySelectorAll("#recListS1 .reccard").forEach((c) => {
+        let ok = true;
+        if (typ === "短工" && c.dataset.type !== "short") ok = false;
+        if (typ === "長工" && c.dataset.type !== "long") ok = false;
+        if (reg && reg !== "全港" && c.dataset.region !== reg) ok = false;
+        if (src === "只我發布" && c.dataset.src !== "mine") ok = false;
+        if (src === "排除我" && c.dataset.src === "mine") ok = false;
+        c.style.display = ok ? "" : "none";
+        if (ok) shown++;
+      });
+      const e = document.querySelector("#recListS1 .recempty");
+      if (e) e.style.display = shown ? "none" : "block";
+    }
+    /* S2 地区筛选泳池 */
+    function filterPoolRegion(reg) {
+      document.querySelectorAll("#s2pools .pool").forEach((p) => {
+        p.style.display =
+          reg === "全港" || p.dataset.region === reg ? "" : "none";
+      });
+    }
 
-/* 月份切换 */
-const MONTHS=['2025年5月','2025年6月','2025年7月','2025年8月'];let mi=2;
-function chgMonth(d){mi=Math.max(0,Math.min(MONTHS.length-1,mi+d));document.getElementById('curMonth').textContent=MONTHS[mi];toast('切到 '+MONTHS[mi]+'（demo：更表數據沿用 7 月示例）');}
+    /* ============ S1 缺人数字 → S2 筛选 ============ */
+    function toS2(day) {
+      go("S2");
+      filterPools(day);
+    }
+    function filterPools(day) {
+      document.querySelectorAll("#s2pools .pool").forEach((p) => {
+        const d = p.dataset.gap;
+        p.style.display = day && d !== day ? "none" : "";
+      });
+      const b = document.getElementById("s2fbar");
+      if (day) {
+        b.classList.add("on");
+        document.getElementById("s2ftxt").textContent =
+          "只顯示「" + (day == "today" ? "今日" : "明日") + "缺人」泳池";
+      } else b.classList.remove("on");
+    }
+    function cancelS2Filter() {
+      restoreTmr();
+      hideCal();
+      document
+        .querySelectorAll("#s2pools .pool")
+        .forEach((p) => (p.style.display = ""));
+      document.getElementById("s2fbar").classList.remove("on");
+      const f = document.getElementById("filtS2");
+      if (f) {
+        const gapRow = [...f.querySelectorAll(".frow")].find(
+          (r) =>
+            r.querySelector(".flab") &&
+            r.querySelector(".flab").textContent.trim() === "缺人",
+        );
+        if (gapRow)
+          gapRow
+            .querySelectorAll(".chip")
+            .forEach((c) =>
+              c.classList.toggle("on", c.textContent.trim() === "全部"),
+            );
+      }
+      toast("已取消篩選，恢復顯示（明日缺人）");
+    }
 
-/* ============ S5→确认入表 ============ */
-let filled=false;
-function openWage(){if(filled){toast('已入表');return}document.getElementById('wageDlg').classList.add('on')}
-function closeWage(){document.getElementById('wageDlg').classList.remove('on')}
-function confirmWage(){
-  const w=document.getElementById('wageIn').value||88;
-  closeWage();filled=true;
-  // 把 7/19（六）第一个缺位填上陈大文
-  const row=SCHED.find(r=>r.date=='7/19');
-  if(row){const idx=row.names.indexOf(null);if(idx>=0)row.names[idx]='陳大文';LG['陳大文']='#5856d6';}
-  document.getElementById('btnChan').outerHTML='<span class="green">已入表 ✓ $'+w+'/時</span>';
-  const g=document.getElementById('gapHoi');if(g)g.outerHTML='<span class="green">齊人 ›</span>';
-  const pool=document.querySelector('#s2pools .pool[data-gap="today"]');if(pool)pool.dataset.gap='';
-  const gt=document.getElementById('gTod');gt.textContent='0';gt.style.color='var(--ok)';
-  BADGE['更表']=1;BADGE['總覽']=2;renderBadges();
-  toast('陳大文已入 7/19 早更・$'+w+'/時，已通知對方');
-  setTimeout(()=>{go('S3');},600);
-}
+    /* ============ S2 缺人日历（含月份选择） ============ */
+    const CALMONTHS = ["2025年5月", "2025年6月", "2025年7月", "2025年8月"];
+    const CALDAYS = [31, 30, 31, 31],
+      CALLEAD = [4, 0, 2, 5]; // 2025 各月天数 / 首日前置空格
+    const CALGAPS = [
+      // 每月「日期→当天缺人总数」（demo 数据）
+      { 6: 1, 13: 2, 20: 1, 27: 1 },
+      { 7: 1, 14: 1, 21: 2 },
+      { 5: 1, 12: 2, 13: 1, 19: 1, 20: 1, 26: 1, 27: 2 },
+      { 2: 1, 3: 2, 9: 1, 16: 1, 23: 1, 30: 1 },
+    ];
+    let calMi = 2;
+    function curGaps() {
+      return CALGAPS[calMi];
+    }
+    function calMN() {
+      return (CALMONTHS[calMi].match(/(\d+)月/) || [])[1] || "7";
+    }
+    function buildCal() {
+      const g = document.getElementById("calGrid");
+      g.innerHTML = "";
+      ["日", "一", "二", "三", "四", "五", "六"].forEach((w) => {
+        const h = document.createElement("div");
+        h.className = "calh";
+        h.textContent = w;
+        g.appendChild(h);
+      });
+      for (let i = 0; i < CALLEAD[calMi]; i++) {
+        const e = document.createElement("div");
+        e.className = "calc";
+        e.style.visibility = "hidden";
+        g.appendChild(e);
+      }
+      const gaps = curGaps();
+      for (let d = 1; d <= CALDAYS[calMi]; d++) {
+        const c = document.createElement("div");
+        const gp = gaps[d];
+        c.className = "calc " + (gp ? "gap" : "full");
+        c.dataset.day = d;
+        c.innerHTML = d + (gp ? '<span class="gn">缺' + gp + "</span>" : "");
+        c.onclick = () => selectCalDay(d);
+        g.appendChild(c);
+      }
+    }
+    function calMonth(delta) {
+      calMi = Math.max(0, Math.min(CALMONTHS.length - 1, calMi + delta));
+      document.getElementById("calMonthLbl").textContent = CALMONTHS[calMi];
+      buildCal();
+      restoreTmr();
+      toast("切到 " + CALMONTHS[calMi]);
+    }
+    function showCal() {
+      buildCal();
+      document.getElementById("s2cal").classList.add("on");
+      document.getElementById("s2pools").style.display = "none";
+      document.getElementById("s2fbar").classList.add("on");
+      document.getElementById("s2ftxt").textContent =
+        "揀一日睇當天缺人泳池（缺人總數會替換上面「明日缺人」）";
+      collapseFiltS2();
+    }
+    function hideCal() {
+      document.getElementById("s2cal").classList.remove("on");
+      document.getElementById("s2pools").style.display = "";
+      filterPools(null);
+      collapseFiltS2();
+    }
+    /* 選完「缺人」篩選後自動收起 .filt 面板，只留 #s2fbar 摘要條 */
+    function collapseFiltS2() {
+      const f = document.getElementById("filtS2");
+      if (f) f.classList.remove("open");
+    }
 
-/* ============ S6 工资 ============ */
-function wageFilter(st){
-  document.querySelectorAll('#wageList .wcard').forEach(c=>{
-    c.style.display=(st==='all'||c.dataset.st===st)?'':'none';
-  });
-}
-function confirmPay(btn,name){
-  btn.outerHTML='<div class="sub green" style="margin:10px 0 0;font-weight:700">支付方已確認，等 '+name+' 點「已收」→ 雙向確認</div>';
-  const card=event.target.closest('.wcard');const amt=card.querySelector('.wamt');
-  toast(name+' 本月全部標為已支付');
-}
-function openWageDetail(name){
-  document.getElementById('wdName').textContent=name;
-  go('S6D');
-}
-function dayPay(btn){btn.outerHTML='<span class="green" style="font-size:12px">已確認 ✓</span>';toast('該日已確認支付');}
+    /* 选特定日子：显示当天缺人泳池 + 用当天缺人总数替换「明日缺人」 */
+    let tmrSaved = null;
+    function selectCalDay(d) {
+      const gp = curGaps()[d] || 0;
+      const box = document.getElementById("gTmr"),
+        cap = document.getElementById("gTmrCap");
+      if (tmrSaved === null)
+        tmrSaved = {
+          n: box.textContent,
+          c: cap.textContent,
+          col: box.style.color,
+        };
+      box.textContent = gp;
+      box.style.color = gp ? "var(--warn)" : "var(--ok)";
+      cap.textContent = calMN() + "/" + d + " 缺人";
+      const pools = document.getElementById("s2pools");
+      pools.style.display = "";
+      document.querySelectorAll("#s2pools .pool").forEach((p) => {
+        p.style.display = gp ? (p.dataset.gap !== "" ? "" : "none") : "";
+      });
+      document
+        .querySelectorAll("#calGrid .calc")
+        .forEach((c) => c.classList.remove("sel"));
+      const sc = document.querySelector('#calGrid .calc[data-day="' + d + '"]');
+      if (sc) sc.classList.add("sel");
+      document.getElementById("s2fbar").classList.add("on");
+      document.getElementById("s2ftxt").textContent =
+        calMN() + "/" + d + "：當天缺人總數 " + gp + "，只顯示缺人泳池";
+    }
+    function restoreTmr() {
+      if (tmrSaved) {
+        const box = document.getElementById("gTmr"),
+          cap = document.getElementById("gTmrCap");
+        box.textContent = tmrSaved.n;
+        box.style.color = tmrSaved.col || "var(--warn)";
+        cap.textContent = tmrSaved.c;
+        tmrSaved = null;
+      }
+      document
+        .querySelectorAll("#calGrid .calc")
+        .forEach((c) => c.classList.remove("sel"));
+    }
 
-/* ============ S7 招募文案 ============ */
-function genText(){document.getElementById('waText').style.display='block';toast('已生成 WhatsApp 文案')}
+    /* ============ S1 待处理 → S4 筛选 ============ */
+    function toS4newest() {
+      go("S4");
+      filterConv(true);
+    }
+    function filterConv(on) {
+      document.querySelectorAll("#s4list .conv").forEach((c) => {
+        c.style.display = on && c.dataset.recv !== "1" ? "none" : "";
+      });
+      document.getElementById("s4fbar").classList.toggle("on", on);
+    }
+    function cancelS4Filter() {
+      filterConv(false);
+      toast("已取消篩選，顯示全部會話");
+    }
 
-renderGrid();
-renderBadges();
-</script>
+    /* ============ S4 会话 ⇄ 聊天 ============ */
+    function openChat() {
+      document.getElementById("s4list").classList.remove("on");
+      document.getElementById("s4chat").classList.add("on");
+    }
+    function backList() {
+      document.getElementById("s4chat").classList.remove("on");
+      document.getElementById("s4list").classList.add("on");
+    }
+    function sendMsg() {
+      const i = document.getElementById("chatin");
+      if (!i.value.trim()) return;
+      const d = document.createElement("div");
+      d.className = "msg me";
+      d.textContent = i.value;
+      document.getElementById("chatbox").appendChild(d);
+      i.value = "";
+      scrollChat();
+    }
+    function sendCard() {
+      const d = document.createElement("div");
+      d.className = "pcard";
+      d.innerHTML =
+        '<div class="pt">📍 泳池詳情卡片</div><div class="sub" style="margin:4px 0">海怡半島泳池・7月19日（六）早更 7:00–15:00<br>時薪 $88</div><div class="sub" style="color:var(--p);font-weight:700">已發送，等對方接受</div>';
+      document.getElementById("chatbox").appendChild(d);
+      scrollChat();
+      toast("卡片已發送；對方接受後你仲要最終確認先入表");
+    }
+    function scrollChat() {
+      const b = document.querySelector("#s4chat .pbody");
+      b.scrollTop = b.scrollHeight;
+    }
+
+    /* ============ §4 更表格子系统 ============ */
+    const LG = {
+      阿明: "#0a84ff",
+      阿強: "#34c759",
+      細龍: "#ff9500",
+      肥波: "#af52de",
+      阿華: "#ff2d55",
+      阿水: "#5ac8fa",
+    };
+    const M = "阿明",
+      Q = "阿強",
+      L = "細龍",
+      B = "肥波",
+      H = "阿華";
+    // 每行：{date,wk,wknd,names:[4]}；空位 = null。刻意打乱以展示「一鍵整理」效果。
+    let SCHED = [
+      { date: "7/14", wk: "一", wknd: 0, names: [M, L, B, Q] },
+      { date: "7/15", wk: "二", wknd: 0, names: [L, B, Q, M] },
+      { date: "7/16", wk: "三", wknd: 0, names: [Q, M, L, null] },
+      { date: "7/17", wk: "四", wknd: 0, names: [M, B, Q, null] },
+      { date: "7/18", wk: "五", wknd: 0, names: [M, L, null, Q] },
+      { date: "7/19", wk: "六", wknd: 1, names: [M, null, B, null] },
+      { date: "7/20", wk: "日", wknd: 1, names: [L, B, null, null] },
+      { date: "7/21", wk: "一", wknd: 0, names: [M, H, L, B] },
+      { date: "7/22", wk: "二", wknd: 0, names: [M, L, B, Q] },
+      { date: "7/23", wk: "三", wknd: 0, names: [Q, M, B, null] },
+      { date: "7/24", wk: "四", wknd: 0, names: [M, H, null, L] },
+      { date: "7/25", wk: "五", wknd: 0, names: [M, L, B, Q] },
+      { date: "7/26", wk: "六", wknd: 1, names: [L, null, null, null] },
+      { date: "7/27", wk: "日", wknd: 1, names: [L, B, null, null] },
+    ];
+    function pill(n) {
+      return n
+        ? `<span class="pill" draggable="true" ondragstart="onDragStart(event)" style="background:${LG[n] || "#8e8e93"}">${n}</span>`
+        : "";
+    }
+    function renderGrid() {
+      const g = document.getElementById("xgrid");
+      let html =
+        '<div class="xhead" style="display:contents"><div class="xg">日期</div><div class="xg">星期</div><div class="xg">1</div><div class="xg">2</div><div class="xg">3</div><div class="xg">4</div></div>';
+      SCHED.forEach((r, ri) => {
+        const wc = r.wknd ? " wkndc" : "";
+        html += `<div class="xg xdate${wc}">${r.date}</div><div class="xg xwk${wc}">${r.wk}</div>`;
+        for (let c = 0; c < 4; c++) {
+          const n = r.names[c];
+          if (n)
+            html += `<div class="xg cell" data-r="${ri}" data-c="${c}" ondragover="event.preventDefault()" ondrop="onDrop(event)">${pill(n)}</div>`;
+          else
+            html += `<div class="xg cell gap" data-r="${ri}" data-c="${c}" ondragover="event.preventDefault()" ondrop="onDrop(event)" onclick="recCell(this)">缺</div>`;
+        }
+      });
+      g.innerHTML = html;
+    }
+    function cellData(el) {
+      return SCHED[+el.dataset.r].names;
+    }
+    let drag = null;
+    function onDragStart(e) {
+      drag = e.target.closest(".cell");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text", "x");
+    }
+    function onDrop(e) {
+      e.preventDefault();
+      const t = e.target.closest(".cell");
+      if (!t || !drag || t === drag) return;
+      const ra = +drag.dataset.r,
+        ca = +drag.dataset.c,
+        rb = +t.dataset.r,
+        cb = +t.dataset.c;
+      const tmp = SCHED[ra].names[ca];
+      SCHED[ra].names[ca] = SCHED[rb].names[cb];
+      SCHED[rb].names[cb] = tmp;
+      renderGrid();
+      toast("已交換");
+    }
+    function recCell(el) {
+      toast("已為呢個位開招募（demo）");
+    }
+
+    /* 一键排更：把 gap 用预设候选填人 */
+    const POOL_CANDS = [M, Q, L, B, H, "阿水"];
+    function autoFill() {
+      let filled = 0;
+      SCHED.forEach((r) => {
+        for (let c = 0; c < 4; c++) {
+          if (!r.names[c]) {
+            // 优先填未在本行的候选（偏好名单→连续性→尽力而为）
+            const cand =
+              POOL_CANDS.find((n) => !r.names.includes(n)) || POOL_CANDS[0];
+            r.names[c] = cand;
+            filled++;
+          }
+        }
+      });
+      renderGrid();
+      toast(
+        filled
+          ? "一鍵排班：偏好名單→連續性→盡力而為，補咗 " + filled + " 格"
+          : "已無缺人格",
+      );
+    }
+
+    /* 一键整理：竖直对齐主列（真实算法，与用例一致） */
+    function tidySchedule() {
+      // 1. canonicalOrder = 首次出现顺序（去重）
+      const canon = [];
+      SCHED.forEach((r) =>
+        r.names.forEach((n) => {
+          if (n && !canon.includes(n)) canon.push(n);
+        }),
+      );
+      // 2-3. 每行重排
+      SCHED.forEach((r) => {
+        const present = r.names.filter((n) => n); // 在场者（去 null）
+        const slots = [null, null, null, null];
+        const queue = [];
+        present.forEach((n) => {
+          const mc = canon.indexOf(n);
+          if (mc >= 0 && mc < 4 && slots[mc] === null) slots[mc] = n;
+          else queue.push(n);
+        });
+        queue.forEach((n) => {
+          const e = slots.indexOf(null);
+          if (e >= 0) slots[e] = n;
+        });
+        r.names = slots;
+      });
+      renderGrid();
+      toast("已整理：各人竪直對齊主列（缺位補齊）");
+    }
+
+    /* 字号缩放 */
+    let cfs = 13;
+    function cellFont(d) {
+      cfs = Math.max(11, Math.min(22, cfs + d));
+      document.documentElement.style.setProperty("--cellfs", cfs + "px");
+    }
+
+    /* 月份切换 */
+    const MONTHS = ["2025年5月", "2025年6月", "2025年7月", "2025年8月"];
+    let mi = 2;
+    function chgMonth(d) {
+      mi = Math.max(0, Math.min(MONTHS.length - 1, mi + d));
+      document.getElementById("curMonth").textContent = MONTHS[mi];
+      toast("切到 " + MONTHS[mi] + "（demo：更表數據沿用 7 月示例）");
+    }
+
+    /* ============ S5→确认入表 ============ */
+    let filled = false;
+    function openWage() {
+      if (filled) {
+        toast("已入表");
+        return;
+      }
+      document.getElementById("wageDlg").classList.add("on");
+    }
+    function closeWage() {
+      document.getElementById("wageDlg").classList.remove("on");
+    }
+    function confirmWage() {
+      const w = document.getElementById("wageIn").value || 88;
+      closeWage();
+      filled = true;
+      // 把 7/19（六）第一个缺位填上陈大文
+      const row = SCHED.find((r) => r.date == "7/19");
+      if (row) {
+        const idx = row.names.indexOf(null);
+        if (idx >= 0) row.names[idx] = "陳大文";
+        LG["陳大文"] = "#5856d6";
+      }
+      document.getElementById("btnChan").outerHTML =
+        '<span class="green">已入表 ✓ $' + w + "/時</span>";
+      const g = document.getElementById("gapHoi");
+      if (g) g.outerHTML = '<span class="green">齊人 ›</span>';
+      const pool = document.querySelector('#s2pools .pool[data-gap="today"]');
+      if (pool) pool.dataset.gap = "";
+      const gt = document.getElementById("gTod");
+      gt.textContent = "0";
+      gt.style.color = "var(--ok)";
+      BADGE["更表"] = 1;
+      BADGE["總覽"] = 2;
+      renderBadges();
+      toast("陳大文已入 7/19 早更・$" + w + "/時，已通知對方");
+      setTimeout(() => {
+        go("S3");
+      }, 600);
+    }
+
+    /* ============ S6 工资 ============ */
+    function wageFilter(st) {
+      document.querySelectorAll("#wageList .wcard").forEach((c) => {
+        c.style.display = st === "all" || c.dataset.st === st ? "" : "none";
+      });
+    }
+    function confirmPay(btn, name) {
+      btn.outerHTML =
+        '<div class="sub green" style="margin:10px 0 0;font-weight:700">支付方已確認，等 ' +
+        name +
+        " 點「已收」→ 雙向確認</div>";
+      const card = event.target.closest(".wcard");
+      const amt = card.querySelector(".wamt");
+      toast(name + " 本月全部標為已支付");
+    }
+    function openWageDetail(name) {
+      document.getElementById("wdName").textContent = name;
+      go("S6D");
+    }
+    function dayPay(btn) {
+      btn.outerHTML =
+        '<span class="green" style="font-size:12px">已確認 ✓</span>';
+      toast("該日已確認支付");
+    }
+
+    /* ============ S7 招募文案 ============ */
+    function genText() {
+      document.getElementById("waText").style.display = "block";
+      toast("已生成 WhatsApp 文案");
+    }
+
+    /* ============ 天文台天氣欄（三端共用；點警告循環，掣跳天文台） ============ */
+    const SIGS = [
+      ["⛈ 雷暴", "ts"],
+      ["🌧 黃雨", "amber"],
+      ["🌧 紅雨", "red"],
+      ["🌧 黑雨", "black"],
+      ["☀ 天晴", "clear"],
+    ];
+    let si = 0;
+    function cycSig() {
+      si = (si + 1) % SIGS.length;
+      const el = document.getElementById("wxsig");
+      el.textContent = SIGS[si][0];
+      el.className = "sig " + SIGS[si][1];
+      toast("天氣警告：" + SIGS[si][0].split(" ")[1]);
+    }
+    function openHKO() {
+      toast("跳轉香港天文台（demo）");
+      window.open("https://www.hko.gov.hk/tc/", "_blank");
+    }
+    function tickClock() {
+      const d = new Date(),
+        p = (n) => String(n).padStart(2, "0");
+      const t = document.getElementById("wxtime");
+      if (t) t.textContent = p(d.getHours()) + ":" + p(d.getMinutes());
+    }
+    tickClock();
+    setInterval(tickClock, 20000);
+
+    renderGrid();
+    renderBadges();
+  </script>
 </body>

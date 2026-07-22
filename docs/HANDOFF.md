@@ -22,6 +22,33 @@
 
 **下次第一步**：读 `docs/PROGRESS.md` + `docs/design/DEMO-RULES.md` + `DEMO-INDEX.md`；按用户对 R3 的反馈继续改，或确认某端后复制进 `confirmed/`。全部设计阶段改动仍未 commit（07-14 起攒着）。
 
+---
+
+**07-21 追加（同日，收到 R3 六点反馈修正 + 功能对照表 + 正式转开发流程）**
+
+1. 后台 designer agent 完成 R3 六点反馈修正（去机型选择器、S2 缺人筛选自动收起、招募按钮风格统一、三端天文台信息栏、01 配色统一成 02/03 的柔和 iOS 灰阶、三端配色变量逐字相同），已写入 `demo-2026-07-21/TREE.md`"同日修订"小节。
+2. 应用户要求，在 `demo-2026-07-21/TREE.md` 补了"功能位置对照表"（SPEC 业务功能→demo 页面 ID 映射），并标出 5 处 demo 尚无对应页面的缺口（个人资料/账号设置、忘记密码完整流程+忘记用户名+换号、新建泳池/模板/偏好名单编辑、子主管管理、通知中心）。
+3. **用户认可整体风格方向，要求正式进入开发流程**：新增 `docs/DEV-PROCESS.md`——固定团队编制（PM/后端/前端/测试/审查/除错/git，各角色对应固定 agent 类型，不再临时拼团队）+ 逐功能审核门细化为**前端一档、后端一档、其他（数据库/测试/部署等）一档**，每个单元做完停一次找用户审，未通过不许往下走。同步在 `.omc/plans/poolmind-phase1-plan.md` "执行方式约束"引用此文件；`.claude/CLAUDE.md` 补了对照表行，并清掉一段过时的"demo 四件套+机型切换"重复描述（已和 `DEMO-RULES.md` 现状脱节）。
+4. **用户当场拍板两件事**：① S（主管端）、L（救生员端）**现在就确认**——`demo-2026-07-21/01-supervisor.html`、`02-lifeguard.html`（R3 同日修订版）已复制进 `docs/design/confirmed/`，改标题注明"已確認樣式，定稿於 2026-07-21"；至此**三端（A/S/L）全部确认**，`DEMO-RULES.md`/`DEMO-INDEX.md` 已同步。② 累积的文档/demo 改动**先不 commit**（用户明确要求，多次问过这次才有答复）。
+
+**遗留**：`confirmed/03-admin.html` 仍是旧蓝配色，R3 新配色未回写（用户未要求现在处理，属已知差异不是漏改）；上述 5 个功能缺口页面要不要现在补，用户尚未拍板。
+
+**下次第一步**：三端已定稿，可以正式启动 **Spike 周**（见 `.omc/plans/poolmind-phase1-plan.md` 里程碑：Meta 商业验证 + OCR 真实样本实测 + 375px 双表交换交互原型），开发按 `docs/DEV-PROCESS.md` 的团队分工与逐单元审核门执行；仍未 commit，视用户何时决定。
+
+---
+
+**07-21 追加（同日，正式开发第一个"其他类"单元——仓库骨架，用户 token 用尽提前收尾）**
+
+用户提了四条正式开发要求，已落实为文档规则（见 `docs/DEV-PROCESS.md` §6、`docs/dev-log/README.md`）：① WhatsApp 验证改用"管理员人工核号"后台工具（计划里本就设计好的 break-glass 方案提前当 Spike/M0 主实现，核心校验逻辑独立成函数，将来 webhook 接通后复用同一函数）；② OCR 维持壳，任意照片过；③ 代码按业务模块分类（`apps/api/src/modules/` 下 auth/certificates/venues-pools/recruitment/chat/roster/payroll/notifications/audit/admin-tools 各自独立目录），不许堆一起；④ dev-log 改动记录精确到函数级（不只列文件）；⑤ 开发库/测试库/正式库三者物理隔离（本地 Docker 一个 Postgres 实例建 `poolmind_dev`+`poolmind_test` 两个库，正式库是独立云端 RDS）。
+
+**已派 `oh-my-claudecode:executor`（opus，后台任务 `scaffold-builder`）搭建仓库骨架**（monorepo：`apps/api` NestJS + `apps/web` React/Vite + `packages/shared`，见上方 §6 结构；本轮只搭骨架和配置，**不含任何业务逻辑**，auth/验证/OCR 等留给下一个"后端"单元）。
+
+**卡在哪**：这台机器**没装 Docker Desktop，也没有本地 Postgres**（5432 端口无人监听），所以数据库相关步骤（`docker compose up`、`prisma migrate`、health 接口连库验证）当场**没法在本机实跑验证**，agent 只能把代码/配置写对，等用户装好 Docker 后才能一键跑通。JS 侧（`pnpm install`、TypeScript 编译、Nest/Vite 能否启动）agent 会尽量跑完。
+
+**用户此时明确表示 token 用尽，要求"搭好框架就关闭，写交接"**——已让 `scaffold-builder` 收尾。**骨架已实际完成**，`docs/dev-log/2026-07-21-repo-scaffold.md` 完整记录（函数级）：monorepo（`apps/api` NestJS 11 个业务域空壳模块 + Prisma + 健康检查、`apps/web` React/Vite 占位首屏 + i18next zh-HK、`packages/shared` 占位包）+ 根目录 `docker-compose.yml`/`pnpm-workspace.yaml`/`package.json`/改写的 `README.md`。**JS 侧全部验证通过**（pnpm install、prisma generate、nest build、vite build、后端实际起服务监听:3000、前端 Vite 起服务并反代 `/health` 成功）。**唯一未验证项**：本机没装 Docker/本地 Postgres，`docker compose up -d`／`prisma migrate dev`／`test:e2e` 三步没法本机实跑，`curl /health` 已如实返回 `db:"error"`（因连不上库，符合预期，代码本身没问题）。`prisma/schema.prisma` 里有个临时占位表 `ScaffoldPlaceholder`，下一单元建真实数据模型时要删掉。全部改动仍未 commit（用户已明确要求先不提交）。
+
+**下次第一步**：先按上面①②③核实骨架 agent 的实际完成情况，再继续。全部改动仍未 commit（用户 07-21 已明确要求"先不提交"）。
+
 ## 2026-07-18
 
 **已完成**

@@ -1,19 +1,34 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1784563527298,
+  "lastScanned": 1784727087089,
   "projectRoot": "C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind",
   "techStack": {
-    "languages": [],
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": ">=20.11.0",
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      }
+    ],
     "frameworks": [],
-    "packageManager": null,
-    "runtime": null
+    "packageManager": "pnpm",
+    "runtime": "Node.js 20.11.0"
   },
   "build": {
-    "buildCommand": "cd \"C:\\Users\\OWNER\\Documents\\script\\workspace\\poolmind\" && echo \"===== web build (tsc -b + vite build) =====\" && corepack pnpm --filter web run build 2>&1 | tail -20; echo \"EXIT=${PIPESTATUS[0]}\"",
-    "testCommand": null,
+    "buildCommand": "pnpm build",
+    "testCommand": "pnpm test",
     "lintCommand": null,
-    "devCommand": null,
-    "scripts": {}
+    "devCommand": "pnpm dev",
+    "scripts": {
+      "dev": "pnpm --parallel --filter ./apps/* dev",
+      "build": "pnpm --filter ./packages/* build && pnpm --filter ./apps/* build",
+      "test": "cross-env NODE_ENV=test pnpm --filter api test:e2e",
+      "db:up": "docker compose up -d",
+      "db:down": "docker compose down"
+    }
   },
   "conventions": {
     "namingStyle": null,
@@ -22,7 +37,7 @@
     "fileOrganization": null
   },
   "structure": {
-    "isMonorepo": false,
+    "isMonorepo": true,
     "workspaces": [],
     "mainDirectories": [
       "docs"
@@ -38,15 +53,48 @@
     "当前处于 UI demo 设计阶段（docs/design/），尚未开始写正式后端/前端代码"
   ],
   "directoryMap": {
+    "apps": {
+      "path": "apps",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1784727087039,
+      "keyFiles": []
+    },
+    "docker": {
+      "path": "docker",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1784727087039,
+      "keyFiles": []
+    },
     "docs": {
       "path": "docs",
       "purpose": "Documentation",
-      "fileCount": 3,
-      "lastAccessed": 1784563527247,
+      "fileCount": 4,
+      "lastAccessed": 1784727087058,
       "keyFiles": [
+        "DEV-PROCESS.md",
         "HANDOFF.md",
         "PROGRESS.md",
         "SPEC.md"
+      ]
+    },
+    "packages": {
+      "path": "packages",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1784727087059,
+      "keyFiles": []
+    },
+    "apps\\api": {
+      "path": "apps\\api",
+      "purpose": "API routes",
+      "fileCount": 7,
+      "lastAccessed": 1784727087060,
+      "keyFiles": [
+        "nest-cli.json",
+        "package.json",
+        "tsconfig.build.json"
       ]
     }
   },
@@ -65,8 +113,8 @@
     },
     {
       "path": "docs/PROGRESS.md",
-      "accessCount": 18,
-      "lastAccessed": 1784649813734,
+      "accessCount": 19,
+      "lastAccessed": 1784727482600,
       "type": "file"
     },
     {
@@ -82,6 +130,12 @@
       "type": "file"
     },
     {
+      "path": "docs/HANDOFF.md",
+      "accessCount": 14,
+      "lastAccessed": 1784727467703,
+      "type": "file"
+    },
+    {
       "path": "docs/design/demo-2026-07-21/03-admin.html",
       "accessCount": 12,
       "lastAccessed": 1784646212510,
@@ -91,12 +145,6 @@
       "path": ".claude/CLAUDE.md",
       "accessCount": 12,
       "lastAccessed": 1784647494405,
-      "type": "file"
-    },
-    {
-      "path": "docs/HANDOFF.md",
-      "accessCount": 11,
-      "lastAccessed": 1784649800571,
       "type": "file"
     },
     {
